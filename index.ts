@@ -25,7 +25,10 @@ const start = async (): Promise<void> => {
   const admin = new AdminJS({
     resources: [
       {
-        resource: PersonModel, CarModel
+        resource: PersonModel
+      },
+      {
+        resource: CarModel
       }
     ]
   })
