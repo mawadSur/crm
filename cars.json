@@ -1,0 +1,8 @@
+{
+  "makeOptions": ["Toyota", "Honda", "Ford"],
+  "modelOptions": ["Camry", "Accord", "Mustang"],
+  "yearOptions": [2020, 2021, 2022],
+  "status":["Good","Good1","Good3"]
+}
+
+  
