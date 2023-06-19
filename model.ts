@@ -44,7 +44,7 @@ export const CarSchema = new Schema<Car>({
   make: { type: String, enum: carMakes, required: true },
   model: { type: String, enum: carModels.map(String), required: true }, // Flatten array and cast to string
   year: { type: String, enum: carYears, required: true },
-  VIN: { type: String, enum: carYears, required: true },
+  VIN: { type: String, required: true },
   mileage: { type: Number, required: true },
   location: { type: String, required: true },
   pictures: { type: [String], required: true },
