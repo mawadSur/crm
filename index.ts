@@ -4,7 +4,7 @@ import AdminJSExpress from '@adminjs/express'
 import { Database, Resource } from '@adminjs/mongoose'
 import mongoose from 'mongoose'
 import * as dotenv from 'dotenv'
-import { PersonModel, CarModel } from './model'
+import { CarModel, CustomerModel, SalesRepModel } from './model'
 dotenv.config()
 
 const PORT = 3001
@@ -25,7 +25,10 @@ const start = async (): Promise<void> => {
   const admin = new AdminJS({
     resources: [
       {
-        resource: PersonModel
+        resource: SalesRepModel
+      },
+      {
+        resource: CustomerModel
       },
       {
         resource: CarModel

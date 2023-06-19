@@ -3,7 +3,7 @@ import fs from 'fs';
 
 const ageRange: number[] = Array.from({ length: 83 }, (_, index) => index + 18);
 
-export interface Person {
+export interface SalesRep {
   name: string;
   age: number;
   gender: string;
@@ -11,7 +11,7 @@ export interface Person {
   phone: FormatString;
 }
 
-export const PersonSchema = new Schema<Person>({
+export const SalesRepSchema = new Schema<SalesRep>({
   name: { type: String, required: true },
   age: { type: Number, enum: ageRange, required: true },
   gender: { type: String, required: true },
@@ -19,7 +19,27 @@ export const PersonSchema = new Schema<Person>({
   phone: { type: String, required: true, validate: /^\d{10}$/ },
 });
 
-export const PersonModel = model<Person>('Person', PersonSchema);
+export const SalesRepModel = model<SalesRep>('Sales Rep', SalesRepSchema);
+
+export interface Customer {
+  name: string;
+  age: number;
+  gender: string;
+  address: string;
+  email: string;
+  phone: FormatString;
+}
+
+export const CustomerSchema = new Schema<Customer>({
+  name: { type: String, required: true },
+  age: { type: Number, enum: ageRange, required: true },
+  gender: { type: String, required: true },
+  address: { type: String, required: true },
+  email: { type: String, required: true },
+  phone: { type: String, required: true, validate: /^\d{10}$/ },
+});
+export const CustomerModel = model<Customer>('Customers', CustomerSchema);
+
 
 const jsonFileContent = fs.readFileSync('cars.json', 'utf8');
 const dropdownOptions = JSON.parse(jsonFileContent);
