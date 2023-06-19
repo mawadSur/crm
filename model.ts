@@ -9,6 +9,13 @@ export interface SalesRep {
   gender: string;
   address: string;
   phone: FormatString;
+  employeeId: string;
+  department: string;
+  supervisor: string;
+  hireDate: Date;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export const SalesRepSchema = new Schema<SalesRep>({
@@ -17,6 +24,13 @@ export const SalesRepSchema = new Schema<SalesRep>({
   gender: { type: String, required: true },
   address: { type: String, required: true },
   phone: { type: String, required: true, validate: /^\d{10}$/ },
+  employeeId: { type: String, required: true },
+  department: { type: String, required: true },
+  supervisor: { type: String, required: true },
+  hireDate: { type: Date, required: true },
+  isActive: { type: Boolean, required: true },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
 
 export const SalesRepModel = model<SalesRep>('Sales Rep', SalesRepSchema);
@@ -28,6 +42,20 @@ export interface Customer {
   address: string;
   email: string;
   phone: FormatString;
+  conversations: TextConversation[]; // Add conversations field
+  dateOfBirth: Date;
+  occupation: string;
+  sourceOfLead: string;
+  preferredContactMethod: string;
+  notes: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface TextConversation {
+  timestamp: Date;
+  sender: string;
+  message: string;
 }
 
 export const CustomerSchema = new Schema<Customer>({
@@ -37,7 +65,20 @@ export const CustomerSchema = new Schema<Customer>({
   address: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true, validate: /^\d{10}$/ },
+  conversations: [{ // Define conversations sub-schema
+    timestamp: { type: Date, required: true },
+    sender: { type: String, required: true },
+    message: { type: String, required: true },
+  }],
+  dateOfBirth: { type: Date, required: true },
+  occupation: { type: String, required: true },
+  sourceOfLead: { type: String, required: true },
+  preferredContactMethod: { type: String, required: true },
+  notes: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
+
 export const CustomerModel = model<Customer>('Customers', CustomerSchema);
 
 
@@ -62,7 +103,7 @@ export interface Car {
 
 export const CarSchema = new Schema<Car>({
   make: { type: String, enum: carMakes, required: true },
-  model: { type: String, enum: carModels.map(String), required: true }, // Flatten array and cast to string
+  model: { type: String, enum: carModels.map(String), required: true },
   year: { type: String, enum: carYears, required: true },
   VIN: { type: String, required: true },
   mileage: { type: Number, required: true },
