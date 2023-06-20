@@ -33,8 +33,15 @@ const start = async (): Promise<void> => {
       {
         resource: CarModel
       }
-    ]
-  })
+    ],
+    branding: {
+      companyName: 'Pegasus',
+      favicon: '../public/icon.jpg',
+    },
+    version: {
+      admin: true,
+    },
+  });
 
   const adminRouter = AdminJSExpress.buildRouter(admin)
 
