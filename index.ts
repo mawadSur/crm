@@ -4,7 +4,8 @@ import AdminJSExpress from '@adminjs/express'
 import { Database, Resource } from '@adminjs/mongoose'
 import mongoose from 'mongoose'
 import * as dotenv from 'dotenv'
-import { CarModel, CustomerModel, SalesRepModel } from './model'
+import { CarModel, CustomerModel, SalesRepModel, ChatConversationModel} from './model'
+
 dotenv.config()
 
 const PORT = 3001
@@ -32,7 +33,11 @@ const start = async (): Promise<void> => {
       },
       {
         resource: CarModel
-      }
+      },
+      {
+        resource:ChatConversationModel
+      },
+    
     ],
     branding: {
       companyName: 'Pegasus',

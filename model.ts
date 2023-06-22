@@ -113,3 +113,32 @@ export const CarSchema = new Schema<Car>({
 });
 
 export const CarModel = model<Car>('Car', CarSchema);
+
+
+//
+
+export interface ChatMessage {
+  timestamp: Date;        // Timestamp of the message
+  sender: string;         // Sender of the message (e.g., "customer" or "bot")
+  message: string;        // Content of the message
+}
+
+export interface ChatConversation {
+  customer_id: string;       // Identifier of the customer
+  messages: ChatMessage[];// Array of chat messages
+  createdAt: Date;        // Timestamp when the conversation was created
+  updatedAt: Date;        // Timestamp when the conversation was last updated
+}
+
+export const ChatConversationSchema = new Schema<ChatConversation>({
+  customer_id: { type: String, required: true },
+  messages: [{
+    timestamp: { type: Date, required: true },
+    sender: { type: String, required: true },
+    message: { type: String, required: true },
+  }],
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+});
+
+export const ChatConversationModel = model<ChatConversation>('ChatConversation', ChatConversationSchema);
