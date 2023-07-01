@@ -15,13 +15,13 @@ PORT=3434
 # MONGO_URL=mongodb://127.0.0.1:27343/crm
 
 # Local DB run with docker
-MONGO_URL=mongodb://db:27343/crm
+MONGO_URL=mongodb://db:27017/crm
 ```
 
 #### Install dependencies
 
 ```bash
-npm i
+yarn
 ```
 
 #### Start normal
@@ -29,7 +29,7 @@ npm i
 <i>Must use local db or staging db (check at .env file)</i>
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 or
@@ -41,3 +41,5 @@ or
 ```bash
 docker compose up
 ```
+
+http://localhost:3434/admin
