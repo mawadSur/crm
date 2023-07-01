@@ -2,3 +2,5 @@ node_modules
 dist
 .adminjs
 .env
+
+yarn-error.log
