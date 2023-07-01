@@ -65,11 +65,14 @@ export const CustomerSchema = new Schema<Customer>({
   address: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true, validate: /^\d{10}$/ },
-  conversations: [{ // Define conversations sub-schema
-    timestamp: { type: Date, required: true },
-    sender: { type: String, required: true },
-    message: { type: String, required: true },
-  }],
+  conversations: [
+    {
+      // Define conversations sub-schema
+      timestamp: { type: Date, required: true },
+      sender: { type: String, required: true },
+      message: { type: String, required: true },
+    },
+  ],
   dateOfBirth: { type: Date, required: true },
   occupation: { type: String, required: true },
   sourceOfLead: { type: String, required: true },
@@ -80,7 +83,6 @@ export const CustomerSchema = new Schema<Customer>({
 });
 
 export const CustomerModel = model<Customer>('Customers', CustomerSchema);
-
 
 const jsonFileContent = fs.readFileSync('./cars.json', 'utf8');
 const dropdownOptions = JSON.parse(jsonFileContent);
