@@ -1,50 +1,50 @@
 import React from 'react';
-import { Area, AreaChart, Legend, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
+import { Area, AreaChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { Card, CardTitle, Flex, Section, ValueText } from '../../../components/common/index.js';
 
 const pdata = [
   {
     name: 'Apr',
-    revenue: 20,
+    days: 20,
   },
   {
     name: 'May',
-    revenue: 4,
+    days: 7,
   },
   {
     name: 'Jun',
-    revenue: 23,
+    days: 25,
   },
   {
     name: 'Ju7',
-    revenue: 10,
+    days: 14,
   },
 ];
 
-const GrossRevenue = () => {
+const AverageDayInventory = () => {
   return (
     <Card>
-      <CardTitle>Gross Revenue</CardTitle>
+      <CardTitle>Average Days in Inventory</CardTitle>
       <Flex $marginTop="20px">
         <Section $padding="0px" $width="30%" $height="70px">
-          <ValueText>100.00$</ValueText>
+          <ValueText $lineHeight="30px">10 Days</ValueText>
         </Section>
         <Section $padding="0px" $width="60%" $height="70px">
           <ResponsiveContainer width="100%" height="100px" aspect={3}>
             <AreaChart data={pdata}>
               <defs>
-                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                <linearGradient id="colorUv1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#9aeef3" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#9aeef3" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <Tooltip />
               <Area
                 type="monotone"
-                dataKey="revenue"
-                stroke="#8884d8"
+                dataKey="days"
+                stroke="#9aeef3"
                 fillOpacity={0.5}
-                fill="url(#colorUv)"
+                fill="url(#colorUv1)"
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -54,4 +54,4 @@ const GrossRevenue = () => {
   );
 };
 
-export default GrossRevenue;
+export default AverageDayInventory;
