@@ -5,6 +5,7 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import { carResource, customerResource, salesRepResource } from './resources/index.js';
+import { Components, componentLoader } from './components/index.js';
 dotenv.config();
 
 const PORT = process.env.PORT || 3123;
@@ -22,7 +23,11 @@ const start = async () => {
   await mongoose.connect(`${process.env.MONGO_URL}`);
 
   const admin = new AdminJS({
+    componentLoader,
     resources: [salesRepResource, customerResource, carResource],
+    dashboard: {
+      component: Components.Dashboard,
+    },
     branding: {
       companyName: 'Pegasus',
       favicon: '../public/icon.jpg',
