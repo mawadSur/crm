@@ -12,34 +12,32 @@ services:
       - .env
     volumes:
       - .:/app
-    depends_on:
-      - db
     networks:
       - crm-network
 
-  db:
-    image: zcube/bitnami-compat-mongodb:latest
-    container_name: crm-db
-    restart: always
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-    volumes:
-      - db-data:/bitnami/mongodb
-    ports:
-      - 27343:27017
-    networks:
-      - crm-network
+  # db:
+  #   image: zcube/bitnami-compat-mongodb:latest
+  #   container_name: crm-db
+  #   restart: always
+  #   environment:
+  #     - ALLOW_EMPTY_PASSWORD=yes
+  #   volumes:
+  #     - db-data:/bitnami/mongodb
+  #   ports:
+  #     - 27343:27017
+  #   networks:
+  #     - crm-network
 
-  redis:
-    image: redis:latest
-    container_name: crm-redis
-    restart: always
-    ports:
-      - '6343:6379'
-    volumes:
-      - redis-data:/data
-    networks:
-      - crm-network
+  # redis:
+  #   image: redis:latest
+  #   container_name: crm-redis
+  #   restart: always
+  #   ports:
+  #     - '6343:6379'
+  #   volumes:
+  #     - redis-data:/data
+  #   networks:
+  #     - crm-network
 
 networks:
   crm-network:
