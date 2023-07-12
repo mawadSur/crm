@@ -43,3 +43,19 @@ docker compose up
 ```
 
 http://localhost:3434/admin
+
+## How to deploy new code on server
+
+1. Pull new code
+
+2. Build code
+
+```bash
+$ yarn build
+```
+
+3. Restart pm2
+
+```bash
+$ pm2 restart crm
+```
