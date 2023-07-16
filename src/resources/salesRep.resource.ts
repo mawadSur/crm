@@ -1,5 +1,7 @@
 import { ResourceWithOptions } from 'adminjs';
+import importExportFeature from '@adminjs/import-export';
 import { SalesRepModel } from '../models/index.js';
+import { componentLoader } from '../components/index.js';
 
 export const salesRepResource: ResourceWithOptions = {
   resource: SalesRepModel,
@@ -14,4 +16,5 @@ export const salesRepResource: ResourceWithOptions = {
     },
     properties: {},
   },
+  features: [importExportFeature({ componentLoader })],
 };
