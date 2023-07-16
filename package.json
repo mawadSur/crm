@@ -1,5 +1,5 @@
 {
-  "name": "adminjs-demo",
+  "name": "crm-pegeus",
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -9,12 +9,12 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "npm run clean && npx tsc",
-    "start": "node dist/index.js",
-    "dev": "concurrently \"npm run clean\" \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
+    "start": "ADMIN_JS_SKIP_BUNDLE=false NODE_ENV=production node dist/index.js",
+    "dev": "npx tsc --watch & nodemon -q dist/index.js",
     "prepare": "husky install",
     "seed": "node dist/core/database/seed/index.js"
   },
-  "author": "",
+  "author": "Sur Consulting, LLC",
   "license": "ISC",
   "dependencies": {
     "@adminjs/express": "^6.0.0",
@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
-    "concurrently": "^8.0.1",
+    "@types/mocha": "^10.0.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.3",
     "prettier": "2.8.8",

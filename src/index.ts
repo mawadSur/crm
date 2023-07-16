@@ -30,6 +30,18 @@ const start = async () => {
     dashboard: {
       component: Components.Dashboard,
     },
+    pages: {
+      calculator: {
+        // name, will be used to build an URL
+        handler: async (request, response, context) => {
+          // fetch values from your database
+          // const value = await Car.find({});
+          // return { data: { inventory: car.value } };
+        },
+        component: Components.Calculator,
+        icon: 'Plus',
+      },
+    },
     branding: {
       companyName: 'Pegasus',
       favicon: '/logo.jpeg',
