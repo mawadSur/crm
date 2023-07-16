@@ -9,7 +9,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "npm run clean && npx tsc",
-    "start": "ADMIN_JS_SKIP_BUNDLE=true NODE_ENV=production node dist/index.js",
+    "start": "ADMIN_JS_SKIP_BUNDLE=false NODE_ENV=production node dist/index.js",
     "dev": "npx tsc --watch & nodemon -q dist/index.js",
     "prepare": "husky install",
     "seed": "node dist/core/database/seed/index.js"
