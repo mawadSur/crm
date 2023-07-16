@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './calculator.module.css';
+// import styles from './calculator.module.css';
 
 const LoanPaymentMatrix = () => {
   const [marketValue, setMarketValue] = useState('0');
@@ -22,8 +22,8 @@ const LoanPaymentMatrix = () => {
   };
 
   return (
-    <div className={styles.calculator}>
-      <table className={styles.table}>
+    <div /* className={styles.calculator} */>
+      <table /* className={styles.table} */>
         <thead>
           <tr>
             <th>Term</th>
@@ -40,7 +40,7 @@ const LoanPaymentMatrix = () => {
         </tbody>
       </table>
 
-      <div className={styles.input}>
+      <div /* className={styles.input} */>
         <label>
           Market Value Selling Price:{' '}
           <input
