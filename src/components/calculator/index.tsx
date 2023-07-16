@@ -40,7 +40,7 @@ const LoanPaymentMatrix = () => {
         </tbody>
       </table>
 
-      <div className={styles.example}>
+      <div className={styles.input}>
         <label>
           Market Value Selling Price:{' '}
           <input
