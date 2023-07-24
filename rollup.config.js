@@ -9,4 +9,9 @@ export default {
       // extract: path.resolve('dist/my-custom-file-name.css')
     }),
   ],
+  output: [
+    {
+      format: 'cjs',
+    },
+  ],
 };

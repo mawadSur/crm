@@ -127,41 +127,6 @@ const pdata = [
     NewCars: 24,
     UsedCars: 30,
   },
-  {
-    name: 'July 25',
-    NewCars: 22,
-    UsedCars: 28,
-  },
-  {
-    name: 'July 26',
-    NewCars: 20,
-    UsedCars: 25,
-  },
-  {
-    name: 'July 27',
-    NewCars: 24,
-    UsedCars: 30,
-  },
-  {
-    name: 'July 28',
-    NewCars: 28,
-    UsedCars: 32,
-  },
-  {
-    name: 'July 29',
-    NewCars: 55,
-    UsedCars: 60,
-  },
-  {
-    name: 'July 30',
-    NewCars: 58,
-    UsedCars: 65,
-  },
-  {
-    name: 'July 31',
-    NewCars: 60,
-    UsedCars: 68,
-  },
 ];
 
 const SalesVolume = React.memo(() => {
