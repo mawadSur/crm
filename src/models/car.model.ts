@@ -8,6 +8,8 @@ const carMakes = dropdownOptions.makeOptions;
 const carModels = Object.values(dropdownOptions.modelOptions).flat();
 const carYears = dropdownOptions.yearOptions;
 const carStatuses = dropdownOptions.statusOptions;
+const carColors = dropdownOptions.colorOptions;
+const carFuelTypes = dropdownOptions.fuelTypeOptions;
 
 export interface Car {
   make: string;
@@ -18,6 +20,11 @@ export interface Car {
   location: string;
   pictures: string[];
   status: string;
+  color: string;
+  fuelType: string;
+  costPrice: number;
+  salePrice: number;
+  options: string[];
 }
 
 export const carSchema = new Schema<Car>({
@@ -29,6 +36,11 @@ export const carSchema = new Schema<Car>({
   location: { type: String, required: true },
   pictures: { type: [String], required: true },
   status: { type: String, enum: carStatuses, required: true },
+  color: { type: String, enum: carColors, required: true },
+  fuelType: { type: String, enum: carFuelTypes, required: true },
+  costPrice: { type: Number, required: true },
+  salePrice: { type: Number, required: true },
+  options: { type: [String], required: false },
 });
 
 //* Indexes
@@ -39,5 +51,9 @@ carSchema.index({ VIN: 1 });
 carSchema.index({ mileage: 1 });
 carSchema.index({ location: 1 });
 carSchema.index({ status: 1 });
+carSchema.index({ color: 1 });
+carSchema.index({ fuelType: 1 });
+carSchema.index({ costPrice: 1 });
+carSchema.index({ salePrice: 1 });
 
 export const CarModel = model<Car>('Car', carSchema);

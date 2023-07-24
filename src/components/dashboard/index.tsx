@@ -3,6 +3,8 @@ import React from 'react';
 //! Components
 import GrossRevenue from './gross-revenue/index.js';
 import SalesVolume from './sales-volume/index.js';
+import AppointmentsToday from './appointments/index.js';
+import DeskLog from './desklog/index.js';
 import InventoryTurnoverRate from './inventory-turnover-rate/index.js';
 import AverageDayInventory from './average-days-inventory/index.js';
 
@@ -13,7 +15,15 @@ import LeadConversionRate from './lead-conversion-rate/index.js';
 const Dashboard: React.FC = () => {
   return (
     <Page>
-      <SalesVolume />
+      <Flex>
+        <Section $width="60%">
+          <AppointmentsToday />
+        </Section>
+        <Section $width="40%">
+          <SalesVolume />
+        </Section>
+      </Flex>
+      <DeskLog />
       <Flex>
         <Section $width="24%">
           <GrossRevenue />

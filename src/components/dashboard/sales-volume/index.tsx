@@ -1,71 +1,166 @@
 import React from 'react';
 
-//! Chart Components
-import { Area, AreaChart, Legend, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
+// Chart Components
+import { BarChart, Bar, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-//! Common Components
+// Common Components
 import { Card, Title } from '../../../components/common/index.js';
 
 const pdata = [
   {
-    name: 'Jan',
-    Toyota: 20,
-    Audi: 10,
+    name: 'July 1',
+    NewCars: 55,
+    UsedCars: 60,
   },
   {
-    name: 'Feb',
-    Toyota: 10,
-    Audi: 50,
+    name: 'July 2',
+    NewCars: 58,
+    UsedCars: 65,
   },
   {
-    name: 'Mar',
-    Toyota: 23,
-    Audi: 55,
+    name: 'July 3',
+    NewCars: 20,
+    UsedCars: 25,
   },
   {
-    name: 'Apr',
-    Toyota: 20,
-    Audi: 10,
+    name: 'July 4',
+    NewCars: 22,
+    UsedCars: 28,
   },
   {
-    name: 'May',
-    Toyota: 4,
-    Audi: 5,
+    name: 'July 5',
+    NewCars: 18,
+    UsedCars: 30,
   },
   {
-    name: 'Jun',
-    Toyota: 7,
-    Audi: 14,
+    name: 'July 6',
+    NewCars: 15,
+    UsedCars: 20,
   },
   {
-    name: 'Jul',
-    Toyota: 17,
-    Audi: 4,
+    name: 'July 7',
+    NewCars: 25,
+    UsedCars: 30,
   },
   {
-    name: 'Aug',
-    Toyota: 32,
-    Audi: 44,
+    name: 'July 8',
+    NewCars: 50,
+    UsedCars: 55,
   },
   {
-    name: 'Sep',
-    Toyota: 12,
-    Audi: 29,
+    name: 'July 9',
+    NewCars: 60,
+    UsedCars: 58,
   },
   {
-    name: 'Oct',
-    Toyota: 12,
-    Audi: 29,
+    name: 'July 10',
+    NewCars: 17,
+    UsedCars: 18,
   },
   {
-    name: 'Nov',
-    Toyota: 72,
-    Audi: 16,
+    name: 'July 11',
+    NewCars: 20,
+    UsedCars: 24,
   },
   {
-    name: 'Dev',
-    Toyota: 100,
-    Audi: 100,
+    name: 'July 12',
+    NewCars: 16,
+    UsedCars: 22,
+  },
+  {
+    name: 'July 13',
+    NewCars: 22,
+    UsedCars: 30,
+  },
+  {
+    name: 'July 14',
+    NewCars: 26,
+    UsedCars: 30,
+  },
+  {
+    name: 'July 15',
+    NewCars: 55,
+    UsedCars: 60,
+  },
+  {
+    name: 'July 16',
+    NewCars: 60,
+    UsedCars: 65,
+  },
+  {
+    name: 'July 17',
+    NewCars: 23,
+    UsedCars: 30,
+  },
+  {
+    name: 'July 18',
+    NewCars: 25,
+    UsedCars: 35,
+  },
+  {
+    name: 'July 19',
+    NewCars: 22,
+    UsedCars: 28,
+  },
+  {
+    name: 'July 20',
+    NewCars: 18,
+    UsedCars: 20,
+  },
+  {
+    name: 'July 21',
+    NewCars: 20,
+    UsedCars: 26,
+  },
+  {
+    name: 'July 22',
+    NewCars: 58,
+    UsedCars: 60,
+  },
+  {
+    name: 'July 23',
+    NewCars: 60,
+    UsedCars: 70,
+  },
+  {
+    name: 'July 24',
+    NewCars: 24,
+    UsedCars: 30,
+  },
+  {
+    name: 'July 25',
+    NewCars: 22,
+    UsedCars: 28,
+  },
+  {
+    name: 'July 26',
+    NewCars: 20,
+    UsedCars: 25,
+  },
+  {
+    name: 'July 27',
+    NewCars: 24,
+    UsedCars: 30,
+  },
+  {
+    name: 'July 28',
+    NewCars: 28,
+    UsedCars: 32,
+  },
+  {
+    name: 'July 29',
+    NewCars: 55,
+    UsedCars: 60,
+  },
+  {
+    name: 'July 30',
+    NewCars: 58,
+    UsedCars: 65,
+  },
+  {
+    name: 'July 31',
+    NewCars: 60,
+    UsedCars: 68,
   },
 ];
 
@@ -74,36 +169,14 @@ const SalesVolume = React.memo(() => {
     <Card>
       <Title>Sales Volume</Title>
       <ResponsiveContainer width="100%" aspect={3}>
-        <AreaChart data={pdata}>
-          <defs>
-            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-            </linearGradient>
-            <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
-            </linearGradient>
-          </defs>
+        <BarChart data={pdata}>
           <XAxis dataKey="name" interval={'preserveStartEnd'} />
-          {/* <YAxis></YAxis> */}
+          <YAxis />
           <Legend />
           <Tooltip />
-          <Area
-            type="monotone"
-            dataKey="Toyota"
-            stroke="#8884d8"
-            fillOpacity={0.5}
-            fill="url(#colorUv)"
-          />
-          <Area
-            type="monotone"
-            dataKey="Audi"
-            stroke="#82ca9d"
-            fillOpacity={0.5}
-            fill="url(#colorPv)"
-          />
-        </AreaChart>
+          <Bar dataKey="NewCars" fill="#8884d8" />
+          <Bar dataKey="UsedCars" fill="#82ca9d" />
+        </BarChart>
       </ResponsiveContainer>
     </Card>
   );
