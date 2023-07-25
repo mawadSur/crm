@@ -212,9 +212,7 @@ const AppointmentsToday = () => {
           <TableBody>
             {appointments.map((appointment) => (
               <TableRow key={appointment.id}>
-                <TableCell component="th" scope="row">
-                  {appointment.time}
-                </TableCell>
+                <TableCell scope="row">{appointment.time}</TableCell>
                 <TableCell>{appointment.name}</TableCell>
                 <TableCell>{appointment.car}</TableCell>
                 <TableCell>{appointment.vin}</TableCell>
