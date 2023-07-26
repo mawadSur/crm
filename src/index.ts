@@ -53,7 +53,7 @@ const start = async () => {
     },
   });
 
-  // const adminRouter = AdminJSExpress.buildRouter(admin);
+  const adminRouter = AdminJSExpress.buildRouter(admin);
   const adminAuthRouter = AdminJSExpress.buildAuthenticatedRouter(
     admin,
     {
@@ -69,7 +69,10 @@ const start = async () => {
       name: 'adminjs',
     }
   );
-  app.use(admin.options.rootPath, adminAuthRouter);
+  app.use(
+    admin.options.rootPath,
+    process.env.NODE_ENV === 'development' ? adminRouter : adminAuthRouter
+  );
 
   app.listen(PORT, () => {
     console.log(`🚀 AdminJS started on http://localhost:${PORT}${admin.options.rootPath}`);

@@ -1,4 +1,14 @@
 {
   "editor.tabSize": 2,
-  "cSpell.userWords": ["adminjs", "nodenext", "mawad", "Tumover", "pdata", "maxlength", "resave"]
+  "cSpell.userWords": [
+    "adminjs",
+    "nodenext",
+    "mawad",
+    "Tumover",
+    "pdata",
+    "maxlength",
+    "resave",
+    "nontax",
+    "gatavt"
+  ]
 }
