@@ -1,19 +1,17 @@
-import React from 'react';
-// import './styles.css';
-import { Title } from '../../common/index.js';
 import {
   Card,
+  MenuItem,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
-  Select,
-  MenuItem,
 } from '@material-ui/core';
+import React from 'react';
+import { Title } from '../../common/index.js';
 
 // Sample data with additional fields
 const deskLogData = [

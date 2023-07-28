@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Chart Components
-import { BarChart, Bar, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 // Common Components
 import { Card, Title } from '../../../components/common/index.js';

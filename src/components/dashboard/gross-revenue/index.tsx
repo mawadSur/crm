@@ -1,5 +1,5 @@
 import React from 'react';
-import { Area, AreaChart, Legend, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
+import { Area, AreaChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { Card, CardTitle, Flex, Section, ValueText } from '../../../components/common/index.js';
 
 const pdata = [
