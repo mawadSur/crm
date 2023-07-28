@@ -1,5 +1,27 @@
 import React, { useState } from 'react';
 // import styles from './calculator.module.css';
+import { styled } from '@adminjs/design-system/styled-components';
+
+const Table = styled('table')`
+  width: 50%;
+  float: left;
+  padding: 20px;
+  border: 2px solid red;
+`;
+
+const Input = styled('Input')`
+  background: black;
+  width: 50%;
+  float: left;
+  padding: 20px;
+  border: 2px solid red;
+`;
+
+const Calculator = styled('div')`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+`;
 
 const LoanPaymentMatrix = () => {
   const [marketValue, setMarketValue] = useState('0');
@@ -22,8 +44,8 @@ const LoanPaymentMatrix = () => {
   };
 
   return (
-    <div /* className={styles.calculator} */>
-      <table /* className={styles.table} */>
+    <Calculator /* className={styles.calculator} */>
+      <Table /* className={styles.table} */>
         <thead>
           <tr>
             <th>Term</th>
@@ -38,12 +60,12 @@ const LoanPaymentMatrix = () => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
 
       <div /* className={styles.input} */>
         <label>
           Market Value Selling Price:{' '}
-          <input
+          <Input
             type="number"
             value={marketValue}
             onChange={(e) => setMarketValue(e.target.value)}
@@ -51,7 +73,7 @@ const LoanPaymentMatrix = () => {
         </label>
         <label>
           Taxable Fees:{' '}
-          <input
+          <Input
             type="number"
             value={taxableFees}
             onChange={(e) => setTaxableFees(e.target.value)}
@@ -59,20 +81,20 @@ const LoanPaymentMatrix = () => {
         </label>
         <label>
           Doc Fee:{' '}
-          <input type="number" value={docFee} onChange={(e) => setDocFee(e.target.value)} />
+          <Input type="number" value={docFee} onChange={(e) => setDocFee(e.target.value)} />
         </label>
         <label>
-          GATAVT: <input type="number" value={gatavt} onChange={(e) => setGatavt(e.target.value)} />
+          GATAVT: <Input type="number" value={gatavt} onChange={(e) => setGatavt(e.target.value)} />
         </label>
         <label>
           Non-Tax Fees:{' '}
-          <input type="number" value={nontaxFees} onChange={(e) => setNontaxFees(e.target.value)} />
+          <Input type="number" value={nontaxFees} onChange={(e) => setNontaxFees(e.target.value)} />
         </label>
         <label>
-          APR: <input type="number" value={apr} onChange={(e) => setApr(e.target.value)} />
+          APR: <Input type="number" value={apr} onChange={(e) => setApr(e.target.value)} />
         </label>
       </div>
-    </div>
+    </Calculator>
   );
 };
 
