@@ -10,8 +10,10 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Title } from '../../common/index.js';
+import { setTransactionId, openModal, closeModal } from '../../../reducers/modalReducer.js';
 
 // Sample data with additional fields
 const deskLogData = [
@@ -339,6 +341,9 @@ const deskLogData = [
 ];
 
 const DeskLog = () => {
+  const dispatch = useDispatch();
+  const [currentTransactionId, setCurrentTransactionId] = useState(null);
+
   // Function to handle status change
   const handleStatusChange = (event, logId) => {
     // Implement your logic to update the sale status for the corresponding logId
@@ -346,8 +351,18 @@ const DeskLog = () => {
     console.log(`New status for logId ${logId}:`, event.target.value);
   };
 
+  const handleRowClick = (id) => {
+    console.log(`TableRow with id ${id} clicked`);
+    dispatch(setTransactionId('id'));
+    dispatch(openModal()); // set modal state to true to open the modal
+  };
+
+  const handleCloseModal = () => {
+    dispatch(closeModal()); // close the modal
+  };
+
   return (
-    <Card className="marginBottom">
+    <Card>
       <Title>Desk Log</Title>
       <TableContainer component={Paper} style={{ maxHeight: 600, overflow: 'auto' }}>
         <Table>
@@ -371,6 +386,7 @@ const DeskLog = () => {
               <TableRow
                 key={log.id}
                 className={`saleStatus-${log.saleStatus.replace(/\s+/g, '-')}`}
+                onClick={() => handleRowClick(log.id)}
               >
                 <TableCell>{log.customerName}</TableCell>
                 <TableCell>{log.vehicle}</TableCell>

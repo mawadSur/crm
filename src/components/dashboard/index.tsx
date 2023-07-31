@@ -11,10 +11,12 @@ import SalesVolume from './sales-volume/index.js';
 //! Common Components
 import { Flex, Page, Section } from '../common/index.js';
 import LeadConversionRate from './lead-conversion-rate/index.js';
+import TransactionModal from '../modal/index.js';
 
 const Dashboard: React.FC = () => {
   return (
     <Page>
+      <TransactionModal></TransactionModal>
       <Flex>
         <Section $width="60%">
           <AppointmentsToday />

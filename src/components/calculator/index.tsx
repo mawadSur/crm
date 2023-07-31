@@ -1,27 +1,5 @@
 import React, { useState } from 'react';
-// import styles from './calculator.module.css';
-import { styled } from '@adminjs/design-system/styled-components';
-
-const Table = styled('table')`
-  width: 50%;
-  float: left;
-  padding: 20px;
-  border: 2px solid red;
-`;
-
-const Input = styled('Input')`
-  background: black;
-  width: 50%;
-  float: left;
-  padding: 20px;
-  border: 2px solid red;
-`;
-
-const Calculator = styled('div')`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 20px;
-`;
+import { Table, Input, Calculator } from './style.js';
 
 const LoanPaymentMatrix = () => {
   const [marketValue, setMarketValue] = useState('0');
