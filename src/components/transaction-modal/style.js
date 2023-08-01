@@ -14,7 +14,6 @@ export const ModalContainer = styled.div`
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   overflow: auto; /* Enable scroll if needed */
-}
 `;
 
 export const ModalContent = styled.div`
@@ -24,10 +23,6 @@ export const ModalContent = styled.div`
   width: 80%;
   border: 1px solid #888;
   max-width: 800px;
-`;
-
-export const HalfDiv = styled.div`
-  width: 50%;
 `;
 
 export const CloseButton = styled.span`
@@ -42,4 +37,9 @@ export const CloseButton = styled.span`
     text-decoration: none;
     cursor: pointer;
   }
+`;
+
+export const Title = styled.h1`
+  font-size: 20px;
+  font-weight: bold;
 `;
