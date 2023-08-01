@@ -7,15 +7,19 @@ export interface Customer {
   gender: string;
   address: string;
   email: string;
-  phone: FormatString;
+  otherEmail: string;
+  homeNumber: FormatString;
+  cellNumber: FormatString;
+  workNumber: FormatString;
   conversations: TextConversation[]; // Add conversations field
   dateOfBirth: Date;
   occupation: string;
   sourceOfLead: string;
   preferredContactMethod: string;
   notes: string;
-  createdAt: Date;
+  textPreferred: boolean;
   updatedAt: Date;
+  createdAt: Date;
 }
 
 export interface TextConversation {
@@ -36,7 +40,9 @@ export const customerSchema = new Schema<Customer>({
   gender: { type: String, required: true },
   address: { type: String, required: true },
   email: { type: String, required: true },
-  phone: { type: String, required: true, validate: /^\d{10}$/ },
+  homeNumber: { type: String, required: true, validate: /^\d{10}$/ },
+  cellNumber: { type: String, required: true, validate: /^\d{10}$/ },
+  workNumber: { type: String, required: true, validate: /^\d{10}$/ },
   conversations: [conversationSchema],
   dateOfBirth: { type: Date, required: true },
   occupation: { type: String, required: true },

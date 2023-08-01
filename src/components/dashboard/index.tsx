@@ -16,7 +16,7 @@ import TransactionModal from '../modal/index.js';
 const Dashboard: React.FC = () => {
   return (
     <Page>
-      <TransactionModal></TransactionModal>
+      <TransactionModal transactionId={1}></TransactionModal>
       <Flex>
         <Section $width="60%">
           <AppointmentsToday />
