@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import styles from './calculator.module.css';
+import calculatorStyle from './style.js';
 
 const LoanPaymentMatrix = () => {
   const [marketValue, setMarketValue] = useState('0');
@@ -22,57 +22,80 @@ const LoanPaymentMatrix = () => {
   };
 
   return (
-    <div /* className={styles.calculator} */>
-      <table /* className={styles.table} */>
+    <calculatorStyle.CalculatorWrapper>
+      <calculatorStyle.Table>
         <thead>
           <tr>
-            <th>Term</th>
-            <th>Monthly Payment</th>
+            <calculatorStyle.TableHeader>Term</calculatorStyle.TableHeader>
+            <calculatorStyle.TableHeader>Monthly Payment</calculatorStyle.TableHeader>
           </tr>
         </thead>
         <tbody>
           {[48, 60, 72].map((term) => (
-            <tr key={term}>
-              <td>{term} months</td>
-              <td>${calculatePayment(term)}</td>
-            </tr>
+            <calculatorStyle.TableRow key={term}>
+              <calculatorStyle.TableCell>{term} months</calculatorStyle.TableCell>
+              <calculatorStyle.TableCell>${calculatePayment(term)}</calculatorStyle.TableCell>
+            </calculatorStyle.TableRow>
           ))}
         </tbody>
-      </table>
+      </calculatorStyle.Table>
 
-      <div /* className={styles.input} */>
-        <label>
+      <calculatorStyle.InputContainer>
+        <calculatorStyle.Label>
           Market Value Selling Price:{' '}
-          <input
+          <calculatorStyle.Input
             type="number"
             value={marketValue}
             onChange={(e) => setMarketValue(e.target.value)}
           />
-        </label>
-        <label>
+        </calculatorStyle.Label>
+        <calculatorStyle.Label>
           Taxable Fees:{' '}
-          <input
+          <calculatorStyle.Input
             type="number"
             value={taxableFees}
             onChange={(e) => setTaxableFees(e.target.value)}
           />
-        </label>
-        <label>
+        </calculatorStyle.Label>
+        <calculatorStyle.Label>
           Doc Fee:{' '}
-          <input type="number" value={docFee} onChange={(e) => setDocFee(e.target.value)} />
-        </label>
-        <label>
-          GATAVT: <input type="number" value={gatavt} onChange={(e) => setGatavt(e.target.value)} />
-        </label>
-        <label>
+          <calculatorStyle.Input
+            type="number"
+            value={docFee}
+            onChange={(e) => setDocFee(e.target.value)}
+          />
+        </calculatorStyle.Label>
+        <calculatorStyle.Label>
+          GATAVT:{' '}
+          <calculatorStyle.Input
+            type="number"
+            value={gatavt}
+            onChange={(e) => setGatavt(e.target.value)}
+          />
+        </calculatorStyle.Label>
+        <calculatorStyle.Label>
           Non-Tax Fees:{' '}
-          <input type="number" value={nontaxFees} onChange={(e) => setNontaxFees(e.target.value)} />
-        </label>
-        <label>
-          APR: <input type="number" value={apr} onChange={(e) => setApr(e.target.value)} />
-        </label>
-      </div>
-    </div>
+          <calculatorStyle.Input
+            type="number"
+            value={nontaxFees}
+            onChange={(e) => setNontaxFees(e.target.value)}
+          />
+        </calculatorStyle.Label>
+        <calculatorStyle.Label>
+          APR:{' '}
+          <calculatorStyle.Input
+            type="number"
+            value={apr}
+            onChange={(e) => setApr(e.target.value)}
+          />
+        </calculatorStyle.Label>
+      </calculatorStyle.InputContainer>
+
+      <calculatorStyle.Result>
+        Monthly Payment: ${calculatePayment(60)}{' '}
+        {/* Display the calculated payment for a specific term */}
+      </calculatorStyle.Result>
+    </calculatorStyle.CalculatorWrapper>
   );
 };
 

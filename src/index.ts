@@ -5,8 +5,15 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import { Components, componentLoader } from './components/index.js';
 import { Database as CoreDB } from './core/database/index.js';
-import { carResource, customerResource, salesRepResource } from './resources/index.js';
+import {
+  carResource,
+  customerResource,
+  salesRepResource,
+  ChatConversationResource,
+} from './resources/index.js';
 import { adminAuthenticate } from './services/auth.service.js';
+import chatRouter from '../API/chatConverstion.js';
+
 dotenv.config();
 
 const PORT = process.env.PORT || 3123;
@@ -69,6 +76,9 @@ const start = async () => {
       name: 'adminjs',
     }
   );
+
+  app.use('/api', chatRouter);
+
   app.use(
     admin.options.rootPath,
     process.env.NODE_ENV === 'development' ? adminRouter : adminAuthRouter
