@@ -10,10 +10,9 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
 import { Title } from '../../common/index.js';
-import { setTransactionId, openModal, closeModal } from '../../../reducers/modalReducer.js';
+import TransactionModal from '../../../components/transaction-modal/index.js';
 
 // Sample data with additional fields
 const deskLogData = [
@@ -341,8 +340,11 @@ const deskLogData = [
 ];
 
 const DeskLog = () => {
-  const dispatch = useDispatch();
-  const [currentTransactionId, setCurrentTransactionId] = useState(null);
+  const [openTransactionModal, setOpenTransactionModal] = React.useState(false);
+  const [currentLog, setCurrentLog] = React.useState();
+  const closeTransactionModal = React.useCallback(() => {
+    setOpenTransactionModal(false);
+  }, []);
 
   // Function to handle status change
   const handleStatusChange = (event, logId) => {
@@ -351,72 +353,76 @@ const DeskLog = () => {
     console.log(`New status for logId ${logId}:`, event.target.value);
   };
 
-  const handleRowClick = (id) => {
-    console.log(`TableRow with id ${id} clicked`);
-    dispatch(setTransactionId('id'));
-    dispatch(openModal()); // set modal state to true to open the modal
-  };
-
-  const handleCloseModal = () => {
-    dispatch(closeModal()); // close the modal
+  const handleRowClick = (log) => {
+    setOpenTransactionModal(true);
+    setCurrentLog(log);
+    // dispatch(modalReducerJs.setTransactionId('id'));
+    // dispatch(modalReducerJs.openModal()); // set modal state to true to open the modal
   };
 
   return (
-    <Card>
-      <Title>Desk Log</Title>
-      <TableContainer component={Paper} style={{ maxHeight: 600, overflow: 'auto' }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Customer Name</TableCell>
-              <TableCell>Vehicle Interested</TableCell>
-              <TableCell>Sale Status</TableCell>
-              <TableCell>Trade-In</TableCell>
-              <TableCell>Financing</TableCell>
-              <TableCell>Time In</TableCell>
-              <TableCell>Time Out</TableCell>
-              <TableCell>Referral Source</TableCell>
-              <TableCell>Sales Rep</TableCell>
-              <TableCell>Phone Numbers</TableCell>
-              <TableCell>Comments</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {deskLogData.map((log) => (
-              <TableRow
-                key={log.id}
-                className={`saleStatus-${log.saleStatus.replace(/\s+/g, '-')}`}
-                onClick={() => handleRowClick(log.id)}
-              >
-                <TableCell>{log.customerName}</TableCell>
-                <TableCell>{log.vehicle}</TableCell>
-                <TableCell>
-                  {/* Dropdown to change sale status */}
-                  <Select value={log.saleStatus} onChange={(e) => handleStatusChange(e, log.id)}>
-                    <MenuItem value="In Progress">In Progress</MenuItem>
-                    <MenuItem value="Completed">Completed</MenuItem>
-                    <MenuItem value="Lost">Lost</MenuItem>
-                  </Select>
-                </TableCell>
-                <TableCell>{log.tradeIn}</TableCell>
-                <TableCell>{log.financing}</TableCell>
-                <TableCell>{log.timeIn}</TableCell>
-                <TableCell>{log.timeOut}</TableCell>
-                <TableCell>{log.referralSource}</TableCell>
-                <TableCell>{log.salesRep}</TableCell>
-                <TableCell>
-                  {/* Display phone numbers */}
-                  <div>Home: {log.phoneNumberHome}</div>
-                  <div>Cell: {log.phoneNumberCell}</div>
-                  <div>Work: {log.phoneNumberWork}</div>
-                </TableCell>
-                <TableCell>{log.comments}</TableCell>
+    <React.Fragment>
+      <TransactionModal
+        open={openTransactionModal}
+        onClose={closeTransactionModal}
+        opportunity={currentLog}
+      />
+      <Card>
+        <Title>Desk Log</Title>
+        <TableContainer component={Paper} style={{ maxHeight: 600, overflow: 'auto' }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Customer Name</TableCell>
+                <TableCell>Vehicle Interested</TableCell>
+                <TableCell>Sale Status</TableCell>
+                <TableCell>Trade-In</TableCell>
+                <TableCell>Financing</TableCell>
+                <TableCell>Time In</TableCell>
+                <TableCell>Time Out</TableCell>
+                <TableCell>Referral Source</TableCell>
+                <TableCell>Sales Rep</TableCell>
+                <TableCell>Phone Numbers</TableCell>
+                <TableCell>Comments</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Card>
+            </TableHead>
+            <TableBody>
+              {deskLogData.map((log) => (
+                <TableRow
+                  key={log.id}
+                  className={`saleStatus-${log.saleStatus.replace(/\s+/g, '-')}`}
+                  onClick={() => handleRowClick(log)}
+                >
+                  <TableCell>{log.customerName}</TableCell>
+                  <TableCell>{log.vehicle}</TableCell>
+                  <TableCell>
+                    {/* Dropdown to change sale status */}
+                    <Select value={log.saleStatus} onChange={(e) => handleStatusChange(e, log.id)}>
+                      <MenuItem value="In Progress">In Progress</MenuItem>
+                      <MenuItem value="Completed">Completed</MenuItem>
+                      <MenuItem value="Lost">Lost</MenuItem>
+                    </Select>
+                  </TableCell>
+                  <TableCell>{log.tradeIn}</TableCell>
+                  <TableCell>{log.financing}</TableCell>
+                  <TableCell>{log.timeIn}</TableCell>
+                  <TableCell>{log.timeOut}</TableCell>
+                  <TableCell>{log.referralSource}</TableCell>
+                  <TableCell>{log.salesRep}</TableCell>
+                  <TableCell>
+                    {/* Display phone numbers */}
+                    <div>Home: {log.phoneNumberHome}</div>
+                    <div>Cell: {log.phoneNumberCell}</div>
+                    <div>Work: {log.phoneNumberWork}</div>
+                  </TableCell>
+                  <TableCell>{log.comments}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Card>
+    </React.Fragment>
   );
 };
 

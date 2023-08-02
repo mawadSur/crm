@@ -13,8 +13,7 @@ export const ModalContainer = styled.div`
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  overflow: auto; /* Enable scroll if needed */
-}
+  overflow: auto;
 `;
 
 export const ModalContent = styled.div`
@@ -26,8 +25,9 @@ export const ModalContent = styled.div`
   max-width: 800px;
 `;
 
-export const HalfDiv = styled.div`
-  width: 50%;
+export const Title = styled.h1`
+  font-size: 20px;
+  font-weight: bold;
 `;
 
 export const CloseButton = styled.span`

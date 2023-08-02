@@ -1,5 +1,4 @@
-import { FormatString, model, Schema } from 'mongoose';
-import { ageRange } from '../utils/index.js';
+import { model, Schema } from 'mongoose';
 
 export interface Opportunity {
   vehicle: string;
