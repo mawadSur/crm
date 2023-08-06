@@ -8,7 +8,6 @@ const ChatConversations = () => {
     const fetchData = async () => {
       try {
         const response = await fetch('http://localhost:3434/api/chats');
-        console.log('response', response);
         const data = await response.json();
         if (data?.length && data[0].messages) {
           console.log('data', data);
@@ -85,7 +84,6 @@ const ChatConversations = () => {
   //   // Fetch messages data from API and set it to 'messages' state
   //   setMessages(conversationData.messages);
   // }, []);
-  console.log('messages', messages);
 
   return (
     <MessageContainer>

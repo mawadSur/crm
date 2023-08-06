@@ -1,14 +1,21 @@
 import dotenv from 'dotenv';
-import { Database } from '../index.js';
+import mongoose from 'mongoose';
 import { seedAdmin } from './admin.seed.js';
+import { seedAppointment } from './appointment.seed.js';
 dotenv.config();
 
-const db = new Database(process.env.MONGO_URL as string);
-db.connect();
-const seed = async () => {
-  await Promise.allSettled([seedAdmin()]);
-};
-
-seed().then(() => {
-  db.close();
-});
+mongoose
+  .connect(process.env.MONGO_URL as string)
+  .then(() => {
+    console.log('seed db starting');
+    const seed = async () => {
+      await Promise.allSettled([seedAdmin(), seedAppointment()]);
+    };
+    seed().then(() => {
+      console.log('seed db stopped');
+      mongoose.connection.close();
+    });
+  })
+  .catch((error) => {
+    console.log('🧨 Connection database error', error);
+  });

@@ -5,7 +5,12 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import { Components, componentLoader } from './components/index.js';
 import { Database as CoreDB } from './core/database/index.js';
-import { carResource, customerResource, salesRepResource } from './resources/index.js';
+import {
+  appointmentResource,
+  carResource,
+  customerResource,
+  salesRepResource,
+} from './resources/index.js';
 import { BaseRoute } from './routes/index.js';
 import { adminAuthenticate } from './services/auth.service.js';
 
@@ -29,7 +34,7 @@ const start = async () => {
 
   const admin = new AdminJS({
     componentLoader,
-    resources: [salesRepResource, customerResource, carResource],
+    resources: [salesRepResource, customerResource, carResource, appointmentResource],
     dashboard: {
       component: Components.Dashboard,
     },
