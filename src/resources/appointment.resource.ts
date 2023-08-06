@@ -6,7 +6,7 @@ import { componentLoader } from '../components/index.js';
 export const appointmentResource: ResourceWithOptions = {
   resource: AppointmentModel,
   options: {
-    id: 'Appointments',
+    id: 'appointments',
     navigation: {
       icon: 'Phone',
     },
@@ -14,8 +14,8 @@ export const appointmentResource: ResourceWithOptions = {
       id: {
         isVisible: { show: true, edit: false, list: true },
       },
-      salesRepId: {
-        reference: 'SalesRep',
+      carId: {
+        reference: 'cars',
         isVisible: {
           list: true,
           edit: false,
@@ -23,8 +23,8 @@ export const appointmentResource: ResourceWithOptions = {
           show: true,
         },
       },
-      carId: {
-        reference: 'Car',
+      saleRepId: {
+        reference: 'sales-reps',
         isVisible: {
           list: true,
           edit: false,
