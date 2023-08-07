@@ -1,18 +1,27 @@
 import importExportFeature from '@adminjs/import-export';
 import { ResourceWithOptions } from 'adminjs';
-import { AppointmentModel } from '../models/index.js';
 import { componentLoader } from '../components/index.js';
+import { DeskLogModel } from '../models/index.js';
 
-export const appointmentResource: ResourceWithOptions = {
-  resource: AppointmentModel,
+export const desklogResource: ResourceWithOptions = {
+  resource: DeskLogModel,
   options: {
-    id: 'appointments',
+    id: 'desklogs',
     navigation: {
-      icon: 'Phone',
+      icon: 'List',
     },
     properties: {
-      carId: {
+      vehicleId: {
         reference: 'cars',
+        isVisible: {
+          list: true,
+          edit: false,
+          filter: true,
+          show: true,
+        },
+      },
+      customerId: {
+        reference: 'customers',
         isVisible: {
           list: true,
           edit: false,

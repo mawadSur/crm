@@ -26,7 +26,7 @@ export const seedAppointment = async () => {
       if (car && saleRep) {
         const newAppointment = new AppointmentModel({
           carId: car._id,
-          saleRepId: saleRep._id,
+          salesRepId: saleRep._id,
           time: new Date().toISOString(),
           isNew: true,
           name: name,

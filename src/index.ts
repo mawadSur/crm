@@ -9,6 +9,7 @@ import {
   appointmentResource,
   carResource,
   customerResource,
+  desklogResource,
   salesRepResource,
 } from './resources/index.js';
 import { BaseRoute } from './routes/index.js';
@@ -34,7 +35,13 @@ const start = async () => {
 
   const admin = new AdminJS({
     componentLoader,
-    resources: [salesRepResource, customerResource, carResource, appointmentResource],
+    resources: [
+      salesRepResource,
+      customerResource,
+      carResource,
+      appointmentResource,
+      desklogResource,
+    ],
     dashboard: {
       component: Components.Dashboard,
     },
@@ -75,14 +82,14 @@ const start = async () => {
       saveUninitialized: true,
       secret: 'Secret',
       name: 'adminjs',
-    }
+    },
   );
 
   app.use('/api', route.router);
 
   app.use(
     admin.options.rootPath,
-    process.env.NODE_ENV === 'development' ? adminRouter : adminAuthRouter
+    process.env.NODE_ENV === 'development' ? adminRouter : adminAuthRouter,
   );
 
   app.listen(PORT, () => {

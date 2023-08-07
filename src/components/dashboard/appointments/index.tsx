@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
   Paper,
   Table,
@@ -11,7 +9,7 @@ import {
 } from '@material-ui/core';
 import { Pagination, Skeleton } from '@mui/material';
 import dayjs from 'dayjs';
-import { Appointment } from '../../../models/index.js';
+import React from 'react';
 import { Card, Title } from '../../common/index.js';
 
 const AppointmentsToday = React.memo(() => {
@@ -26,7 +24,7 @@ const AppointmentsToday = React.memo(() => {
       try {
         setLoading(true);
         const response = await fetch(
-          'http://localhost:3434/api/appointments' + '?offset=' + offset + '&limit=' + limit
+          'http://localhost:3434/api/appointments' + '?offset=' + offset + '&limit=' + limit,
         );
         console.log('response', response);
         const data = await response.json();
@@ -50,7 +48,7 @@ const AppointmentsToday = React.memo(() => {
     (_, value) => {
       setOffset((value - 1) * limit);
     },
-    [offset, limit]
+    [offset, limit],
   );
 
   return (
@@ -87,11 +85,14 @@ const AppointmentsToday = React.memo(() => {
                 <TableCell>
                   <Skeleton animation="wave" />
                 </TableCell>
+                <TableCell>
+                  <Skeleton animation="wave" />
+                </TableCell>
               </React.Fragment>
             )}
             {!loading &&
               appointments?.length > 0 &&
-              appointments.map((appointment: Appointment) => (
+              appointments.map((appointment: any) => (
                 <TableRow key={appointment.id}>
                   <TableCell scope="row">{dayjs(appointment.time).format('h:mm A')}</TableCell>
                   <TableCell>{appointment.name}</TableCell>
@@ -101,7 +102,6 @@ const AppointmentsToday = React.memo(() => {
                   <TableCell>{appointment?.salesRep?.name ?? ''}</TableCell>
                 </TableRow>
               ))}
-            {!loading && appointments?.length === 0 && <TableRow>{'Empty Appointments'}</TableRow>}
           </TableBody>
         </Table>
       </TableContainer>

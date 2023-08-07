@@ -11,12 +11,12 @@ import SalesVolume from './sales-volume/index.js';
 //! Common Components
 import { Flex, Page, Section } from '../common/index.js';
 import LeadConversionRate from './lead-conversion-rate/index.js';
-import ChatConversations from '../conversation/index.js';
+// import ChatConversations from '../conversation/index.js';
 
 const Dashboard: React.FC = () => {
   return (
     <Page>
-      <ChatConversations />
+      {/* <ChatConversations /> */}
       <Flex>
         <Section $width="60%">
           <AppointmentsToday />
@@ -25,7 +25,9 @@ const Dashboard: React.FC = () => {
           <SalesVolume />
         </Section>
       </Flex>
-      <DeskLog />
+      <Flex>
+        <DeskLog />
+      </Flex>
       <Flex>
         <Section $width="24%">
           <GrossRevenue />

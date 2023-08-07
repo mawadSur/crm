@@ -5,9 +5,6 @@ export const ChatConversationResource: ResourceWithOptions = {
   resource: ConversationModel,
   options: {
     properties: {
-      id: {
-        isVisible: { show: true, edit: false, list: true },
-      },
       customerId: {
         isVisible: { show: true, edit: true, list: true },
       },

@@ -1,18 +1,22 @@
-import { IQuery } from 'src/utils/interfaces/index.js';
-import { Appointment, AppointmentModel } from '../models/index.js';
+import { DeskLogModel } from '../models/index.js';
+import { IQuery } from '../utils/interfaces/index.js';
 
-export class AppointmentService {
+export class DesklogService {
   constructor() {}
 
   async list(query: IQuery): Promise<{
     data: any[];
     total: number;
   }> {
-    const data = await AppointmentModel.find()
+    const data = await DeskLogModel.find()
       .populate([
         {
-          path: 'carId',
+          path: 'vehicleId',
           model: 'Car',
+        },
+        {
+          path: 'customerId',
+          model: 'Customers',
         },
         {
           path: 'salesRepId',
@@ -25,7 +29,7 @@ export class AppointmentService {
       .skip(query.offset)
       .limit(query.limit)
       .exec();
-    const total = await AppointmentModel.countDocuments();
+    const total = await DeskLogModel.countDocuments();
     return {
       data,
       total,
