@@ -6,8 +6,9 @@ import express from 'express';
 import { Components, componentLoader } from './components/index.js';
 import { Database as CoreDB } from './core/database/index.js';
 import { carResource, customerResource, salesRepResource } from './resources/index.js';
-import { adminAuthenticate } from './services/auth.service.js';
 //import chatRouter from '../API/chatConverstion.js';
+import { BaseRoute } from './routes/index.js';
+import { adminAuthenticate } from './services/auth.service.js';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ AdminJS.registerAdapter({
 const start = async () => {
   const app = express();
   app.use(express.static('public'));
+  const route = new BaseRoute();
 
   const database = new CoreDB(process.env.MONGO_URL as string);
   await database.connect();
