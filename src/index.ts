@@ -5,14 +5,9 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import { Components, componentLoader } from './components/index.js';
 import { Database as CoreDB } from './core/database/index.js';
-import {
-  carResource,
-  customerResource,
-  salesRepResource,
-  ChatConversationResource,
-} from './resources/index.js';
+import { carResource, customerResource, salesRepResource } from './resources/index.js';
 import { adminAuthenticate } from './services/auth.service.js';
-import chatRouter from '../API/chatConverstion.js';
+//import chatRouter from '../API/chatConverstion.js';
 
 dotenv.config();
 
@@ -48,6 +43,16 @@ const start = async () => {
         component: Components.Calculator,
         icon: 'Plus',
       },
+      Chat: {
+        // name, will be used to build an URL
+        handler: async (request, response, context) => {
+          // fetch values from your database
+          // const value = await Car.find({});
+          // return { data: { inventory: car.value } };
+        },
+        component: Components.Chat,
+        icon: 'Plus',
+      },
     },
     branding: {
       companyName: 'Pegasus',
@@ -77,7 +82,7 @@ const start = async () => {
     }
   );
 
-  app.use('/api', chatRouter);
+  //app.use('/api', chatRouter);
 
   app.use(
     admin.options.rootPath,

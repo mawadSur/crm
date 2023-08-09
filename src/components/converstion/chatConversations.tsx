@@ -5,7 +5,7 @@ import {
   CustomerMessage,
   BotMessage,
   MessageDetails,
-} from './style.js';
+} from './chatConversation.style.js';
 
 const ChatConversations = () => {
   const [messages, setMessages] = useState([]);
