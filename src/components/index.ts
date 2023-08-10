@@ -6,6 +6,6 @@ export const Components = {
   Dashboard: componentLoader.add('Dashboard', './dashboard/index.js'),
   Calculator: componentLoader.add('Calculator', './calculator/index.js'),
   Campaign: componentLoader.add('Campaign', './campaign/index.js'),
-  // FollowUp: componentLoader.add('Follow up', './followUp/index.js'),
+  FollowUp: componentLoader.add('Followup', './followUp/index.js'),
   Chat: componentLoader.add('Chat', './conversation/index.js'),
 };
