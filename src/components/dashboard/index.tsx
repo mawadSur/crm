@@ -16,7 +16,6 @@ import ChatConversations from '../conversation/chatConversation.js';
 const Dashboard: React.FC = () => {
   return (
     <Page>
-      <ChatConversations />
       <Flex>
         <Section $width="60%">
           <AppointmentsToday />

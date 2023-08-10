@@ -6,4 +6,8 @@ export class ConversationService {
   async list() {
     return ConversationModel.find();
   }
+
+  async getChat(customerId) {
+    return ConversationModel.findOne({ customer_id: customerId });
+  }
 }

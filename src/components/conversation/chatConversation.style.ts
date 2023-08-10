@@ -47,3 +47,19 @@ export const MessageDetails = styled.div`
   font-size: 12px;
   transition: opacity 0.2s;
 `;
+
+export const BackButton = styled.button`
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #555;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #333;
+  }
+`;

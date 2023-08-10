@@ -24,7 +24,6 @@ const start = async () => {
   const app = express();
   app.use(express.static('public'));
   const route = new BaseRoute();
-
   const database = new CoreDB(process.env.MONGO_URL as string);
   await database.connect();
 
@@ -45,13 +44,9 @@ const start = async () => {
         component: Components.Calculator,
         icon: 'Plus',
       },
-      Chat: {
+      chat: {
         // name, will be used to build an URL
-        handler: async (request, response, context) => {
-          // fetch values from your database
-          // const value = await Car.find({});
-          // return { data: { inventory: car.value } };
-        },
+        handler: async (request, response, context) => {},
         component: Components.Chat,
         icon: 'Plus',
       },
@@ -85,7 +80,7 @@ const start = async () => {
   );
 
   //app.use('/api', chatRouter);
-
+  app.use('/', route.router);
   app.use(
     admin.options.rootPath,
     process.env.NODE_ENV === 'development' ? adminRouter : adminAuthRouter
