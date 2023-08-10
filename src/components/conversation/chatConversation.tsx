@@ -1,15 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   BotMessage,
   CustomerMessage,
   MessageContainer,
   MessageDetails,
   BackButton,
+  InputContainer,
+  StyledInput,
+  SendButton,
 } from './chatConversation.style.js';
 
 const ChatConversations = ({ customerId, onBackClick }) => {
-  const [messages, setMessages] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [newMessage, setNewMessage] = useState('');
+
+  const handleNewMessageChange = (event) => {
+    setNewMessage(event.target.value);
+  };
+
+  const handleSendMessage = async () => {
+    // Send the new message to the API and update the messages
+    try {
+      const response = await fetch(`http://localhost:3434/chats/sendMessage/${customerId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: newMessage }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status: ${response.status}`);
+      }
+
+      // Assuming the API responds with the updated messages
+      const data = await response.json();
+
+      if (data?.messages) {
+        setMessages(data.messages);
+      }
+
+      // Clear the input field
+      setNewMessage('');
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  };
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -63,6 +100,15 @@ const ChatConversations = ({ customerId, onBackClick }) => {
           <div>No conversation data available for this customer.</div>
         )}
       </MessageContainer>
+      <InputContainer>
+        <StyledInput
+          type="text"
+          value={newMessage}
+          onChange={handleNewMessageChange}
+          placeholder="Type your message..."
+        />
+        <SendButton onClick={handleSendMessage}>Send</SendButton>
+      </InputContainer>
     </div>
   );
 };
