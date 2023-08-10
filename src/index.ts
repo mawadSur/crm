@@ -63,8 +63,8 @@ const start = async () => {
           // const value = await Car.find({});
           // return { data: { inventory: car.value } };
         },
-        component: Components.Calculator,
-        icon: 'Plus',
+        component: Components.Campaign,
+        icon: 'Campaign',
       },
     },
     branding: {
