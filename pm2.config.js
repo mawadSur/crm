@@ -1,8 +1,10 @@
+const path = require('path');
+
 module.exports = {
   apps: [
     {
       name: 'crm',
-      script: './dist/index.js',
+      script: path.resolve(__dirname, 'dist/index.js'),
       interpreter: 'node',
       instances: 1,
       autorestart: true,
