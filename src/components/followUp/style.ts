@@ -1,6 +1,6 @@
 import { styled } from '@adminjs/design-system/styled-components';
 
-export const Card = styled.div`
+const Card = styled.div`
   width: 80%;
   padding: 20px;
   margin: auto;
@@ -13,12 +13,12 @@ export const Card = styled.div`
   background: white;
 `;
 
-export const Title = styled.h2`
+const Title = styled.h2`
   font-size: 1.5rem;
   margin: 0;
 `;
 
-export const Dropdown = styled.div`
+const Dropdown = styled.div`
   display: flex;
   flex-wrap: wrap; // Allows the content to wrap onto the next line.
   justify-content: space-between;
@@ -29,7 +29,7 @@ export const Dropdown = styled.div`
   }
 `;
 
-export const Input = styled.input`
+const Input = styled.input`
   flex: 0 0 calc(50% - 10px); // Each input will take roughly half the container width minus the gap.
   padding: 5px;
   margin-bottom: 10px;
@@ -39,7 +39,7 @@ export const Input = styled.input`
   }
 `;
 
-export const LaunchButton = styled.button`
+const LaunchButton = styled.button`
   display: flex;
   align-items: center;
   padding: 8px 16px;

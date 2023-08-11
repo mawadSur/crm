@@ -1,42 +1,42 @@
 import { styled } from '@adminjs/design-system/styled-components';
 
-export const CalculatorWrapper = styled.div`
+const CalculatorWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 20px;
 `;
 
-export const Table = styled.table`
+const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
   border: 2px solid #e0e0e0;
 `;
 
-export const TableHeader = styled.th`
+const TableHeader = styled.th`
   padding: 12px;
   background-color: #f5f5f5;
   text-align: left;
   border-bottom: 2px solid #e0e0e0;
 `;
 
-export const TableRow = styled.tr`
+const TableRow = styled.tr`
   &:nth-child(even) {
     background-color: #f9f9f9;
   }
 `;
 
-export const TableCell = styled.td`
+const TableCell = styled.td`
   padding: 12px;
   text-align: left;
 `;
 
-export const InputContainer = styled.div`
+const InputContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
 `;
 
-export const Label = styled.label`
+const Label = styled.label`
   flex: 1 0 50%;
   display: flex;
   align-items: center;
@@ -44,7 +44,7 @@ export const Label = styled.label`
   margin-left: 10px;
 `;
 
-export const Input = styled.input`
+const Input = styled.input`
   flex: 0 0 20%;
   padding: 10px;
   width:  20%
@@ -52,7 +52,7 @@ export const Input = styled.input`
   border-radius: 8px;
 `;
 
-export const Result = styled.div`
+const Result = styled.div`
   grid-column: span 2;
   text-align: center;
   font-size: 18px;

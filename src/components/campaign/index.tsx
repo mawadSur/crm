@@ -17,7 +17,7 @@ const BlastCampaignCard = () => {
 
   return (
     <div>
-      <campaignStyle.Card onClick={handleClick}>
+      <campaignStyle.Card onClick={handleClick} open={isMenuOpen}>
         {/* <icon> */}
         <campaignStyle.Title>Blast Campaign</campaignStyle.Title>
       </campaignStyle.Card>

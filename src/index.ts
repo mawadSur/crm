@@ -66,6 +66,16 @@ const start = async () => {
         component: Components.Campaign,
         icon: 'Campaign',
       },
+      followUp: {
+        // name, will be used to build an URL
+        handler: async (request, response, context) => {
+          // fetch values from your database
+          // const value = await Car.find({});
+          // return { data: { inventory: car.value } };
+        },
+        component: Components.FollowUp,
+        icon: 'Campaign',
+      },
     },
     branding: {
       companyName: 'Pegasus',
