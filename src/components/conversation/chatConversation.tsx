@@ -21,8 +21,14 @@ const ChatConversations = ({ customerId, onBackClick }) => {
 
   const handleSendMessage = async () => {
     // Send the new message to the API and update the messages
+
+    const fetchUrl =
+      process.env.USE_LOCAL === 'true'
+        ? `${process.env.REACT_APP_FETCH_URL}/chats/sendMessage`
+        : '/chats/sendMessage';
+
     try {
-      const response = await fetch(`http://localhost:3434/chats/sendMessage/${customerId}`, {
+      const response = await fetch(`${fetchUrl}/${customerId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,9 +55,14 @@ const ChatConversations = ({ customerId, onBackClick }) => {
   };
 
   React.useEffect(() => {
+    const fetchUrl =
+      process.env.USE_LOCAL === 'true'
+        ? `${process.env.REACT_APP_FETCH_URL}/chats/getChat`
+        : '/chats/getChat';
+
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3434/chats/getChat/${customerId}`);
+        const response = await fetch(`${fetchUrl}/${customerId}`);
         if (!response.ok) {
           throw new Error(`API request failed with status: ${response.status}`);
         }

@@ -17,8 +17,13 @@ function CustomersList() {
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
   const [showConversation, setShowConversation] = useState(false);
 
+  const fetchUrl =
+    process.env.USE_LOCAL === 'true'
+      ? `${process.env.FETCH_URL}/customers/getCustomers`
+      : '/customers/getCustomers';
+
   useEffect(() => {
-    fetch('http://localhost:3434/customers/getCustomers')
+    fetch(fetchUrl)
       .then((response) => response.json())
       .then((data) => {
         console.log('Fetched data:', JSON.stringify(data, null, 2));
