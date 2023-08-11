@@ -27,7 +27,6 @@ export class ChatRoute {
       const customerId = req.params.customerId;
       const data = await this.conversationService.getChat(customerId);
       res.json(data);
-      console.log('dania data', res.json(data));
     } catch (error) {
       res.status(500).json({ message: 'Error fetching data' });
     }
