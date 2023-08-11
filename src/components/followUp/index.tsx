@@ -1,31 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { FunnelChart, Tooltip, Funnel, Cell, LabelList, ResponsiveContainer } from 'recharts';
+import { FunnelChart, Tooltip, Funnel, Cell, ResponsiveContainer } from 'recharts';
 import followUpStyle from './style.js';
 
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#fd6b19'];
+const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#fd6b19']; // sample colors, adjust as necessary
 
 const FollowUp = () => {
   const [data, setData] = useState([]);
 
+  // Load animation by populating data after a delay (using useEffect and useState)
   useEffect(() => {
     const fetchData = [
-      { value: 100, name: 'Visitor' },
-      { value: 80, name: 'Sign-up' },
-      { value: 50, name: 'Trial' },
-      { value: 20, name: 'Paid' },
+      { value: 100, name: 'Sent message' },
+      { value: 80, name: 'Postive Response' },
+      { value: 50, name: 'Made Appointment' },
+      { value: 20, name: 'Visited Store' },
     ];
 
-    setTimeout(() => setData(fetchData), 500);
+    setTimeout(() => setData(fetchData), 500); // simulating loading data with a delay
   }, []);
 
-  const handleClick = (event, payload) => {
-    alert(`${payload.name}: ${payload.value}`);
+  const handleClick = (data, index) => {
+    alert(`${data.name}: ${data.value}`);
   };
 
   return (
-    <div style={{ height: '100vh' }}>
+    <div>
       <h1>Follow Up Page</h1>
-      <ResponsiveContainer width="80%" height="100vh">
+      <ResponsiveContainer width="80%" height={400}>
         <FunnelChart>
           <Tooltip />
           <Funnel
@@ -33,11 +34,7 @@ const FollowUp = () => {
             dataKey="value"
             nameKey="name"
             // onClick={handleClick}
-            isAnimationActive={true}
-            animationDuration={500}
-            // symmetric
           >
-            <LabelList position="right" fill="#000" stroke="none" dataKey="name" />
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
@@ -46,6 +43,7 @@ const FollowUp = () => {
                 stroke="none"
                 strokeWidth={1}
                 fillOpacity={0.7}
+                onMouseEnter={() => {}}
               />
             ))}
           </Funnel>
