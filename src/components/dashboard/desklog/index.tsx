@@ -14,13 +14,18 @@ import React from 'react';
 import { Title } from '../../common/index.js';
 import TransactionModal from '../../../components/transaction-modal/index.js';
 import { ESaleStatus } from '../../../models/desklog.model.js';
-import { Pagination, Skeleton } from '@mui/material';
+import { Pagination, Skeleton, TableSortLabel } from '@mui/material';
+import styles from './styles.js';
+
+type Order = 'asc' | 'desc';
 
 const DeskLog = () => {
   const [openTransactionModal, setOpenTransactionModal] = React.useState(false);
   const [currentLog, setCurrentLog] = React.useState();
   const [deskLogData, setDeskLogData] = React.useState([]);
   const [total, setTotal] = React.useState(0);
+  const [timeInSortOrder, setSortedTimeIns] = React.useState('asc');
+  const [timeOutSortOrder, setSortedTimeOuts] = React.useState('asc');
   const [offset, setOffset] = React.useState(0);
   const [limit] = React.useState(10);
   const [loading, setLoading] = React.useState(false);
@@ -74,6 +79,23 @@ const DeskLog = () => {
     [offset, limit],
   );
 
+  const sortTimeInTable = (property: string) => (event: React.MouseEvent<unknown>) => {
+    sortDeskLogs(timeInSortOrder === 'asc' ? 1 : -1, 'timeIn');
+    setSortedTimeIns(timeInSortOrder === 'asc' ? 'desc' : 'asc');
+  };
+
+  const sortTimeOutTable = (property: string) => (event: React.MouseEvent<unknown>) => {
+    sortDeskLogs(timeOutSortOrder === 'asc' ? 1 : -1, 'timeOut');
+    setSortedTimeOuts(timeOutSortOrder === 'asc' ? 'desc' : 'asc');
+  };
+
+  const sortDeskLogs = (sortOrder: number, sortProp: string) => {
+    deskLogData.sort((a, b) => {
+      return sortOrder * a[sortProp].localeCompare(b[sortProp]);
+    });
+    setDeskLogData(deskLogData);
+  };
+
   return (
     <React.Fragment>
       <TransactionModal
@@ -82,7 +104,7 @@ const DeskLog = () => {
         opportunity={currentLog}
       />
       <Card>
-        <Title>Desk Log</Title>
+        <Title style={styles.DeskLogTitle}>Desk Log</Title>
         <TableContainer component={Paper} style={{ maxHeight: 600, overflow: 'auto' }}>
           <Table>
             <TableHead>
@@ -92,8 +114,22 @@ const DeskLog = () => {
                 <TableCell>Sale Status</TableCell>
                 <TableCell>Trade-In</TableCell>
                 <TableCell>Financing</TableCell>
-                <TableCell>Time In</TableCell>
-                <TableCell>Time Out</TableCell>
+                <TableCell>
+                  Time In
+                  <TableSortLabel
+                    active={true}
+                    direction={timeInSortOrder as Order}
+                    onClick={sortTimeInTable('asc')}
+                  ></TableSortLabel>
+                </TableCell>
+                <TableCell>
+                  Time Out
+                  <TableSortLabel
+                    active={true}
+                    direction={timeOutSortOrder as Order}
+                    onClick={sortTimeOutTable('asc')}
+                  ></TableSortLabel>
+                </TableCell>
                 <TableCell>Referral Source</TableCell>
                 <TableCell>Sales Rep</TableCell>
                 <TableCell>Phone Numbers</TableCell>
