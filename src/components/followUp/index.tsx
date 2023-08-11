@@ -9,17 +9,17 @@ const FollowUp = () => {
 
   useEffect(() => {
     const fetchData = [
-      { value: 100, name: 'Sent message' },
-      { value: 80, name: 'Postive Response' },
-      { value: 50, name: 'Made Appointment' },
-      { value: 20, name: 'Visited Store' },
+      { value: 100, name: 'Visitor' },
+      { value: 80, name: 'Sign-up' },
+      { value: 50, name: 'Trial' },
+      { value: 20, name: 'Paid' },
     ];
 
     setTimeout(() => setData(fetchData), 500);
   }, []);
 
-  const handleClick = (data, index) => {
-    alert(`${data.name}: ${data.value}`);
+  const handleClick = (event, payload) => {
+    alert(`${payload.name}: ${payload.value}`);
   };
 
   return (
@@ -33,6 +33,9 @@ const FollowUp = () => {
             dataKey="value"
             nameKey="name"
             // onClick={handleClick}
+            isAnimationActive={true}
+            animationDuration={500}
+            // symmetric
           >
             <LabelList position="right" fill="#000" stroke="none" dataKey="name" />
             {data.map((entry, index) => (
@@ -43,7 +46,6 @@ const FollowUp = () => {
                 stroke="none"
                 strokeWidth={1}
                 fillOpacity={0.7}
-                onMouseEnter={() => {}}
               />
             ))}
           </Funnel>
