@@ -1,15 +1,10 @@
-import fs from 'fs';
 import { model, Schema } from 'mongoose';
+import { CarModels } from '../core/database/seed/data.seed.js';
 
-const jsonFileContent = fs.readFileSync('./cars.json', 'utf8');
-const dropdownOptions = JSON.parse(jsonFileContent);
-
-const carMakes = dropdownOptions.makeOptions;
-const carModels = Object.values(dropdownOptions.modelOptions).flat();
-const carYears = dropdownOptions.yearOptions;
-const carStatuses = dropdownOptions.statusOptions;
-const carColors = dropdownOptions.colorOptions;
-const carFuelTypes = dropdownOptions.fuelTypeOptions;
+const carMakes = CarModels.makeOptions;
+const carModels = Object.values(CarModels.modelOptions).flat();
+const carYears = CarModels.yearOptions;
+const carStatuses = CarModels.statusOptions;
 
 export interface Car {
   make: string;
@@ -36,8 +31,8 @@ export const carSchema = new Schema<Car>({
   location: { type: String, required: true },
   pictures: { type: [String], required: true },
   status: { type: String, enum: carStatuses, required: true },
-  color: { type: String, enum: carColors, required: true },
-  fuelType: { type: String, enum: carFuelTypes, required: true },
+  color: { type: String, required: true },
+  fuelType: { type: String, required: true },
   costPrice: { type: Number, required: true },
   salePrice: { type: Number, required: true },
   options: { type: [String], required: false },

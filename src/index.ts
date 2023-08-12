@@ -5,8 +5,13 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import { Components, componentLoader } from './components/index.js';
 import { Database as CoreDB } from './core/database/index.js';
-import { carResource, customerResource, salesRepResource } from './resources/index.js';
-//import chatRouter from '../API/chatConverstion.js';
+import {
+  appointmentResource,
+  carResource,
+  customerResource,
+  desklogResource,
+  salesRepResource,
+} from './resources/index.js';
 import { BaseRoute } from './routes/index.js';
 import { adminAuthenticate } from './services/auth.service.js';
 
@@ -29,7 +34,13 @@ const start = async () => {
 
   const admin = new AdminJS({
     componentLoader,
-    resources: [salesRepResource, customerResource, carResource],
+    resources: [
+      salesRepResource,
+      customerResource,
+      carResource,
+      appointmentResource,
+      desklogResource,
+    ],
     dashboard: {
       component: Components.Dashboard,
     },
@@ -49,6 +60,26 @@ const start = async () => {
         handler: async (request, response, context) => {},
         component: Components.Chat,
         icon: 'Plus',
+      },
+      campaign: {
+        // name, will be used to build an URL
+        handler: async (request, response, context) => {
+          // fetch values from your database
+          // const value = await Car.find({});
+          // return { data: { inventory: car.value } };
+        },
+        component: Components.Campaign,
+        icon: 'Campaign',
+      },
+      followUp: {
+        // name, will be used to build an URL
+        handler: async (request, response, context) => {
+          // fetch values from your database
+          // const value = await Car.find({});
+          // return { data: { inventory: car.value } };
+        },
+        component: Components.FollowUp,
+        icon: 'Campaign',
       },
     },
     branding: {
@@ -76,14 +107,14 @@ const start = async () => {
       saveUninitialized: true,
       secret: 'Secret',
       name: 'adminjs',
-    }
+    },
   );
 
   //app.use('/api', chatRouter);
   app.use('/', route.router);
   app.use(
     admin.options.rootPath,
-    process.env.NODE_ENV === 'development' ? adminRouter : adminAuthRouter
+    process.env.NODE_ENV === 'development' ? adminRouter : adminAuthRouter,
   );
 
   app.listen(PORT, () => {
