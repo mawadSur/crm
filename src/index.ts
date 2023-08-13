@@ -14,6 +14,7 @@ import {
 } from './resources/index.js';
 import { BaseRoute } from './routes/index.js';
 import { adminAuthenticate } from './services/auth.service.js';
+import { CustomerModel } from './models/customer.model.js';
 
 dotenv.config();
 
@@ -60,11 +61,11 @@ const start = async () => {
         // name, will be used to build an URL
         handler: async (request, response, context) => {
           // fetch values from your database
-          // const value = await Car.find({});
-          // return { data: { inventory: car.value } };
+          const customerCount = await CustomerModel.countDocuments();
+          return { data: { customerCount } };
         },
         component: Components.Campaign,
-        icon: 'Campaign',
+        icon: 'Zap',
       },
       followUp: {
         // name, will be used to build an URL

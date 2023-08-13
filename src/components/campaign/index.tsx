@@ -1,78 +1,334 @@
-// src/components/BlastCampaignCard.js
-import React, { useState } from 'react';
-import campaignStyle from './style.js';
+import React from 'react';
 
-const BlastCampaignCard = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [totalCustomers, setTotalCustomers] = useState(1000); // Example initial value
+import { ApiClient } from 'adminjs';
+import {
+  convertPropertyNameToDisplayName,
+  isDateFormat,
+  objectToQueryParams,
+} from '../../utils/functions.js';
+import { Input } from '../common/index.js';
+import CampaignStyle from './style.js';
+import dayjs from 'dayjs';
 
-  const handleClick = () => {
+const BlastCampaignCard = React.memo(() => {
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [totalCustomers, setTotalCustomers] = React.useState(0);
+  const [customers, setCustomers] = React.useState([]);
+  const [totalCustomerValid, setTotalCustomerValid] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
+  const [filterValue, setFilterValue] = React.useState({
+    name: '',
+    email: '',
+    location: '',
+    occupation: '',
+    sourceOfLead: '',
+    contact: '',
+    age: null,
+    purchase: '',
+    carMake: '',
+    carModel: '',
+    carYear: '',
+    carColor: '',
+    carPrice: '',
+    leaseOfPurchase: '',
+    lastServiceDate: '',
+    tradeIn: '',
+    testDriveHistory: '',
+    financingStatus: '',
+    type: '',
+    warrantyStatus: '',
+  });
+  const api = new ApiClient();
+
+  React.useEffect(() => {
+    const fetchCustomerCount = async () => {
+      try {
+        const response: any = await api.getPage({
+          pageName: 'campaign',
+        });
+
+        const { data } = response;
+        if (data?.data?.customerCount) {
+          setTotalCustomers(data.data.customerCount);
+        }
+      } catch (error) {
+        console.log('error', error);
+      }
+    };
+
+    fetchCustomerCount();
+  }, []);
+
+  React.useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      (async () => {
+        try {
+          const query = objectToQueryParams(filterValue);
+          if (!query) {
+            setCustomers([]);
+            setTotalCustomerValid(0);
+            return;
+          }
+          setLoading(true);
+          const response = await fetch(`http://localhost:3434/api/customers?${query}`);
+          const data = await response.json();
+          console.log('data', data);
+          if (data?.total > 0) {
+            setCustomers(data.items);
+            setTotalCustomerValid(data.total);
+          }
+          setLoading(false);
+        } catch (error) {
+          setLoading(false);
+          console.log('error', error);
+        }
+      })();
+    }, 2000); //! Debounce for search
+
+    return () => {
+      clearTimeout(delayDebounceFn);
+    };
+  }, [filterValue]);
+
+  const handleClick = React.useCallback(() => {
     setIsMenuOpen(!isMenuOpen);
-  };
+  }, []);
 
-  const handleInputChange = (e) => {
-    // Example logic: subtract 10 for each character entered.
-    setTotalCustomers(1000 - e.target.value.length * 10);
-  };
+  const handleInputChange = React.useCallback((e) => {
+    const name = e.target.name;
+    setFilterValue({
+      ...filterValue,
+      [name]: e.target.value,
+    });
+  }, []);
+
+  const handleLaunch = React.useCallback(
+    (customers) => () => {
+      if (!customers) return;
+      console.log('customers', customers);
+    },
+    [],
+  );
+
+  const titles = ['name', 'age', 'gender', 'email', 'address', 'dateOfBirth'];
 
   return (
-    <div>
-      <campaignStyle.Card onClick={handleClick} open={isMenuOpen}>
-        {/* <icon> */}
-        <campaignStyle.Title>Blast Campaign</campaignStyle.Title>
-      </campaignStyle.Card>
-      <campaignStyle.Dropdown open={isMenuOpen}>
-        <p>Total Customers: {totalCustomers}</p>
-        <campaignStyle.Input placeholder="Filter by occupation" onChange={handleInputChange} />
-        <campaignStyle.Input placeholder="Filter by source of lead" onChange={handleInputChange} />
-        <campaignStyle.Input
+    <CampaignStyle.ContainerCampaign>
+      <CampaignStyle.Card onClick={handleClick} open={isMenuOpen}>
+        <CampaignStyle.Title>Blast Campaign</CampaignStyle.Title>
+      </CampaignStyle.Card>
+      <CampaignStyle.Dropdown open={isMenuOpen}>
+        <p>
+          Total Customers: {totalCustomerValid} / {totalCustomers}
+        </p>
+        <Input
+          placeholder="Filter by name"
+          type="text"
+          name="name"
+          value={filterValue.name}
+          onChange={handleInputChange}
+        />
+        <Input
+          placeholder="Filter by email"
+          type="email"
+          name="email"
+          value={filterValue.email}
+          onChange={handleInputChange}
+        />
+        <Input
+          placeholder="Filter by occupation"
+          type="text"
+          name="occupation"
+          value={filterValue.occupation}
+          onChange={handleInputChange}
+        />
+        <Input
+          placeholder="Filter by source of lead"
+          type="text"
+          name="sourceOfLead"
+          value={filterValue.sourceOfLead}
+          onChange={handleInputChange}
+        />
+        <Input
           placeholder="Filter by preferred contact method"
+          type="text"
+          name="contact"
+          value={filterValue.contact}
           onChange={handleInputChange}
         />
-        <campaignStyle.Input placeholder="Filter by age" onChange={handleInputChange} />
-        <campaignStyle.Input placeholder="Filter by location" onChange={handleInputChange} />
-        <campaignStyle.Input
+        <Input
+          placeholder="Age"
+          type="number"
+          max={100}
+          min={1}
+          name="age"
+          value={filterValue.age}
+          onChange={handleInputChange}
+        />
+        <Input
+          placeholder="Filter by location"
+          disabled={true}
+          name="location"
+          value={filterValue.location}
+          onChange={handleInputChange}
+        />
+        <Input
           placeholder="Filter by purchase history"
+          type="text"
+          disabled={true}
+          name="purchase"
+          value={filterValue.purchase}
           onChange={handleInputChange}
         />
-        <campaignStyle.Input placeholder="Filter by car make" onChange={handleInputChange} />
-        <campaignStyle.Input placeholder="Filter by car model" onChange={handleInputChange} />
-        <campaignStyle.Input placeholder="Filter by car year" onChange={handleInputChange} />
-        <campaignStyle.Input placeholder="Filter by car color" onChange={handleInputChange} />
-        <campaignStyle.Input placeholder="Filter by car price range" onChange={handleInputChange} />
-        <campaignStyle.Input
+        <Input
+          placeholder="Filter by car make"
+          type="text"
+          disabled={true}
+          name="carMake"
+          value={filterValue.carMake}
+          onChange={handleInputChange}
+        />
+        <Input
+          placeholder="Filter by car model"
+          type="text"
+          disabled={true}
+          name="carModel"
+          value={filterValue.carModel}
+          onChange={handleInputChange}
+        />
+        <Input
+          placeholder="Filter by car year"
+          type="text"
+          disabled={true}
+          name="carYear"
+          value={filterValue.carYear}
+          onChange={handleInputChange}
+        />
+        <Input
+          placeholder="Filter by car color"
+          type="text"
+          disabled={true}
+          name="carColor"
+          value={filterValue.carColor}
+          onChange={handleInputChange}
+        />
+        <Input
+          placeholder="Filter by car price range"
+          type="number"
+          disabled={true}
+          name="carPrice"
+          value={filterValue.carPrice}
+          onChange={handleInputChange}
+        />
+        <Input
           placeholder="Filter by lease or purchase"
+          type="text"
+          disabled={true}
+          name="leaseOfPurchase"
+          value={filterValue.leaseOfPurchase}
           onChange={handleInputChange}
         />
-        <campaignStyle.Input
+        <Input
           placeholder="Filter by last service date"
           onChange={handleInputChange}
+          type="text"
+          disabled={true}
+          name="lastServiceDate"
+          value={filterValue.lastServiceDate}
         />
-        <campaignStyle.Input placeholder="Filter by warranty status" onChange={handleInputChange} />
-        <campaignStyle.Input
+        <Input
+          placeholder="Filter by warranty status"
+          onChange={handleInputChange}
+          type="text"
+          disabled={true}
+          name="warrantyStatus"
+          value={filterValue.warrantyStatus}
+        />
+        <Input
           placeholder="Filter by financing status"
           onChange={handleInputChange}
+          type="text"
+          disabled={true}
+          name="financingStatus"
+          value={filterValue.financingStatus}
         />
-        <campaignStyle.Input
+        <Input
           placeholder="Filter by customer type (new/returning)"
           onChange={handleInputChange}
+          type="text"
+          disabled={true}
+          name="type"
+          value={filterValue.type}
         />
-        <campaignStyle.Input
+        <Input
           placeholder="Filter by test drive history"
           onChange={handleInputChange}
+          type="text"
+          disabled={true}
+          name="testDriveHistory"
+          value={filterValue.testDriveHistory}
         />
-        <campaignStyle.Input
+        <Input
           placeholder="Filter by trade-in history"
           onChange={handleInputChange}
+          type="text"
+          disabled={true}
+          name="tradeIn"
+          value={filterValue.tradeIn}
         />
         {/* Add more input boxes as needed */}
-        <campaignStyle.LaunchButton>
-          {/* <FaRocket /> */}
+        <CampaignStyle.LaunchButton
+          disabled={customers?.length === 0}
+          onClick={handleLaunch(customers)}
+        >
           Launch
-        </campaignStyle.LaunchButton>
-      </campaignStyle.Dropdown>
-    </div>
+        </CampaignStyle.LaunchButton>
+
+        <div style={{ marginTop: '10px' }}>
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            customers?.length > 0 && (
+              <CampaignStyle.Table>
+                <colgroup>
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <thead>
+                  <tr>
+                    {titles.map((title, index) => (
+                      <th key={index}>{convertPropertyNameToDisplayName(title)}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {customers?.map((item) => (
+                    <tr key={item.id}>
+                      {titles.map((title, index) => {
+                        let value = item[title];
+                        if (isDateFormat(value) && title !== 'age') {
+                          value = dayjs(value).format('MM/DD/YYYY');
+                        }
+                        return <td key={index}>{value}</td>;
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+                {/* <tfoot>
+            <tr>
+              {titles.map((title, index) => (
+                <th key={index}>{title}</th>
+              ))}
+            </tr>
+          </tfoot> */}
+              </CampaignStyle.Table>
+            )
+          )}
+        </div>
+      </CampaignStyle.Dropdown>
+    </CampaignStyle.ContainerCampaign>
   );
-};
+});
 
 export default BlastCampaignCard;

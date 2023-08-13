@@ -1,10 +1,15 @@
 import { FormatString, model, Schema } from 'mongoose';
 import { ageRange } from '../utils/index.js';
 
+export enum ECustomerGender {
+  Male = 'Male',
+  Female = 'Female',
+  Other = 'Other',
+}
 export interface Customer {
   name: string;
   age: number;
-  gender: string;
+  gender: ECustomerGender;
   address: string;
   email: string;
   otherEmail: string;
@@ -37,7 +42,7 @@ export const conversationSchema = new Schema({
 export const customerSchema = new Schema<Customer>({
   name: { type: String, required: true },
   age: { type: Number, enum: ageRange, required: true },
-  gender: { type: String, required: true },
+  gender: { type: String, enum: ECustomerGender, required: true },
   address: { type: String, required: true },
   email: { type: String, required: true },
   homeNumber: { type: String, required: true, validate: /^\d{10}$/ },
