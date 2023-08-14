@@ -50,6 +50,8 @@ const ChatConversations = ({ customerId, onBackClick }) => {
       // Clear the input field
       setNewMessage('');
     } catch (error) {
+      console.log('error :' + error);
+
       console.error('Error sending message:', error);
     }
   };

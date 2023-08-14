@@ -35,10 +35,11 @@ export class ChatRoute {
   async sendMessage(req: express.Request, res: express.Response) {
     try {
       const customerId = req.params.customerId;
-      const message = req.body.message;
+      //const message = req.body.message;
+      const message = 'test';
 
       console.log('customerId:', customerId);
-      console.log('message:', message);
+      console.log('message:', req.body);
       // Assuming sender is always 'admin'
       const sender = 'admin';
       const updatedConversation = await this.conversationService.sendMessage(
@@ -48,6 +49,7 @@ export class ChatRoute {
       );
       res.json(updatedConversation);
     } catch (error) {
+      console.log('error ' + error);
       res.status(500).json({ message: 'Error sending message' });
     }
   }
