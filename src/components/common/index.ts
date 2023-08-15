@@ -45,3 +45,16 @@ export const ValueText = styled('p')<{ $lineHeight?: string }>`
   line-height: ${({ $lineHeight }) => $lineHeight ?? '50px'};
   text-align: center;
 `;
+
+export const Input = styled.input`
+  flex: 0 0 calc(50% - 10px); // Each input will take roughly half the container width minus the gap.
+  margin-bottom: 10px;
+  padding: 0.75rem 0.5rem;
+  margin: 10px;
+  border-radius: 4px;
+  border: 0.1px solid rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 600px) {
+    flex: 0 0 100%;
+  }
+`;
