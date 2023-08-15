@@ -101,7 +101,6 @@ const BlastCampaignCard = React.memo(() => {
       [name]: e.target.value,
     });
   }, []);
-
   const handleLaunch = React.useCallback(
     (customers) => () => {
       if (!customers) return;
