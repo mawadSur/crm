@@ -105,6 +105,9 @@ const start = async () => {
     },
   );
 
+  /* Watch for changes */
+  admin.watch();
+
   app.use('/api', route.router);
 
   app.use(
