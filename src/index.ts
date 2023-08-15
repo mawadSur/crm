@@ -5,8 +5,10 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import { Components, componentLoader } from './components/index.js';
 import { Database as CoreDB } from './core/database/index.js';
+import { CustomerModel } from './models/customer.model.js';
 import {
   appointmentResource,
+  blastResource,
   carResource,
   customerResource,
   desklogResource,
@@ -14,7 +16,6 @@ import {
 } from './resources/index.js';
 import { BaseRoute } from './routes/index.js';
 import { adminAuthenticate } from './services/auth.service.js';
-import { CustomerModel } from './models/customer.model.js';
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ const start = async () => {
       carResource,
       appointmentResource,
       desklogResource,
+      blastResource,
     ],
     dashboard: {
       component: Components.Dashboard,
