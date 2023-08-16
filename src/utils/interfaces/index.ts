@@ -1,5 +1,2 @@
-export interface IQuery {
-  query?: any;
-  limit: number;
-  offset: number;
-}
+export * from './common.interface.js';
+export * from './customer.interface.js';
