@@ -89,6 +89,9 @@ const start = async () => {
     settings: {
       defaultPerPage: 10,
     },
+    assets: {
+      styles: ['/sidebar.css'],
+    },
   });
 
   const adminRouter = AdminJSExpress.buildRouter(admin);
