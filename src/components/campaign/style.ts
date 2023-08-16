@@ -61,40 +61,31 @@ const LaunchButton = styled.button`
   & > svg {
     margin-right: 8px;
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: #e9ecef;
+  }
 `;
 
 const Table = styled.table`
   margin: 0 auto;
-  margin-top: 10px;
+  margin-top: 2rem;
+  width: 80%;
   caption-side: top;
   border: none;
   border-collapse: collapse;
-  /* border-collapse: separate; */
-  /* border-spacing: 5px 10px; */
-
   caption-side: bottom;
-  /* empty-cell: show | hide;  */
-  /* empty-cell is a property of table or the cells themselves */
 
-  /* vertical-align: baseline | sub | super | text-top | 
-                text-bottom | middle | top | bottom | 
-                <percentage> | <length> */
-
-  /* tbody {
-    vertical-align: top;
-  }              */
   td,
   th {
     border: none;
     padding: 5px 10px;
   }
-  /* td,
-  th {
-    border: 1px solid;
-  } */
 
   td {
     padding: 5px 10px;
+    text-align: center;
   }
 
   tbody tr {
@@ -102,7 +93,7 @@ const Table = styled.table`
       background-color: #efefef;
     }
     :hover {
-      background-color: lightpink;
+      background-color: #bcdef4;
     }
   }
   thead > tr {
@@ -115,6 +106,19 @@ const Table = styled.table`
   }
 `;
 
+const LaunchFormWrapper = styled.div`
+  display: flex;
+  justify-content: space-around;
+  width: 550px;
+  margin: 0 auto;
+`;
+
+const Textarea = styled.textarea`
+  width: 450px;
+  height: fit-content;
+  min-height: 100px;
+`;
+
 const campaignStyle = {
   Card,
   Title,
@@ -122,6 +126,8 @@ const campaignStyle = {
   LaunchButton,
   ContainerCampaign,
   Table,
+  LaunchFormWrapper,
+  Textarea,
 };
 
 export default campaignStyle;

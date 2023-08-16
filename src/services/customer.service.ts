@@ -1,5 +1,6 @@
-import { IQuery, IQueryCustomer } from '../utils/index.js';
-import { CustomerModel } from '../models/index.js';
+import httpRequest from '../libs/httpsRequest.js';
+import { BlastModel, CustomerModel } from '../models/index.js';
+import { IQueryCustomer } from '../utils/index.js';
 
 export class CustomerService {
   constructor() {}
@@ -43,5 +44,95 @@ export class CustomerService {
       data,
       total,
     };
+  }
+
+  async launchCampaign(payload: { customerIds: string[]; context: string }) {
+    const customers = await CustomerModel.find({
+      _id: {
+        $in: payload.customerIds,
+      },
+    })
+      .lean()
+      .exec();
+
+    if (customers.length === 0) {
+      throw new Error('Customers not found');
+    }
+
+    const waitingList = customers.map((customer) => ({
+      name: customer.name,
+      phone: customer.phone,
+      customerId: customer._id,
+      context: String(payload.context),
+      isSendMessage: false,
+    }));
+
+    //! Create blast data
+    const blasts = await BlastModel.insertMany(waitingList, {
+      ordered: false,
+      lean: true,
+    });
+
+    //! Send message to customers
+    const promiseSendMessage = await Promise.allSettled(
+      blasts.map((blast) =>
+        this.requestLaunch({
+          phone: blast.phone,
+          context: blast.context,
+        }),
+      ),
+    );
+
+    let totalSuccess = 0;
+    let totalFailed = 0;
+    const updateBlastOperations = [];
+
+    promiseSendMessage.forEach((item, i) => {
+      console.log('item.status', item.status);
+      if (item.status === 'rejected') {
+        totalFailed += 1;
+        return;
+      }
+      if (item.status === 'fulfilled') {
+        totalSuccess += 1;
+        const blastId = blasts[i]._id;
+
+        if (!blastId) return;
+
+        console.log('blastId', blastId);
+        updateBlastOperations.push({
+          updateOne: {
+            filter: { _id: blastId },
+            update: { $set: { isSendMessage: true } },
+          },
+        });
+      }
+    });
+
+    if (updateBlastOperations.length > 0) {
+      //! Update blast status
+      await BlastModel.bulkWrite(updateBlastOperations, {
+        ordered: false,
+      });
+    }
+
+    return {
+      totalFailed,
+      totalSuccess,
+    };
+  }
+
+  private async requestLaunch(payload: { phone: string; context: string }) {
+    try {
+      const url = 'https://p1ev6atlse.execute-api.us-east-1.amazonaws.com/prod/IncomingSMSHandler';
+      const response = await httpRequest.post(url, {
+        phone: payload.phone,
+        context: payload.context,
+      });
+      return response.data;
+    } catch (error) {
+      console.log('error', error);
+      throw error;
+    }
   }
 }
