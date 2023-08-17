@@ -112,7 +112,6 @@ const BlastCampaignCard = React.memo(() => {
     if (!customers || !prompt) return;
     resetData();
     try {
-      console.log('customers', customers);
       setLaunchLoading(true);
       const response = await fetch('http://localhost:3434/api/customers/launch', {
         method: 'POST',

@@ -88,7 +88,6 @@ export class CustomerService {
     const updateBlastOperations = [];
 
     promiseSendMessage.forEach((item, i) => {
-      console.log('item.status', item.status);
       if (item.status === 'rejected') {
         totalFailed += 1;
         return;
@@ -124,7 +123,7 @@ export class CustomerService {
 
   private async requestLaunch(payload: { phone: string; context: string }) {
     try {
-      const url = 'https://prnnfaqhaojrjnxqtrhr6lirpq0qclho.lambda-url.us-east-1.on.aws/';
+      const url = process.env.AWS_SEND_MESSAGE_URI;
       const response = await httpRequest.post(
         url,
         JSON.stringify({

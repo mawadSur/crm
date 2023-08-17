@@ -37,7 +37,6 @@ export class CustomerRoute {
       customerIds: Joi.array().items(Joi.string()).required(),
       context: Joi.string().required(),
     });
-    console.log(req.body);
     const { error, value } = schema.validate(req.body);
     if (error) {
       return res.status(400).json({ message: error.message });
