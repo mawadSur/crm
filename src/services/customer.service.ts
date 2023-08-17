@@ -124,14 +124,23 @@ export class CustomerService {
 
   private async requestLaunch(payload: { phone: string; context: string }) {
     try {
-      const url = 'https://p1ev6atlse.execute-api.us-east-1.amazonaws.com/prod/IncomingSMSHandler';
-      const response = await httpRequest.post(url, {
-        phone: payload.phone,
-        context: payload.context,
-      });
+      const url = 'https://prnnfaqhaojrjnxqtrhr6lirpq0qclho.lambda-url.us-east-1.on.aws/';
+      const response = await httpRequest.post(
+        url,
+        JSON.stringify({
+          phone: payload.phone,
+          context: payload.context,
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          maxBodyLength: Infinity,
+        },
+      );
       return response.data;
     } catch (error) {
-      console.log('error', error);
+      console.log('error', error?.message);
       throw error;
     }
   }
