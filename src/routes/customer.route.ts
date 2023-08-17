@@ -1,21 +1,31 @@
 import express from 'express';
-import { CustomersService } from '../services/index.js';
 
-export class CustomersRoute {
+import { CustomerService } from '../services/index.js';
+import { IQueryCustomer } from 'src/utils/index.js';
+
+export class CustomerRoute {
   private router;
-  private customerService: CustomersService;
-
+  private customerService: CustomerService;
   constructor() {
     this.router = express.Router();
-    this.router.get('/getCustomers', this.getCusomers.bind(this));
-    this.customerService = new CustomersService();
+    this.router.get('/', this.list.bind(this));
+    this.customerService = new CustomerService();
   }
 
-  async getCusomers(_: express.Request, res: express.Response) {
+  async list(req: express.Request, res: express.Response) {
     try {
-      const data = await this.customerService.list();
-      res.json(data);
+      const { offset, limit, ...rest } = req.query;
+      const { data, total } = await this.customerService.list({
+        offset: Number(offset),
+        limit: Number(limit),
+        query: rest,
+      } as IQueryCustomer);
+      res.json({
+        items: data.map((item) => item.toJSON()),
+        total,
+      });
     } catch (error) {
+      console.log('error', error);
       res.status(500).json({ message: 'Error fetching data' });
     }
   }

@@ -5,8 +5,10 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import { Components, componentLoader } from './components/index.js';
 import { Database as CoreDB } from './core/database/index.js';
+import { CustomerModel } from './models/customer.model.js';
 import {
   appointmentResource,
+  blastResource,
   carResource,
   customerResource,
   desklogResource,
@@ -40,6 +42,7 @@ const start = async () => {
       carResource,
       appointmentResource,
       desklogResource,
+      blastResource,
     ],
     dashboard: {
       component: Components.Dashboard,
@@ -65,11 +68,11 @@ const start = async () => {
         // name, will be used to build an URL
         handler: async (request, response, context) => {
           // fetch values from your database
-          // const value = await Car.find({});
-          // return { data: { inventory: car.value } };
+          const customerCount = await CustomerModel.countDocuments();
+          return { data: { customerCount } };
         },
         component: Components.Campaign,
-        icon: 'Campaign',
+        icon: 'Zap',
       },
       followUp: {
         // name, will be used to build an URL
@@ -91,6 +94,9 @@ const start = async () => {
     settings: {
       defaultPerPage: 10,
     },
+    assets: {
+      styles: ['/sidebar.css'],
+    },
   });
 
   const adminRouter = AdminJSExpress.buildRouter(admin);
@@ -110,8 +116,12 @@ const start = async () => {
     },
   );
 
-  //app.use('/api', chatRouter);
-  app.use('/', route.router);
+
+  /* Watch for changes */
+  admin.watch();
+
+  app.use('/api', route.router);
+
   app.use(
     admin.options.rootPath,
     process.env.NODE_ENV === 'development' ? adminRouter : adminAuthRouter,
