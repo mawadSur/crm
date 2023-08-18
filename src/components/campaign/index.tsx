@@ -16,6 +16,12 @@ const BlastCampaignCard = React.memo(() => {
   const [customers, setCustomers] = React.useState([]);
   const [totalCustomerValid, setTotalCustomerValid] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const [launchLoading, setLaunchLoading] = React.useState(false);
+  const [totalLaunchSuccess, setTotalLaunchSuccess] = React.useState(0);
+  const [totalLaunchFailed, setTotalLaunchFailed] = React.useState(0);
+  const [prompt, setPrompt] = React.useState(
+    'Hey ${number.name}, \n\nThis is Alex from Stone Mountain Toyota. \n\n Are you interested in buying at the moment?\n\nThanks,\n\nAlex',
+  );
   const [filterValue, setFilterValue] = React.useState({
     name: '',
     email: '',
@@ -101,15 +107,55 @@ const BlastCampaignCard = React.memo(() => {
       [name]: e.target.value,
     });
   }, []);
-  const handleLaunch = React.useCallback(
-    (customers) => () => {
-      if (!customers) return;
-      console.log('customers', customers);
-    },
-    [],
-  );
+
+  const handleLaunch = React.useCallback(async (customers, prompt) => {
+    if (!customers || !prompt) return;
+    resetData();
+    try {
+      setLaunchLoading(true);
+      const response = await fetch('http://localhost:3434/api/customers/launch', {
+        method: 'POST',
+        body: JSON.stringify({
+          customerIds: customers.map((customer) => customer._id),
+          context: prompt,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      if (data) {
+        setTotalLaunchFailed(data?.totalFailed);
+        setTotalLaunchSuccess(data?.totalSuccess);
+      }
+      setLaunchLoading(false);
+    } catch (error) {
+      setLaunchLoading(false);
+      console.log('error', error);
+    }
+  }, []);
+
+  const resetData = React.useCallback(() => {
+    setCustomers([]);
+    setTotalLaunchSuccess(null);
+    setTotalLaunchFailed(null);
+  }, []);
+
+  const handleChangePrompt = React.useCallback((e) => {
+    const delayDebounceFn = setTimeout(async () => {
+      setPrompt(e.target.value);
+    }, 2000); //! Debounce for change data
+
+    return () => {
+      clearTimeout(delayDebounceFn);
+    };
+  }, []);
 
   const titles = ['name', 'age', 'gender', 'email', 'address', 'dateOfBirth'];
+
+  console.log('totalLaunchFailed', totalLaunchFailed);
+  console.log('totalLaunchSuccess', totalLaunchSuccess);
 
   return (
     <CampaignStyle.ContainerCampaign>
@@ -275,17 +321,30 @@ const BlastCampaignCard = React.memo(() => {
           name="tradeIn"
           value={filterValue.tradeIn}
         />
-        {/* Add more input boxes as needed */}
-        <CampaignStyle.LaunchButton
-          disabled={customers?.length === 0}
-          onClick={handleLaunch(customers)}
-        >
-          Launch
-        </CampaignStyle.LaunchButton>
+
+        <CampaignStyle.LaunchFormWrapper>
+          <CampaignStyle.Textarea defaultValue={prompt} onChange={handleChangePrompt} />
+          <CampaignStyle.LaunchButton
+            disabled={customers?.length === 0 || !prompt}
+            onClick={() => handleLaunch(customers, prompt)}
+          >
+            Launch
+          </CampaignStyle.LaunchButton>
+        </CampaignStyle.LaunchFormWrapper>
 
         <div style={{ marginTop: '10px' }}>
-          {loading ? (
-            <p>Loading...</p>
+          <div style={{ textAlign: 'center', width: '100%' }}>
+            <p>
+              {totalLaunchFailed ?? 0} Failed / {totalLaunchSuccess ?? 0} Success
+            </p>
+          </div>
+        </div>
+
+        <div style={{ marginTop: '10px' }}>
+          {loading || launchLoading ? (
+            <div style={{ textAlign: 'center', width: '100%' }}>
+              <p>Loading...</p>
+            </div>
           ) : (
             customers?.length > 0 && (
               <CampaignStyle.Table>
@@ -314,13 +373,6 @@ const BlastCampaignCard = React.memo(() => {
                     </tr>
                   ))}
                 </tbody>
-                {/* <tfoot>
-            <tr>
-              {titles.map((title, index) => (
-                <th key={index}>{title}</th>
-              ))}
-            </tr>
-          </tfoot> */}
               </CampaignStyle.Table>
             )
           )}
