@@ -121,12 +121,14 @@ const start = async () => {
   admin.watch();
   app.use(bodyParser.json());
 
-  app.use('/api', route.router);
-
   app.use(
     admin.options.rootPath,
     process.env.NODE_ENV === 'development' ? adminRouter : adminAuthRouter,
   );
+
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use('/api', route.router);
 
   app.listen(PORT, () => {
     console.log(`🚀 AdminJS started on http://localhost:${PORT}${admin.options.rootPath}`);

@@ -6,6 +6,7 @@ export interface Blast {
   phone: string;
   customerId: string | SchemaDefinitionProperty<string>;
   isSendMessage: boolean;
+  context: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -14,6 +15,7 @@ export const blastSchema = new Schema<Blast>(
   {
     name: { type: String, required: true },
     phone: { type: String, required: true },
+    context: { type: String, required: true },
     customerId: { type: Schema.Types.ObjectId, ref: 'Customers' },
     isSendMessage: { type: Boolean, required: true, default: false },
   },

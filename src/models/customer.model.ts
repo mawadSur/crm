@@ -22,6 +22,7 @@ export interface Customer {
   sourceOfLead: string;
   preferredContactMethod: string;
   notes: string;
+  phone: string;
   textPreferred: boolean;
   updatedAt: Date;
   createdAt: Date;
@@ -45,6 +46,7 @@ export const customerSchema = new Schema<Customer>({
   gender: { type: String, enum: ECustomerGender, required: true },
   address: { type: String, required: true },
   email: { type: String, required: true },
+  phone: { type: String, required: true },
   homeNumber: { type: String, required: true, validate: /^\d{10}$/ },
   cellNumber: { type: String, required: true, validate: /^\d{10}$/ },
   workNumber: { type: String, required: true, validate: /^\d{10}$/ },
