@@ -8,8 +8,6 @@ import {
   StyledHeading,
   ShowButton,
 } from './customers.style.js';
-import styled from 'styled-components';
-
 import ChatConversations from './chatConversation.js';
 
 function CustomersList() {
@@ -17,30 +15,40 @@ function CustomersList() {
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
   const [showConversation, setShowConversation] = useState(false);
 
+  //'http://localhost:3434/api/customers'
+  //`${process.env.FETCH_URL}/api/customers`
+
   const fetchUrl =
     process.env.USE_LOCAL === 'true'
-      ? `${process.env.FETCH_URL}/customers/getCustomers`
-      : '/customers/getCustomers';
+      ? `${process.env.FETCH_URL}/api/customers`
+      : 'http://localhost:3434/api/customers';
 
   useEffect(() => {
-    fetch(fetchUrl)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Fetched data:', JSON.stringify(data, null, 2));
+    const fetchData = async () => {
+      try {
+        const response = await fetch(fetchUrl);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        console.log('Fetched data:', data);
+
         setCustomers(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Error fetching data:', error);
-      });
-  }, []);
+      }
+    };
+    fetchData();
+  }, [fetchUrl]);
 
   const handleCustomerClick = (customerId) => {
     setSelectedCustomerId(customerId);
-    setShowConversation(true); // Show the conversation page
+    setShowConversation(true);
   };
 
   const handleBackToCustomerList = () => {
-    setShowConversation(false); // Show the customer list page
+    setSelectedCustomerId(null);
+    setShowConversation(false);
   };
 
   if (showConversation) {
@@ -59,7 +67,7 @@ function CustomersList() {
             <TableHeader>Name</TableHeader>
             <TableHeader>ID</TableHeader>
             <TableHeader>Age</TableHeader>
-            <TableHeader>Conversation </TableHeader>
+            <TableHeader>Conversation</TableHeader>
           </tr>
         </thead>
         <tbody>

@@ -6,6 +6,7 @@ import express from 'express';
 import { Components, componentLoader } from './components/index.js';
 import { Database as CoreDB } from './core/database/index.js';
 import { CustomerModel } from './models/customer.model.js';
+import bodyParser from 'body-parser';
 import {
   appointmentResource,
   blastResource,
@@ -116,9 +117,9 @@ const start = async () => {
     },
   );
 
-
   /* Watch for changes */
   admin.watch();
+  app.use(bodyParser.json());
 
   app.use('/api', route.router);
 

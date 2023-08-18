@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from 'react';
+
 import {
   Tab,
   Tabs,
@@ -15,7 +17,6 @@ import {
   TableRow,
   Paper,
 } from '@mui/material';
-import React from 'react';
 import { Title } from './style.js';
 
 export interface ITransactionModalProps {
@@ -54,7 +55,21 @@ function TabPanel(props) {
 }
 
 const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps) => {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
+  const [deskLogData, setDeskLogData] = useState([]);
+
+  useEffect(() => {
+    if (open) {
+      fetch('http://localhost:3434/api/desklogs')
+        .then((response) => response.json())
+        .then((data) => {
+          setDeskLogData(data.items); // Assuming 'items' is the array of data in the API response
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
+    }
+  }, [open]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -71,31 +86,31 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
           <Box style={{ marginTop: '20px', width: '50%' }}>
             <Title>Customer</Title>
             <div>
-              <b>Customer Name:</b> {'customer.name'}
+              <b>Customer Name:</b> {opportunity?.customer?.name}
             </div>
             <div>
-              <b>Address:</b> {'customer.address'}
+              <b>Address:</b> {opportunity?.customer?.address}
             </div>
             <div>
-              <b>Home Number:</b> {'customer.homeNumber'}
+              <b>Home Number:</b> {opportunity?.customer?.homeNumber}
             </div>
             <div>
-              <b>Cell Number:</b> {'customer.cellNumber'}
+              <b>Cell Number:</b> {opportunity?.customer?.cellNumber}
             </div>
             <div>
-              <b>Work Number:</b> {'customer.workNumber'}
+              <b>Work Number:</b> {opportunity?.customer?.workNumber}
             </div>
             <div>
-              <b>Preferred Email:</b> {'customer.email'}
+              <b>Preferred Email:</b> {opportunity?.customer?.email}
             </div>
             <div>
-              <b>Other Email:</b> {'customer.otherEmail'}
+              <b>Other Email:</b> {opportunity?.customer?.otherEmail}
             </div>
             <div>
-              <b>Birthday:</b> {'new Date(customer.dateOfBirth).toDateString()'}
+              <b>Birthday:</b> {new Date(opportunity?.customer?.dateOfBirth).toDateString()}
             </div>
             <div>
-              <b>Last Modified:</b> {'new Date(customer.updatedAt).toLocaleString()'}
+              <b>Last Modified:</b> {new Date(opportunity?.customer?.updatedAt).toLocaleString()}
             </div>
             <div>{/* <b>Text Preferred:</b> {customer?.textPreferred ? 'Yes' : 'No'} */}</div>
           </Box>
@@ -103,25 +118,25 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
           <Box style={{ marginTop: '20px', marginRight: '10px', width: '50%' }}>
             <Title>Opportunity</Title>
             <div>
-              <b>Vehicle:</b> {'opportunity.vehicle'}
+              <b>Vehicle:</b> {opportunity?.customer?.vehicle}
             </div>
             <div>
-              <b>Stock Number:</b> {'opportunity.stock'}
+              <b>Stock Number:</b> {opportunity?.customer?.stock}
             </div>
             <div>
               <b>Trade:</b> {opportunity?.trade ? 'Yes' : 'No'}
             </div>
             <div>
-              <b>Sales Team:</b> {'opportunity.salesTeam'}
+              <b>Sales Team:</b> {opportunity?.customer?.salesTeam}
             </div>
             <div>
-              <b>Up Type:</b> {'opportunity.upType'}
+              <b>Up Type:</b> {opportunity?.customer?.upType}
             </div>
             <div>
-              <b>Source:</b> {'opportunity.source'}
+              <b>Source:</b> {opportunity?.customer?.source}
             </div>
             <div>
-              <b>Date/Time Due:</b> {'new Date(opportunity.dateTimeDue).toLocaleString()'}
+              <b>Date/Time Due:</b> {new Date(opportunity?.customer.dateTimeDue).toLocaleString()}
             </div>
             <div>
               <b>Sales Status:</b> {'opportunity.salesStatus'}
