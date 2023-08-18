@@ -61,7 +61,8 @@ const AppointmentsToday = React.memo(() => {
               <TableCell>Time</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Car Interested In</TableCell>
-              <TableCell>VIN</TableCell>
+              <TableCell>Show/No Show</TableCell>
+              <TableCell>Confirmed</TableCell>
               <TableCell>New/Used</TableCell>
               <TableCell>Sales Rep</TableCell>
             </TableRow>
@@ -70,6 +71,9 @@ const AppointmentsToday = React.memo(() => {
           <TableBody>
             {loading && (
               <React.Fragment>
+                <TableCell>
+                  <Skeleton animation="wave" />
+                </TableCell>
                 <TableCell>
                   <Skeleton animation="wave" />
                 </TableCell>
@@ -97,7 +101,19 @@ const AppointmentsToday = React.memo(() => {
                   <TableCell scope="row">{dayjs(appointment.time).format('h:mm A')}</TableCell>
                   <TableCell>{appointment.name}</TableCell>
                   <TableCell>{appointment?.car?.model ?? ''}</TableCell>
-                  <TableCell>{appointment?.car?.VIN ?? ''}</TableCell>
+                  <TableCell
+                    style={{
+                      color:
+                        dayjs(appointment?.time).format('h:mm A') > dayjs().format('h:mm A')
+                          ? 'green'
+                          : 'red',
+                    }}
+                  >
+                    {dayjs(appointment.time).format('h:mm A') > dayjs().format('h:mm A')
+                      ? 'Show'
+                      : 'No Show'}
+                  </TableCell>
+                  <TableCell>{appointment?.car?.status === 'Sold' ? 'Yes' : 'No '}</TableCell>
                   <TableCell>{appointment.isNew ? 'New' : 'Used'}</TableCell>
                   <TableCell>{appointment?.salesRep?.name ?? ''}</TableCell>
                 </TableRow>
