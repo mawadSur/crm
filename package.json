@@ -9,7 +9,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "npm run clean && npx tsc",
-    "start": "NODE_ENV=production node --max-old-space-size=4096 dist/index.js",
+    "start": "NODE_ENV=production node dist/index.js",
     "server": "pm2 reload pm2.config.js --env production || pm2 start pm2.config.js --env production",
     "start:dev": "yarn cache clean && yarn && yarn build && yarn start",
     "dev": "npx tsc --watch & nodemon --max-old-space-size=4096 -q dist/index.js",
