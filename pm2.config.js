@@ -19,6 +19,7 @@ module.exports = {
         DATABASE_URL: 'your-production-database-url',
         SECRET_KEY: 'your-production-secret-key',
       },
+      max_memory_restart: '300M',
     },
   ],
 };
