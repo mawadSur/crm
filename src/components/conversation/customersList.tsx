@@ -15,9 +15,6 @@ function CustomersList() {
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
   const [showConversation, setShowConversation] = useState(false);
 
-  //'http://localhost:3434/api/customers'
-  //`${process.env.FETCH_URL}/api/customers`
-
   const fetchUrl =
     process.env.USE_LOCAL === 'true'
       ? `${process.env.FETCH_URL}/api/customers`
@@ -31,9 +28,18 @@ function CustomersList() {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log('Fetched data:', data);
+        const testData = [
+          {
+            _id: '123',
+            name: 'd',
+            email: 'moe@example.com',
+            age: '1234',
+          },
+        ];
+        setCustomers(data.items);
 
-        setCustomers(data);
+        console.log('Fetched data:', data);
+        console.log('Customers data ' + customers.length);
       } catch (error) {
         console.error('Error fetching data:', error);
       }

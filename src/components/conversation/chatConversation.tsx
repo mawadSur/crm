@@ -24,8 +24,8 @@ const ChatConversations = ({ customerId, onBackClick }) => {
 
     const fetchUrl =
       process.env.USE_LOCAL === 'true'
-        ? `${process.env.REACT_APP_FETCH_URL}/chats/sendMessage`
-        : '/chats/sendMessage';
+        ? `${process.env.FETCH_URL}/api/chats/sendMessage`
+        : 'api/chats/sendMessage';
 
     try {
       const response = await fetch(`${fetchUrl}/${customerId}`, {
@@ -45,6 +45,7 @@ const ChatConversations = ({ customerId, onBackClick }) => {
 
       if (data?.messages) {
         setMessages(data.messages);
+        console.log('Msg sent');
       }
 
       // Clear the input field
@@ -59,8 +60,8 @@ const ChatConversations = ({ customerId, onBackClick }) => {
   React.useEffect(() => {
     const fetchUrl =
       process.env.USE_LOCAL === 'true'
-        ? `${process.env.FETCH_URL}/chats/getChat`
-        : '/chats/getChat';
+        ? `${process.env.FETCH_URL}/api/chats/getChat`
+        : '/api/chats/getChat';
 
     const fetchData = async () => {
       try {
