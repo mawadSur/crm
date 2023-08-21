@@ -16,6 +16,7 @@
     "desklog",
     "salereps",
     "salesreps",
-    "desklogs"
+    "desklogs",
+    "autorestart"
   ]
 }
