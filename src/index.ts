@@ -16,6 +16,8 @@ import {
 } from './resources/index.js';
 import { BaseRoute } from './routes/index.js';
 import { adminAuthenticate } from './services/auth.service.js';
+import session from 'express-session';
+import mongoStore from 'connect-mongo';
 
 dotenv.config();
 
@@ -104,10 +106,16 @@ const start = async () => {
     },
     null,
     {
-      resave: true,
+      resave: false,
       saveUninitialized: true,
       secret: 'Secret',
       name: 'adminjs',
+      store: mongoStore.create({
+        mongoUrl: process.env.MONGO_URL,
+        autoRemove: 'interval',
+        autoRemoveInterval: 10,
+        ttl: 60 * 60 * 24,
+      }),
     },
   );
 
