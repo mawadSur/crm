@@ -120,7 +120,9 @@ const start = async () => {
   );
 
   /* Watch for changes */
-  admin.watch();
+  if (process.env.NODE_ENV !== 'production') {
+    admin.watch();
+  }
 
   app.use(
     admin.options.rootPath,
