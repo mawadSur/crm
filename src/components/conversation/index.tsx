@@ -7,7 +7,7 @@ const ChatConversations = () => {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://54.163.121.239/api/chats');
+        const response = await fetch('http://44.210.136.161/api/chats');
         const data = await response.json();
         if (data?.length && data[0].messages) {
           console.log('data', data);

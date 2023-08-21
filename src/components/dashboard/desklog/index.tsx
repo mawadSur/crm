@@ -52,7 +52,7 @@ const DeskLog = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          'http://54.163.121.239/api/desklogs' + '?offset=' + offset + '&limit=' + limit,
+          'http://44.210.136.161/api/desklogs' + '?offset=' + offset + '&limit=' + limit,
         );
         console.log('response', response);
         const data = await response.json();
