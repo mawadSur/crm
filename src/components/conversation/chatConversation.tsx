@@ -47,16 +47,6 @@ const ChatConversations = ({ customerId, onBackClick }) => {
         setMessages(data.messages);
 
         // Fetch customer information
-        const customerInfoResponse = await fetch(`/api/customers/${customerId}`);
-        if (!customerInfoResponse.ok) {
-          throw new Error(`API request failed with status: ${customerInfoResponse.status}`);
-        }
-        const customerInfoData = await customerInfoResponse.json();
-
-        if (customerInfoData?.phoneNumber) {
-          sendToPhoneNumber(customerInfoData.phoneNumber, newMessage);
-          console.log('Message sent to phone number:', customerInfoData.phoneNumber);
-        }
         console.log('Msg sent');
       }
 
@@ -65,34 +55,6 @@ const ChatConversations = ({ customerId, onBackClick }) => {
     } catch (error) {
       console.log('error :' + error);
 
-      console.error('Error sending message:', error);
-    }
-  };
-
-  const sendToPhoneNumber = async (phoneNumber, context) => {
-    const apiUrl = 'https://prnnfaqhaojrjnxqtrhr6lirpq0qclho.lambda-url.us-east-1.on.aws/';
-
-    const payload = {
-      action: 'send',
-      phone: phoneNumber,
-      context: context,
-    };
-
-    try {
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        throw new Error(`API request failed with status: ${response.status}`);
-      }
-
-      console.log('Message sent successfully');
-    } catch (error) {
       console.error('Error sending message:', error);
     }
   };
