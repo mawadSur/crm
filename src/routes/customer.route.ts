@@ -10,7 +10,10 @@ export class CustomerRoute {
   constructor() {
     this.router = express.Router();
     this.router.get('/', this.list.bind(this));
+    // return information of specific customer
+    this.router.get('/:customerId', this.getCusomerInfo.bind(this));
     this.router.post('/launch', this.launchCampaign.bind(this));
+
     this.customerService = new CustomerService();
   }
 
@@ -51,6 +54,22 @@ export class CustomerRoute {
     }
   }
 
+  async getCusomerInfo(req: express.Request, res: express.Response) {
+    try {
+      const customerId = req.params.customerId;
+
+      const customerInfo = await this.customerService.getCustomerInfo(customerId);
+
+      if (!customerInfo) {
+        return res.status(404).json({ message: 'Customer not found' });
+      }
+
+      res.json(customerInfo);
+    } catch (error) {
+      console.log('error', error);
+      res.status(500).json({ message: 'Error fetching customer information' });
+    }
+  }
   getRouter() {
     return this.router;
   }

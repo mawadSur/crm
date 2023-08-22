@@ -121,6 +121,16 @@ export class CustomerService {
     };
   }
 
+  async getCustomerInfo(customerId) {
+    try {
+      const customerInfo = await CustomerModel.findById(customerId);
+      return customerInfo;
+    } catch (error) {
+      console.log('Error fetching customer information:', error);
+      throw new Error('Error fetching customer information');
+    }
+  }
+
   private async requestLaunch(payload: { phone: string; context: string }) {
     try {
       const url = process.env.AWS_SEND_MESSAGE_URI;
