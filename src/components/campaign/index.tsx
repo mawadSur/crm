@@ -76,7 +76,7 @@ const BlastCampaignCard = React.memo(() => {
             return;
           }
           setLoading(true);
-          const response = await fetch(`http://localhost:3434/api/customers?${query}`);
+          const response = await fetch(`http://54.242.249.213/api/customers?${query}`);
           const data = await response.json();
           console.log('data', data);
           if (data?.total > 0) {
@@ -113,7 +113,7 @@ const BlastCampaignCard = React.memo(() => {
     resetData();
     try {
       setLaunchLoading(true);
-      const response = await fetch('http://localhost:3434/api/customers/launch', {
+      const response = await fetch('http://54.242.249.213/api/customers/launch', {
         method: 'POST',
         body: JSON.stringify({
           customerIds: customers.map((customer) => customer._id),
