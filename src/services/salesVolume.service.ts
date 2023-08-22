@@ -8,13 +8,7 @@ export class SalesVolumeService {
     data: any[];
     total: number;
   }> {
-    const data = await SalesVolumeModel.find()
-      .sort({
-        time: -1,
-      })
-      .skip(query.offset)
-      .limit(query.limit)
-      .exec();
+    const data = await SalesVolumeModel.find().skip(query.offset).limit(query.limit).exec();
     const total = await SalesVolumeModel.countDocuments();
     return {
       data,

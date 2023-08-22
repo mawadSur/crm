@@ -15,8 +15,8 @@ export class SalesVolumeRoute {
     try {
       const { offset, limit } = req.query;
       const { data, total } = await this.salesVolumeService.list({
-        offset: Number(offset),
-        limit: Number(limit),
+        offset: Number(offset ?? 0),
+        limit: Number(limit ?? 100),
       });
       res.json({
         items: data,

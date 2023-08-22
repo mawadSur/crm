@@ -28,6 +28,6 @@ export class BaseRoute {
     this.router.use('/appointments', this.appointmentRoute.getRouter());
     this.router.use('/desklogs', this.desklogRoute.getRouter());
     this.router.use('/customers', this.customerRoute.getRouter());
-    this.router.use('/salesVolume', this.salesVolumeRoute.getRouter());
+    this.router.use('/salesVolumes', this.salesVolumeRoute.getRouter());
   }
 }
