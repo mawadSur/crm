@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { ConversationModel, CustomerModel } from '../models/index.js';
-import fetch from 'node-fetch';
+import httpRequest from '../libs/httpsRequest.js';
 
 export class ConversationService {
   constructor() {}
@@ -52,20 +52,19 @@ export class ConversationService {
 
     const payload = {
       action: 'send',
-      phone: '+14047919415',
+      phone: phoneNumber,
       context: context,
     };
 
     try {
-      const response = await fetch(apiUrl, {
-        method: 'POST',
+      const response = await httpRequest.post(apiUrl, JSON.stringify(payload), {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        maxBodyLength: Infinity,
       });
 
-      if (!response.ok) {
+      if (response.status !== 200) {
         throw new Error(`API request failed with status: ${response.status}`);
       }
 
