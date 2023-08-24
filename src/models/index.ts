@@ -7,3 +7,4 @@ export * from './customer.model.js';
 export * from './desklog.model.js';
 export * from './opportunity.model.js';
 export * from './salesRep.model.js';
+export * from './salesVolume.model.js';
