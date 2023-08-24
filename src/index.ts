@@ -119,7 +119,7 @@ const start = async () => {
 
   /* Watch for changes */
   admin.watch();
-  app.use(bodyParser.json());
+  app.use(express.json());
 
   app.use(
     admin.options.rootPath,
