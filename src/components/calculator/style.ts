@@ -1,13 +1,13 @@
 import { styled } from '@adminjs/design-system/styled-components';
 
 // HeaderTop
-const Header = styled.div`
+const CompanyInfo = styled.div`
   display: flex;
   // border: 1px solid;
   width: 100%;
 `;
 
-const HeaderRow = styled.div`
+const CompanyDetails = styled.div`
   width: 50%;
   // border: 1px solid saddlebrown;
   display: flex;
@@ -30,14 +30,14 @@ const CompanyDescription = styled.p`
   font-size: 16px;
 `;
 
-const HeaderCell1 = styled.div`
+const CompanyBasicInfo = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 4px;
 `;
-const HeaderCell2 = styled.div`
+const CompanyEmployeeInfo = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -54,14 +54,14 @@ const HeaderCell2Input = styled.input`
 `;
 // HeaderBottom
 
-const BottomHeader = styled.div`
+const CustomerInfo = styled.div`
   // border: 1px solid red;
   width: 100%;
   display: flex;
   flex-direction: column;
 `;
 
-const BottomFirstDiv = styled.div`
+const CustomerInfoType = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
@@ -69,7 +69,7 @@ const BottomFirstDiv = styled.div`
   padding: 10px;
 `;
 
-const BottomSecondDiv = styled.div`
+const CustomerDetails = styled.div`
   width: 100%;
   // display: flex;
   // flex-direction: row;
@@ -77,7 +77,7 @@ const BottomSecondDiv = styled.div`
   border-bottom: 1px solid black;
   padding-block: 1px;
 `;
-const BottomThirdDiv = styled.div`
+const CustomerDetailsInfo = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -85,7 +85,7 @@ const BottomThirdDiv = styled.div`
   border-bottom: 4px solid black;
 `;
 
-const BS1 = styled.div`
+const CustomerHeader = styled.div`
   width: 50%;
   // border: 1px solid;
   display: flex;
@@ -95,7 +95,7 @@ const BS1 = styled.div`
   padding: 2px;
 `;
 
-const BS2 = styled.div`
+const CustomerBasicInfo = styled.div`
   width: 50%;
   // border: 1px solid;
   display: flex;
@@ -105,7 +105,7 @@ const BS2 = styled.div`
   padding: 2px;
 `;
 
-const BSRow = styled.div`
+const CustomerDataInfo = styled.div`
   // border: 1px solid;
   width: 100%;
   display: flex;
@@ -116,49 +116,52 @@ const BSRow = styled.div`
 
 // MiddleRow
 
-const SecondBottom = styled.div`
+const CarInfo = styled.div`
   width: 100%;
   border-bottom: 4px solid;
   // border: 1px solid;
 `;
 
-const SB11 = styled.div`
+const CarType = styled.div`
   width: 100%;
   // border: 1px solid red;
   padding: 10px;
 `;
 
-const SB22 = styled.div`
+const CarDetails = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
   padding-inline: 10px;
   border-bottom: 1px solid;
 `;
-const SB22Child = styled.div`
+const CarDetailHeader = styled.div`
   width: 25%;
   // border: 1px solid;
   // padding: 10px;
 `;
 
-const SB33 = styled.div`
+const CarBasicInfo = styled.div`
   width: 100%;
   // border: 1px solid red;
   display: flex;
   flex-direction: row;
   border-bottom: 1px solid;
 `;
-const SB33Child = styled.div`
+const CarBasicInfoHeader = styled.div`
   width: 50%;
   // border: 1px solid;
-  // padding: 10px;
+  padding-inline: 10px;
+  padding-top: 10px;
 `;
 
-const SB44 = styled.div`
+const CarTypeInfo = styled.div`
   // padding: 10px 0px 0px 0px;
   width: 100%;
   border-bottom: 1px solid;
   margin-bottom: 5px;
+  padding-inline: 10px;
+  padding-top: 10px;
 `;
 const SpanCommon = styled.span`
   font-size: 16px;
@@ -257,29 +260,29 @@ const Result = styled.div`
 
 const calculatorStyle = {
   CalculatorWrapper,
-  Header,
-  HeaderRow,
-  HeaderCell1,
-  HeaderCell2,
-  BottomHeader,
-  BottomFirstDiv,
-  BottomSecondDiv,
-  BS1,
-  BS2,
-  BSRow,
+  CompanyInfo,
+  CompanyDetails,
+  CompanyBasicInfo,
+  CompanyEmployeeInfo,
+  CustomerInfo,
+  CustomerInfoType,
+  CustomerDetails,
+  CustomerHeader,
+  CustomerBasicInfo,
+  CustomerDataInfo,
   InputCommon,
   SpanCommon,
   CompanyName,
   CompanyTitle,
   CompanyDescription,
   HeaderCell2Input,
-  SecondBottom,
-  SB11,
-  SB22,
-  SB22Child,
-  SB33,
-  SB33Child,
-  SB44,
+  CarInfo,
+  CarType,
+  CarDetails,
+  CarDetailHeader,
+  CarBasicInfo,
+  CarBasicInfoHeader,
+  CarTypeInfo,
   Table,
   TableHeader,
   TableRow,
@@ -289,7 +292,7 @@ const calculatorStyle = {
   Input,
   InputRow,
   Result,
-  BottomThirdDiv,
+  CustomerDetailsInfo,
 };
 
 export default calculatorStyle;
