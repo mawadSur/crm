@@ -1,22 +1,24 @@
 import {
-  Tab,
-  Tabs,
   Box,
-  Typography,
   List,
   ListItem,
   ListItemText,
   Modal,
+  Paper,
+  Tab,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
+  Tabs,
+  Typography,
 } from '@mui/material';
+import dayjs from 'dayjs';
 import React from 'react';
-import { Title } from './style.js';
+import { dateFormat } from '../../libs/utils/index.js';
+import { Text, Title } from './style.js';
 
 export interface ITransactionModalProps {
   open: boolean;
@@ -43,13 +45,13 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} {...other}>
+    <Text role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} {...other}>
       {value === index && (
         <Box sx={{ p: 3 }}>
           <Typography>{children}</Typography>
         </Box>
       )}
-    </div>
+    </Text>
   );
 }
 
@@ -59,6 +61,9 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  console.log('opportunity', opportunity);
+
   return (
     <Modal
       open={open}
@@ -67,85 +72,90 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <div style={{ display: 'flex' }}>
+        <Text style={{ display: 'flex' }}>
           <Box style={{ marginTop: '20px', width: '50%' }}>
             <Title>Customer</Title>
-            <div>
-              <b>Customer Name:</b> {'customer.name'}
-            </div>
-            <div>
-              <b>Address:</b> {'customer.address'}
-            </div>
-            <div>
-              <b>Home Number:</b> {'customer.homeNumber'}
-            </div>
-            <div>
-              <b>Cell Number:</b> {'customer.cellNumber'}
-            </div>
-            <div>
-              <b>Work Number:</b> {'customer.workNumber'}
-            </div>
-            <div>
-              <b>Preferred Email:</b> {'customer.email'}
-            </div>
-            <div>
-              <b>Other Email:</b> {'customer.otherEmail'}
-            </div>
-            <div>
-              <b>Birthday:</b> {'new Date(customer.dateOfBirth).toDateString()'}
-            </div>
-            <div>
-              <b>Last Modified:</b> {'new Date(customer.updatedAt).toLocaleString()'}
-            </div>
-            <div>{/* <b>Text Preferred:</b> {customer?.textPreferred ? 'Yes' : 'No'} */}</div>
+            <Text>
+              <b>Customer Name:</b> {opportunity?.customer?.name ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Address:</b> {opportunity?.customer?.address ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Home Number:</b> {opportunity?.customer?.phone ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Cell Number:</b> {opportunity?.customer?.phone ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Work Number:</b> {opportunity?.customer?.phone ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Preferred Email:</b> {opportunity?.customer?.phone ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Other Email:</b> {opportunity?.customer?.email ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Birthday:</b>{' '}
+              {opportunity?.customer?.dateOfBirth
+                ? dayjs(opportunity.customer.dateOfBirth).format('YYYY-MM-DD')
+                : 'N/A'}
+            </Text>
+            <Text>
+              <b>Last Modified:</b>{' '}
+              {opportunity?.customer?.updatedAt
+                ? dateFormat(opportunity.customer.updatedAt, true)
+                : 'N/A'}
+            </Text>
           </Box>
 
           <Box style={{ marginTop: '20px', marginRight: '10px', width: '50%' }}>
             <Title>Opportunity</Title>
-            <div>
-              <b>Vehicle:</b> {'opportunity.vehicle'}
-            </div>
-            <div>
-              <b>Stock Number:</b> {'opportunity.stock'}
-            </div>
-            <div>
+            <Text>
+              <b>Vehicle:</b> {opportunity?.vehicle?.model ?? ''} {opportunity?.vehicle?.make ?? ''}
+            </Text>
+            <Text>
+              <b>Stock Number:</b> 10
+            </Text>
+            <Text>
               <b>Trade:</b> {opportunity?.trade ? 'Yes' : 'No'}
-            </div>
-            <div>
-              <b>Sales Team:</b> {'opportunity.salesTeam'}
-            </div>
-            <div>
+            </Text>
+            <Text>
+              <b>Sales Team:</b> {opportunity?.salesRep?.name ?? ''}
+            </Text>
+            {/* <Text>
               <b>Up Type:</b> {'opportunity.upType'}
-            </div>
-            <div>
-              <b>Source:</b> {'opportunity.source'}
-            </div>
-            <div>
-              <b>Date/Time Due:</b> {'new Date(opportunity.dateTimeDue).toLocaleString()'}
-            </div>
-            <div>
-              <b>Sales Status:</b> {'opportunity.salesStatus'}
-            </div>
-            <div>
+            </Text> */}
+            <Text>
+              <b>Source:</b> {opportunity?.referralSource ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Date/Time Due:</b> {dateFormat(new Date().toISOString())}
+            </Text>
+            <Text>
+              <b>Sales Status:</b> {opportunity?.saleStatus ?? 'N/A'}
+            </Text>
+            <Text>
               <b>In Showroom:</b> {opportunity?.inShowroom ? 'Yes' : 'No'}
-            </div>
-            <div>
+            </Text>
+            <Text>
               <b>Demo:</b> {opportunity?.demo ? 'Yes' : 'No'}
-            </div>
-            <div>
+            </Text>
+            <Text>
               <b>Ask Money Down:</b> {opportunity?.askMoneyDown ? 'Yes' : 'No'}
-            </div>
-            <div>
+            </Text>
+            <Text>
               <b>Write Up:</b> {opportunity?.writeUp ? 'Yes' : 'No'}
-            </div>
-            <div>
+            </Text>
+            <Text>
               <b>TO:</b> {opportunity?.to ? 'Yes' : 'No'}
-            </div>
-            <div>
+            </Text>
+            <Text>
               <b>Manager Phone Call:</b> {opportunity?.managerPhoneCall ? 'Yes' : 'No'}
-            </div>
+            </Text>
           </Box>
-        </div>
+        </Text>
         <>
           <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
