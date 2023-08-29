@@ -16,6 +16,7 @@ import TransactionModal from '../../../components/transaction-modal/index.js';
 import { ESaleStatus } from '../../../models/desklog.model.js';
 import { Pagination, Skeleton, TableSortLabel } from '@mui/material';
 import styles from './styles.js';
+import { error } from 'console';
 
 type Order = 'asc' | 'desc';
 
@@ -34,27 +35,52 @@ const DeskLog = () => {
   }, []);
 
   // Function to handle status change
-  const handleStatusChange = (event, logId) => {
-    // Implement your logic to update the sale status for the corresponding logId
-    // For example, you can update the status in the deskLogData array
-    console.log(`New status for logId ${logId}:`, event.target.value);
+  const handleStatusChange = async (event, logId) => {
+    try {
+      const newStatus = event.target.value;
+      // Send an API request to update the sale status
+      const response = await fetch(`http://localhost:3434/api/desklogs/updateSaleStatus/${logId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ saleStatus: newStatus }),
+      });
+
+      if (response.ok) {
+        const updatedDeskLogData = deskLogData.map((log) => {
+          if (log.id === logId) {
+            return { ...log, saleStatus: newStatus };
+          }
+          return log;
+        });
+
+        setDeskLogData(updatedDeskLogData);
+
+        console.log(`New status for logId ${logId}:`, newStatus);
+      } else {
+        console.error('Failed to update sale status');
+      }
+    } catch (error) {
+      console.error('Error updating sale status:', error);
+    }
   };
 
   const handleRowClick = (log) => {
     setOpenTransactionModal(true);
     setCurrentLog(log);
     // dispatch(modalReducerJs.setTransactionId('id'));
-    // dispatch(modalReducerJs.openModal()); // set modal state to true to open the modal
+    // dispatch(modalReducerJs.openModal());
   };
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(
-          'http://34.201.244.19/api/desklogs' + '?offset=' + offset + '&limit=' + limit,
-        );
-        console.log('response', response);
+        const fetchUrl =
+          'http://localhost:3434/api/desklogs' + '?offset=' + offset + '&limit=' + limit;
+        const response = await fetch(fetchUrl);
+
         const data = await response.json();
         if (data?.items?.length) {
           setDeskLogData(data.items);
@@ -179,7 +205,7 @@ const DeskLog = () => {
                   <TableRow
                     key={log.id}
                     className={`saleStatus-${log.saleStatus.replace(/\s+/g, '-')}`}
-                    onClick={() => handleRowClick(log)}
+                    //onClick={() => handleRowClick(log)}
                   >
                     <TableCell>{log?.customer?.name ?? ''}</TableCell>
                     <TableCell>{log?.vehicle?.model}</TableCell>
@@ -207,6 +233,9 @@ const DeskLog = () => {
                       <div>Work: {log?.phoneNumberWork ?? ''}</div>
                     </TableCell>
                     <TableCell>{log?.comments ?? ''}</TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>
+                      <h3> Show info</h3>
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
