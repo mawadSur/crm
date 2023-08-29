@@ -51,15 +51,11 @@ http://localhost:3434/admin
 2. Build code
 
 ```bash
-$ yarn install #run if we have new packages
-```
-
-```bash
 $ yarn build
 ```
 
 3. Restart pm2
 
 ```bash
-$ yarn server
+$ pm2 restart crm
 ```
