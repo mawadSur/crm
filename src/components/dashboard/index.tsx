@@ -28,7 +28,7 @@ const Dashboard: React.FC = () => {
       <Flex>
         <DeskLog />
       </Flex>
-      {/* <Flex>
+      <Flex>
         <Section $width="24%">
           <GrossRevenue />
         </Section>
@@ -41,7 +41,7 @@ const Dashboard: React.FC = () => {
         <Section $width="24%">
           <LeadConversionRate />
         </Section>
-      </Flex> */}
+      </Flex>
     </Page>
   );
 };

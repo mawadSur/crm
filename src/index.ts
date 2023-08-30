@@ -18,7 +18,6 @@ import { BaseRoute } from './routes/index.js';
 import { adminAuthenticate } from './services/auth.service.js';
 import session from 'express-session';
 import mongoStore from 'connect-mongo';
-import e from 'express';
 
 dotenv.config();
 
@@ -123,8 +122,6 @@ const start = async () => {
   /* Watch for changes */
   if (process.env.NODE_ENV !== 'production') {
     admin.watch();
-  } else {
-    admin.initialize();
   }
 
   app.use(
@@ -137,9 +134,7 @@ const start = async () => {
   app.use('/api', route.router);
 
   app.listen(PORT, () => {
-    console.log(
-      `🚀 AdminJS started on http://localhost:${PORT}${admin.options.rootPath} - with env ${process.env.NODE_ENV}`,
-    );
+    console.log(`🚀 AdminJS started on http://localhost:${PORT}${admin.options.rootPath}`);
   });
 };
 
