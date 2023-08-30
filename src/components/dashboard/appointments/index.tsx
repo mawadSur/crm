@@ -11,6 +11,7 @@ import { Pagination, Skeleton } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
 import { Card, Title } from '../../common/index.js';
+import { ENV_VARIABLES } from '../../../config/environment.js';
 
 const AppointmentsToday = React.memo(() => {
   const [appointments, setAppointments] = React.useState([]);
@@ -24,7 +25,7 @@ const AppointmentsToday = React.memo(() => {
       try {
         setLoading(true);
         const response = await fetch(
-          'http://34.201.244.19/api/appointments' + '?offset=' + offset + '&limit=' + limit,
+          `${ENV_VARIABLES.APP_URL}/api/appointments` + '?offset=' + offset + '&limit=' + limit,
         );
         console.log('response', response);
         const data = await response.json();
