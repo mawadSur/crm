@@ -7,7 +7,7 @@ import Campaign from '../dist/components/campaign/index'
 AdminJS.UserComponents.Campaign = Campaign
 import Followup from '../dist/components/followUp/index'
 AdminJS.UserComponents.Followup = Followup
-import Chat from '../dist/components/conversation/index'
+import Chat from '../dist/components/conversation/customersList'
 AdminJS.UserComponents.Chat = Chat
 import ImportComponent from '../node_modules/@adminjs/import-export/lib/components/ImportComponent'
 AdminJS.UserComponents.ImportComponent = ImportComponent
