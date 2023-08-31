@@ -16,6 +16,7 @@ import TransactionModal from '../../../components/transaction-modal/index.js';
 import { ESaleStatus } from '../../../models/desklog.model.js';
 import { Pagination, Skeleton, TableSortLabel } from '@mui/material';
 import styles from './styles.js';
+import { ENV_VARIABLES } from '../../../config/environment.js';
 
 type Order = 'asc' | 'desc';
 
@@ -52,7 +53,7 @@ const DeskLog = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          'http://34.201.244.19/api/desklogs' + '?offset=' + offset + '&limit=' + limit,
+          `${ENV_VARIABLES}/api/desklogs` + '?offset=' + offset + '&limit=' + limit,
         );
         console.log('response', response);
         const data = await response.json();
