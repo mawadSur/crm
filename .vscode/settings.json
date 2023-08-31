@@ -18,5 +18,6 @@
     "salesreps",
     "desklogs",
     "autorestart"
-  ]
+  ],
+  "editor.acceptSuggestionOnEnter": "on"
 }
