@@ -136,6 +136,8 @@ const start = async () => {
   /* Watch for changes */
   if (process.env.NODE_ENV !== 'production') {
     admin.watch();
+  } else {
+    admin.initialize();
   }
 
   app.use(
