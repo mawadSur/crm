@@ -150,7 +150,9 @@ const start = async () => {
   app.use('/api', route.router);
 
   app.listen(PORT, () => {
-    console.log(`🚀 AdminJS started on http://localhost:${PORT}${admin.options.rootPath}`);
+    console.log(
+      `🚀 AdminJS started on http://localhost:${PORT}${admin.options.rootPath} - with env ${process.env.NODE_ENV}`,
+    );
   });
 };
 
