@@ -10,11 +10,12 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
+import { Pagination, Skeleton, TableSortLabel } from '@mui/material';
 import React from 'react';
-import { Title } from '../../common/index.js';
 import TransactionModal from '../../../components/transaction-modal/index.js';
 import { ESaleStatus } from '../../../models/desklog.model.js';
-import { Pagination, Skeleton, TableSortLabel } from '@mui/material';
+import { Title } from '../../common/index.js';
+import { dateFormat } from '../../../libs/utils/index.js';
 import styles from './styles.js';
 
 type Order = 'asc' | 'desc';
@@ -52,10 +53,11 @@ const DeskLog = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          'http://34.201.244.19/api/desklogs' + '?offset=' + offset + '&limit=' + limit,
+          'http://54.242.249.213/api/desklogs' + '?offset=' + offset + '&limit=' + limit,
+          // 'http://localhost:3434/api/desklogs' + '?offset=' + offset + '&limit=' + limit,
         );
-        console.log('response', response);
         const data = await response.json();
+        console.log('data', data);
         if (data?.items?.length) {
           setDeskLogData(data.items);
         }
@@ -196,8 +198,8 @@ const DeskLog = () => {
                     </TableCell>
                     <TableCell>{log?.tradeIn ?? ''}</TableCell>
                     <TableCell>{log?.financing ?? ''}</TableCell>
-                    <TableCell>{log?.timeIn ?? ''}</TableCell>
-                    <TableCell>{log?.timeOut ?? ''}</TableCell>
+                    <TableCell>{log?.timeIn ? dateFormat(log?.timeIn, true) : ''}</TableCell>
+                    <TableCell>{log?.timeOut ? dateFormat(log?.timeOut, true) : ''}</TableCell>
                     <TableCell>{log?.referralSource ?? ''}</TableCell>
                     <TableCell>{log?.salesRep?.name ?? ''}</TableCell>
                     <TableCell>
