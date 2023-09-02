@@ -9,6 +9,7 @@ import {
 import { Input } from '../common/index.js';
 import CampaignStyle from './style.js';
 import dayjs from 'dayjs';
+import { ENV_VARIABLES } from '../../config/environment.js';
 
 const BlastCampaignCard = React.memo(() => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -76,7 +77,7 @@ const BlastCampaignCard = React.memo(() => {
             return;
           }
           setLoading(true);
-          const response = await fetch(`http://54.157.23.22/api/customers?${query}`);
+          const response = await fetch(`${ENV_VARIABLES.APP_URL}/api/customers?${query}`);
           const data = await response.json();
           console.log('data', data);
           if (data?.total > 0) {
@@ -113,7 +114,7 @@ const BlastCampaignCard = React.memo(() => {
     resetData();
     try {
       setLaunchLoading(true);
-      const response = await fetch('http://54.157.23.22/api/customers/launch', {
+      const response = await fetch(`${ENV_VARIABLES.APP_URL}/api/customers/launch`, {
         method: 'POST',
         body: JSON.stringify({
           customerIds: customers.map((customer) => customer._id),

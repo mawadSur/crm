@@ -1,5 +1,6 @@
 import React from 'react';
 import { BotMessage, CustomerMessage, MessageContainer, MessageDetails } from './style.js';
+import { ENV_VARIABLES } from '../../config/environment.js';
 
 const ChatConversations = () => {
   const [messages, setMessages] = React.useState([]);
@@ -7,7 +8,7 @@ const ChatConversations = () => {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://54.157.23.22/api/chats');
+        const response = await fetch(`${ENV_VARIABLES.APP_URL}/api/chats`);
         const data = await response.json();
         if (data?.length && data[0].messages) {
           console.log('data', data);
