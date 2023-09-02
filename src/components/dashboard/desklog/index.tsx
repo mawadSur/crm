@@ -17,6 +17,7 @@ import { ESaleStatus } from '../../../models/desklog.model.js';
 import { Title } from '../../common/index.js';
 import { dateFormat } from '../../../libs/utils/index.js';
 import styles from './styles.js';
+import { ENV_VARIABLES } from '../../../config/environment.js';
 
 type Order = 'asc' | 'desc';
 
@@ -53,8 +54,7 @@ const DeskLog = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          'http://54.157.23.22/api/desklogs' + '?offset=' + offset + '&limit=' + limit,
-          // 'http://localhost:3434/api/desklogs' + '?offset=' + offset + '&limit=' + limit,
+          `${ENV_VARIABLES.APP_URL}/api/desklogs` + '?offset=' + offset + '&limit=' + limit,
         );
         const data = await response.json();
         console.log('data', data);
