@@ -67,6 +67,7 @@ const CustomerInfoType = styled.div`
   justify-content: center;
   align-items: center;
   padding: 10px;
+  font-weight: 600;
 `;
 
 const CustomerDetails = styled.div`

@@ -56,12 +56,12 @@ const LoanPaymentMatrix = () => {
         <calculatorStyle.CompanyInfo>
           <calculatorStyle.CompanyDetails>
             <calculatorStyle.CompanyBasicInfo>
-              <calculatorStyle.CompanyTitle>PORSCHE</calculatorStyle.CompanyTitle>
+              <calculatorStyle.CompanyTitle></calculatorStyle.CompanyTitle>
               <calculatorStyle.CompanyName>
-                Hennessy <span style={{ fontWeight: 900 }}>Porsche</span>
+                <span style={{ fontWeight: 900 }}>Stone Mountain Toyota</span>
               </calculatorStyle.CompanyName>
               <calculatorStyle.CompanyDescription>
-                2020 Lorem Ipsum is simply dummy text
+                2023 Premier Dealer
               </calculatorStyle.CompanyDescription>
             </calculatorStyle.CompanyBasicInfo>
           </calculatorStyle.CompanyDetails>
@@ -127,24 +127,24 @@ const LoanPaymentMatrix = () => {
           </calculatorStyle.CarType>
           <calculatorStyle.CarDetails>
             <calculatorStyle.CarDetailHeader>
-              Stock #:<calculatorStyle.SpanCommon>N847488H</calculatorStyle.SpanCommon>
+              Stock #:<calculatorStyle.SpanCommon> N847488H</calculatorStyle.SpanCommon>
             </calculatorStyle.CarDetailHeader>
             <calculatorStyle.CarDetailHeader>
-              New/Used:<calculatorStyle.SpanCommon>Used</calculatorStyle.SpanCommon>
+              New/Used:<calculatorStyle.SpanCommon> Used</calculatorStyle.SpanCommon>
             </calculatorStyle.CarDetailHeader>
             <calculatorStyle.CarDetailHeader>
-              VIN:<calculatorStyle.SpanCommon>7BHDOH8KUGBDJKD</calculatorStyle.SpanCommon>
+              VIN:<calculatorStyle.SpanCommon> 7BHDOH8KUGBDJKD</calculatorStyle.SpanCommon>
             </calculatorStyle.CarDetailHeader>
             <calculatorStyle.CarDetailHeader>
-              Mileage:<calculatorStyle.SpanCommon>54</calculatorStyle.SpanCommon>
+              Mileage:<calculatorStyle.SpanCommon> 54</calculatorStyle.SpanCommon>
             </calculatorStyle.CarDetailHeader>
           </calculatorStyle.CarDetails>
           <calculatorStyle.CarBasicInfo>
             <calculatorStyle.CarBasicInfoHeader>
-              Vehicle:<calculatorStyle.SpanCommon>2023 Rivian R1S</calculatorStyle.SpanCommon>
+              Vehicle:<calculatorStyle.SpanCommon> 2023 Rivian R1S</calculatorStyle.SpanCommon>
             </calculatorStyle.CarBasicInfoHeader>
             <calculatorStyle.CarBasicInfoHeader>
-              Color:<calculatorStyle.SpanCommon>Launch Green</calculatorStyle.SpanCommon>
+              Color:<calculatorStyle.SpanCommon> Launch Green</calculatorStyle.SpanCommon>
             </calculatorStyle.CarBasicInfoHeader>
           </calculatorStyle.CarBasicInfo>
           <calculatorStyle.CarTypeInfo>
