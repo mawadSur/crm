@@ -86,7 +86,7 @@ export class CustomerService {
     let totalSuccess = 0;
     let totalFailed = 0;
     const updateBlastOperations = [];
-
+    console.log(promiseSendMessage);
     promiseSendMessage.forEach((item, i) => {
       if (item.status === 'rejected') {
         totalFailed += 1;
@@ -127,6 +127,7 @@ export class CustomerService {
       const response = await httpRequest.post(
         url,
         JSON.stringify({
+          action: 'send',
           phone: payload.phone,
           context: payload.context,
         }),
@@ -137,6 +138,7 @@ export class CustomerService {
           maxBodyLength: Infinity,
         },
       );
+      console.log(response);
       return response.data;
     } catch (error) {
       console.log('error', error?.message);
