@@ -40,6 +40,13 @@ export const customerSchema = new Schema<ICustomer>(
       type: [otherContactSchema],
       default: [],
     },
+    relationships: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Customers',
+        default: [],
+      },
+    ],
   },
   {
     timestamps: true,

@@ -17,6 +17,10 @@ export class DesklogService {
         {
           path: 'customerId',
           model: 'Customers',
+          populate: {
+            path: 'relationships',
+            model: 'Customers',
+          },
         },
         {
           path: 'salesRepId',

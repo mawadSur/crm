@@ -31,6 +31,7 @@ export interface ICustomer {
   notes: string;
   textPreferred: boolean;
   otherContacts: ICustomerOtherContact[];
+  relationships: string[];
   updatedAt: Date;
   createdAt: Date;
 }

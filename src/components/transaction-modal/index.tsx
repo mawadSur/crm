@@ -80,6 +80,7 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
     fetchCustomerConversation();
   }, [opportunity?.customerId]);
 
+  console.log('opportunity', opportunity);
   return (
     <Modal
       open={open}
@@ -242,14 +243,16 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
             </TabPanel>
             <TabPanel value={value} index={2}>
               <List>
-                {/* Here you can map through your contacts and return a ListItem for each one */}
-                <ListItem>
-                  <ListItemText primary="John Doe" secondary="Referred by: Jane Smith" />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="Alice Johnson" secondary="Referred by: John Doe" />
-                </ListItem>
-                {/* Add more items as needed */}
+                {opportunity?.customer?.relationships?.map((rel) => {
+                  return (
+                    <ListItem>
+                      <ListItemText
+                        primary={rel.name}
+                        secondary={`Referred by: ${opportunity.customer?.name}`}
+                      />
+                    </ListItem>
+                  );
+                })}
               </List>
             </TabPanel>
             <TabPanel value={value} index={3}>
