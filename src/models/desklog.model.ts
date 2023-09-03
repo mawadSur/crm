@@ -1,28 +1,12 @@
 import { Schema, SchemaDefinitionProperty, model } from 'mongoose';
+import { EFinancing, EReferralSource, ESaleStatus, ICustomer } from '../utils/index.js';
 import { Car } from './car.model.js';
-import { Customer } from './customer.model.js';
 import { SalesRep } from './salesRep.model.js';
 
-export enum ESaleStatus {
-  InProgress = 'In Progress',
-  Completed = 'Completed',
-  Lost = 'Lost',
-}
-export enum EFinancing {
-  Pending = 'Pending',
-  Approved = 'Approved',
-  Declined = 'Declined',
-}
-export enum EReferralSource {
-  Service = 'Service',
-  Phone = 'Phone',
-  Internet = 'Internet',
-  Campaign = 'Campaign',
-}
 export interface DeskLog {
   id: string;
   customerId: string | SchemaDefinitionProperty<string>;
-  customer: Customer;
+  customer: ICustomer;
   vehicle: Car;
   vehicleId: string | SchemaDefinitionProperty<string>;
   saleStatus: ESaleStatus;

@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const ageRange: number[] = Array.from({ length: 83 }, (_, index) => index + 18);
 
 export const objectToQueryParams = (obj: Record<string, any>): string => {
@@ -24,4 +26,23 @@ export const convertPropertyNameToDisplayName = (propertyName: string): string =
 export const isDateFormat = (value: string) => {
   const date = new Date(value);
   return !isNaN(date.getTime());
+};
+
+export const dateFormat = (data: string, hasHour?: boolean) => {
+  if (!data) return '';
+  return dayjs(data).format(hasHour ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD');
+};
+
+export const formatPhoneNumber = (phoneNumber) => {
+  if (!phoneNumber) return 'N/A';
+
+  const cleaned = phoneNumber.replace(/\D/g, '');
+
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+
+  if (match) {
+    return `(${match[1]}) ${match[2]}-${match[3]}`;
+  }
+
+  return phoneNumber;
 };

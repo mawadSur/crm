@@ -3,3 +3,5 @@ export interface IQuery {
   limit: number;
   offset: number;
 }
+
+export type Order = 'asc' | 'desc';

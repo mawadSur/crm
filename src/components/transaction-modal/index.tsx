@@ -17,7 +17,8 @@ import {
 } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
-import { dateFormat } from '../../libs/utils/index.js';
+import { getConversationByCustomerId } from '../../libs/apis/index.js';
+import { dateFormat, formatPhoneNumber } from '../../utils/index.js';
 import { Text, Title } from './style.js';
 
 export interface ITransactionModalProps {
@@ -57,12 +58,27 @@ function TabPanel(props) {
 
 const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps) => {
   const [value, setValue] = React.useState(0);
-
+  const [loadingCustomer, setLoadingCustomer] = React.useState(false);
+  const [customer, setCustomer] = React.useState({});
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  console.log('opportunity', opportunity);
+  React.useEffect(() => {
+    if (!opportunity?.customerId) return;
+
+    setLoadingCustomer(true);
+
+    // Use an async function to fetch the conversation
+    const fetchCustomerConversation = async () => {
+      const conversation = await getConversationByCustomerId(opportunity.customerId);
+      setCustomer(conversation);
+      //TODO use conversation data here
+      setLoadingCustomer(false);
+    };
+
+    fetchCustomerConversation();
+  }, [opportunity?.customerId]);
 
   return (
     <Modal
@@ -82,16 +98,16 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
               <b>Address:</b> {opportunity?.customer?.address ?? 'N/A'}
             </Text>
             <Text>
-              <b>Home Number:</b> {opportunity?.customer?.phone ?? 'N/A'}
+              <b>Home Number:</b> {formatPhoneNumber(opportunity?.customer?.homeNumber) ?? 'N/A'}
             </Text>
             <Text>
-              <b>Cell Number:</b> {opportunity?.customer?.phone ?? 'N/A'}
+              <b>Cell Number:</b> {formatPhoneNumber(opportunity?.customer?.cellNumber) ?? 'N/A'}
             </Text>
             <Text>
-              <b>Work Number:</b> {opportunity?.customer?.phone ?? 'N/A'}
+              <b>Work Number:</b> {formatPhoneNumber(opportunity?.customer?.workNumber) ?? 'N/A'}
             </Text>
             <Text>
-              <b>Preferred Email:</b> {opportunity?.customer?.phone ?? 'N/A'}
+              <b>Preferred Email:</b> {opportunity?.customer?.preferredContactMethod ?? 'N/A'}
             </Text>
             <Text>
               <b>Other Email:</b> {opportunity?.customer?.email ?? 'N/A'}
@@ -181,18 +197,15 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {/* Here you can map through your contacts and return a row for each one */}
-                    <TableRow>
-                      <TableCell>John Doe</TableCell>
-                      <TableCell>john.doe@example.com</TableCell>
-                      <TableCell>123-456-7890</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Jane Smith</TableCell>
-                      <TableCell>jane.smith@example.com</TableCell>
-                      <TableCell>098-765-4321</TableCell>
-                    </TableRow>
-                    {/* Add more rows as needed */}
+                    {opportunity?.customer?.otherContacts?.map((contact) => {
+                      return (
+                        <TableRow key={contact._id}>
+                          <TableCell>{contact.name}</TableCell>
+                          <TableCell>{contact.email}</TableCell>
+                          <TableCell>{formatPhoneNumber(contact.phone)}</TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>

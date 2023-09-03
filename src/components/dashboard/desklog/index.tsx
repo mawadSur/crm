@@ -13,13 +13,10 @@ import {
 import { Pagination, Skeleton, TableSortLabel } from '@mui/material';
 import React from 'react';
 import TransactionModal from '../../../components/transaction-modal/index.js';
-import { ESaleStatus } from '../../../models/desklog.model.js';
-import { Title } from '../../common/index.js';
-import { dateFormat } from '../../../libs/utils/index.js';
-import styles from './styles.js';
 import { ENV_VARIABLES } from '../../../config/environment.js';
-
-type Order = 'asc' | 'desc';
+import { ESaleStatus, Order, dateFormat } from '../../../utils/index.js';
+import { Title } from '../../common/index.js';
+import styles from './styles.js';
 
 const DeskLog = () => {
   const [openTransactionModal, setOpenTransactionModal] = React.useState(false);
@@ -45,8 +42,6 @@ const DeskLog = () => {
   const handleRowClick = (log) => {
     setOpenTransactionModal(true);
     setCurrentLog(log);
-    // dispatch(modalReducerJs.setTransactionId('id'));
-    // dispatch(modalReducerJs.openModal()); // set modal state to true to open the modal
   };
 
   React.useEffect(() => {
@@ -57,7 +52,6 @@ const DeskLog = () => {
           `${ENV_VARIABLES.APP_URL}/api/desklogs` + '?offset=' + offset + '&limit=' + limit,
         );
         const data = await response.json();
-        console.log('data', data);
         if (data?.items?.length) {
           setDeskLogData(data.items);
         }

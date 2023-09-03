@@ -61,7 +61,7 @@ export class CustomerService {
 
     const waitingList = customers.map((customer) => ({
       name: customer.name,
-      phone: customer.phone,
+      phone: customer.workNumber,
       customerId: customer._id,
       context: String(payload.context),
       isSendMessage: false,
@@ -86,7 +86,7 @@ export class CustomerService {
     let totalSuccess = 0;
     let totalFailed = 0;
     const updateBlastOperations = [];
-    console.log(promiseSendMessage);
+
     promiseSendMessage.forEach((item, i) => {
       if (item.status === 'rejected') {
         totalFailed += 1;

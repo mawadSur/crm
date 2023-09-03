@@ -29,6 +29,7 @@ export class DesklogService {
       .skip(query.offset)
       .limit(query.limit)
       .exec();
+
     const total = await DeskLogModel.countDocuments();
     return {
       data,

@@ -6,4 +6,13 @@ export class ConversationService {
   async list() {
     return ConversationModel.find();
   }
+
+  async getConversationByCustomerId(customerId: string) {
+    return ConversationModel.findOne({ customerId })
+      .sort({
+        createdAt: -1,
+      })
+      .lean()
+      .exec();
+  }
 }

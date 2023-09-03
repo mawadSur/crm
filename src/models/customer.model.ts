@@ -1,32 +1,5 @@
-import { FormatString, model, Schema } from 'mongoose';
-import { ageRange } from '../utils/index.js';
-
-export enum ECustomerGender {
-  Male = 'Male',
-  Female = 'Female',
-  Other = 'Other',
-}
-export interface Customer {
-  name: string;
-  age: number;
-  gender: ECustomerGender;
-  address: string;
-  email: string;
-  otherEmail: string;
-  homeNumber: FormatString;
-  cellNumber: FormatString;
-  workNumber: FormatString;
-  conversations: TextConversation[]; // Add conversations field
-  dateOfBirth: Date;
-  occupation: string;
-  sourceOfLead: string;
-  preferredContactMethod: string;
-  notes: string;
-  phone: string;
-  textPreferred: boolean;
-  updatedAt: Date;
-  createdAt: Date;
-}
+import { model, Schema } from 'mongoose';
+import { ageRange, ECustomerGender, ICustomer, validateEmailRegex } from '../utils/index.js';
 
 export interface TextConversation {
   timestamp: Date;
@@ -34,37 +7,56 @@ export interface TextConversation {
   message: string;
 }
 
-export const conversationSchema = new Schema({
-  timestamp: { type: Date, required: true },
-  sender: { type: String, required: true },
-  message: { type: String, required: true },
+export const otherContactSchema = new Schema({
+  name: { type: String, required: true },
+  phone: { type: String, required: true },
+  email: {
+    type: String,
+    required: true,
+    validate: validateEmailRegex,
+  },
 });
 
-export const customerSchema = new Schema<Customer>({
-  name: { type: String, required: true },
-  age: { type: Number, enum: ageRange, required: true },
-  gender: { type: String, enum: ECustomerGender, required: true },
-  address: { type: String, required: true },
-  email: { type: String, required: true },
-  phone: { type: String, required: true },
-  homeNumber: { type: String, required: true, validate: /^\d{10}$/ },
-  cellNumber: { type: String, required: true, validate: /^\d{10}$/ },
-  workNumber: { type: String, required: true, validate: /^\d{10}$/ },
-  conversations: [conversationSchema],
-  dateOfBirth: { type: Date, required: true },
-  occupation: { type: String, required: true },
-  sourceOfLead: { type: String, required: true },
-  preferredContactMethod: { type: String, required: true },
-  notes: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+export const customerSchema = new Schema<ICustomer>(
+  {
+    name: { type: String, required: true },
+    age: { type: Number, enum: ageRange, required: true },
+    gender: { type: String, enum: ECustomerGender, required: true },
+    address: { type: String, required: true },
+    email: {
+      type: String,
+      required: true,
+      validate: validateEmailRegex,
+    },
+    homeNumber: { type: String, required: true, validate: /^\d{10}$/ },
+    cellNumber: { type: String, required: true, validate: /^\d{10}$/ },
+    workNumber: { type: String, required: true, validate: /^\d{10}$/ },
+    dateOfBirth: { type: Date, required: true },
+    occupation: { type: String, required: true },
+    sourceOfLead: { type: String, required: true },
+    preferredContactMethod: { type: String, required: true },
+    notes: { type: String, required: true },
+    otherContacts: {
+      type: [otherContactSchema],
+      default: [],
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
 //* Indexes
 customerSchema.index({ name: 1 });
 customerSchema.index({ age: 1 });
 customerSchema.index({ gender: 1 });
-customerSchema.index({ phone: 1 });
+customerSchema.index({ homeNumber: 1 });
+customerSchema.index({ cellNumber: 1 });
+customerSchema.index({ workNumber: 1 });
 customerSchema.index({ email: 1 });
 
-export const CustomerModel = model<Customer>('Customers', customerSchema);
+customerSchema.index({ 'otherContacts.name': 1 });
+customerSchema.index({ 'otherContacts.phone': 1 });
+customerSchema.index({ 'otherContacts.email': 1 });
+
+export const CustomerModel = model<ICustomer>('Customers', customerSchema);

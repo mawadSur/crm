@@ -25,7 +25,7 @@ const AppointmentsToday = React.memo(() => {
       try {
         setLoading(true);
         const response = await fetch(
-          `${ENV_VARIABLES.APP_URL}` + '?offset=' + offset + '&limit=' + limit,
+          `${ENV_VARIABLES.API_URL}/appointments` + '?offset=' + offset + '&limit=' + limit,
         );
         console.log('response', response);
         const data = await response.json();
