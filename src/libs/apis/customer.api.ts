@@ -5,8 +5,7 @@ export const getConversationByCustomerId = async (customerId: string) => {
     const response = await fetch(`${ENV_VARIABLES.API_URL}/customers/${customerId}/conversations`);
     return await response.json();
   } catch (error) {
-    console.log('error', error);
-    return [];
+    throw error;
   }
 };
 
@@ -18,9 +17,18 @@ export const getCustomerServices = async (customerId: string) => {
     return await response.json();
   } catch (error) {
     console.log('error', error);
-    return {
-      data: [],
-      total: 0,
-    };
+    throw error;
+  }
+};
+
+export const getCustomerInsurances = async (customerId: string) => {
+  try {
+    const response = await fetch(
+      `${ENV_VARIABLES.API_URL}/customers/${customerId}/insurances?unlimited=true`,
+    );
+    return await response.json();
+  } catch (error) {
+    console.log('error', error);
+    throw error;
   }
 };

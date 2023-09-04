@@ -1,5 +1,10 @@
 import httpRequest from '../libs/httpsRequest.js';
-import { BlastModel, CustomerModel, CustomerServiceModel } from '../models/index.js';
+import {
+  BlastModel,
+  CustomerInsuranceModel,
+  CustomerModel,
+  CustomerServiceModel,
+} from '../models/index.js';
 import { IQuery, IQueryCustomer } from '../utils/index.js';
 
 export class CustomerService {
@@ -147,8 +152,32 @@ export class CustomerService {
   }
 
   async getCustomerServices(customerId: string, query: IQuery) {
-    const total = await CustomerModel.countDocuments();
+    const total = await CustomerServiceModel.countDocuments();
     const queryOptions: any = CustomerServiceModel.find({
+      customerId,
+    });
+
+    if (!query?.unlimited) {
+      queryOptions.limit(query?.limit ?? 10);
+      queryOptions.offset(query?.offset ?? 0);
+    }
+    const customerServices = await queryOptions
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'customerId',
+        model: 'Customers',
+      })
+      .lean()
+      .exec();
+    return {
+      data: customerServices,
+      total,
+    };
+  }
+
+  async getCustomerInsurances(customerId: string, query: IQuery) {
+    const total = await CustomerInsuranceModel.countDocuments();
+    const queryOptions: any = CustomerInsuranceModel.find({
       customerId,
     });
 

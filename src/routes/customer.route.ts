@@ -12,6 +12,7 @@ export class CustomerRoute {
     this.router.get('/', this.list.bind(this));
     this.router.get('/:customerId/conversations', this.getCustomerConversations.bind(this));
     this.router.get('/:customerId/services', this.getCustomerServices.bind(this));
+    this.router.get('/:customerId/insurances', this.getCustomerInsurances.bind(this));
     this.router.post('/launch', this.launchCampaign.bind(this));
     this.customerService = new CustomerService();
     this.conversationService = new ConversationService();
@@ -83,7 +84,24 @@ export class CustomerRoute {
       res.status(200).json(result);
     } catch (error) {
       console.log('error', error);
-      res.status(500).json({ message: 'Error fetching conversation' });
+      res.status(500).json({ message: 'Error fetching customer services' });
+    }
+  }
+
+  async getCustomerInsurances(req: express.Request, res: express.Response) {
+    const schema = Joi.object({
+      customerId: Joi.string().required(),
+    });
+    const { error, value } = schema.validate(req.params);
+    if (error) {
+      return res.status(400).json({ message: error.message });
+    }
+    try {
+      const result = await this.customerService.getCustomerInsurances(value.customerId, req.query);
+      res.status(200).json(result);
+    } catch (error) {
+      console.log('error', error);
+      res.status(500).json({ message: 'Error fetching customer insurances' });
     }
   }
 

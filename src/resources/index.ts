@@ -3,6 +3,8 @@ export * from './blast.resource.js';
 export * from './car.resource.js';
 export * from './chatConversation.resource.js';
 export * from './customer.resource.js';
+export * from './customerInsurance.resource.js';
+export * from './customerService.resource.js';
 export * from './desklog.resource.js';
 export * from './salesRep.resource.js';
 export * from './serviceType.resource.js';

@@ -11,7 +11,9 @@ import {
   appointmentResource,
   blastResource,
   carResource,
+  customerInsurance,
   customerResource,
+  customerService,
   desklogResource,
   salesRepResource,
   serviceTypeResource,
@@ -40,7 +42,11 @@ const start = async () => {
     componentLoader,
     resources: [
       salesRepResource,
+
       customerResource,
+      customerService,
+      customerInsurance,
+
       carResource,
       appointmentResource,
       desklogResource,

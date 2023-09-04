@@ -1,3 +1,4 @@
+import { Schema } from 'mongoose';
 import { IQuery } from './common.interface.js';
 
 import { FormatString, SchemaDefinitionProperty } from 'mongoose';
@@ -46,6 +47,13 @@ export enum ECustomerServiceType {
 export interface ICustomerService extends Document {
   name: string;
   status: ECustomerServiceType;
+  customerId: SchemaDefinitionProperty<string>;
+}
+
+export interface ICustomerInsurance extends Document {
+  policyType: string;
+  policyNumber: string;
+  expiryDate: Schema.Types.Date;
   customerId: SchemaDefinitionProperty<string>;
 }
 

@@ -17,7 +17,11 @@ import {
 } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
-import { getConversationByCustomerId, getCustomerServices } from '../../libs/apis/index.js';
+import {
+  getConversationByCustomerId,
+  getCustomerInsurances,
+  getCustomerServices,
+} from '../../libs/apis/index.js';
 import { dateFormat, formatPhoneNumber } from '../../utils/index.js';
 import { Text, Title } from './style.js';
 
@@ -60,7 +64,8 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
   const [value, setValue] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
   const [customer, setCustomer] = React.useState({});
-  const [customerService, setCustomerService] = React.useState([]);
+  const [customerServices, setCustomerServices] = React.useState([]);
+  const [customerInsurances, setCustomerInsurances] = React.useState([]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -74,17 +79,32 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
     const fetching = async () => {
       const conversation = await getConversationByCustomerId(opportunity.customerId);
 
-      const [responseConversation, responseCustomerService] = await Promise.all([
-        getConversationByCustomerId(opportunity.customerId),
-        getCustomerServices(opportunity.customerId),
-      ]);
+      const [responseConversation, responseCustomerService, responseInsurance] =
+        await Promise.allSettled([
+          getConversationByCustomerId(opportunity.customerId),
+          getCustomerServices(opportunity.customerId),
+          getCustomerInsurances(opportunity.customerId),
+        ]);
 
-      if (responseConversation?.length > 0) {
+      console.log('===>', {
+        responseConversation,
+        responseCustomerService,
+        responseInsurance,
+      });
+
+      if (responseConversation.status === 'fulfilled' && responseConversation.value?.length > 0) {
         setCustomer(conversation);
       }
 
-      if (responseCustomerService?.data?.length > 0) {
-        setCustomerService(responseCustomerService.data);
+      if (
+        responseCustomerService.status === 'fulfilled' &&
+        responseCustomerService.value?.data?.length > 0
+      ) {
+        setCustomerServices(responseCustomerService.value.data);
+      }
+
+      if (responseInsurance.status === 'fulfilled' && responseInsurance.value?.data?.length > 0) {
+        setCustomerInsurances(responseInsurance.value.data);
       }
 
       setLoading(false);
@@ -237,7 +257,7 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
                   </TableHead>
                   <TableBody>
                     {/* Here you can map through your service requests and return a row for each one */}
-                    {customerService?.map((service) => {
+                    {customerServices?.map((service) => {
                       return (
                         <TableRow id={service._id}>
                           <TableCell>{service?.name ?? 'N/A'}</TableCell>
@@ -278,18 +298,15 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {/* Here you can map through your insurance policies and return a row for each one */}
-                    <TableRow>
-                      <TableCell>Car Insurance</TableCell>
-                      <TableCell>12345</TableCell>
-                      <TableCell>2024-01-01</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Health Insurance</TableCell>
-                      <TableCell>67890</TableCell>
-                      <TableCell>2023-12-31</TableCell>
-                    </TableRow>
-                    {/* Add more rows as needed */}
+                    {customerInsurances.map((insurance) => {
+                      return (
+                        <TableRow key={insurance._id}>
+                          <TableCell>{insurance?.policyType ?? 'N/A'}</TableCell>
+                          <TableCell>{insurance?.policyNumber ?? 'N/A'}</TableCell>
+                          <TableCell>{dateFormat(insurance.expiryDate)}</TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>
