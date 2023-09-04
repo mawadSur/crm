@@ -1,6 +1,7 @@
 import AdminJSExpress from '@adminjs/express';
 import { Database, Resource } from '@adminjs/mongoose';
 import AdminJS from 'adminjs';
+import mongoStore from 'connect-mongo';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import { Components, componentLoader } from './components/index.js';
@@ -13,12 +14,10 @@ import {
   customerResource,
   desklogResource,
   salesRepResource,
+  serviceTypeResource,
 } from './resources/index.js';
 import { BaseRoute } from './routes/index.js';
 import { adminAuthenticate } from './services/auth.service.js';
-import session from 'express-session';
-import mongoStore from 'connect-mongo';
-
 dotenv.config();
 
 const PORT = process.env.PORT || 3123;
@@ -32,20 +31,6 @@ AdminJS.registerAdapter({
 const start = async () => {
   const app = express();
   app.use(express.static('public'));
-  app.use(function (req, res, next) {
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', `http://localhost:${PORT}`);
-
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-    // Pass to next layer of middleware
-    next();
-  });
-
   const route = new BaseRoute();
 
   const database = new CoreDB(process.env.MONGO_URL as string);
@@ -60,6 +45,7 @@ const start = async () => {
       appointmentResource,
       desklogResource,
       blastResource,
+      serviceTypeResource,
     ],
     dashboard: {
       component: Components.Dashboard,

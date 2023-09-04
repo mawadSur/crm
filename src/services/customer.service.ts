@@ -1,6 +1,6 @@
 import httpRequest from '../libs/httpsRequest.js';
-import { BlastModel, CustomerModel } from '../models/index.js';
-import { IQueryCustomer } from '../utils/index.js';
+import { BlastModel, CustomerModel, CustomerServiceModel } from '../models/index.js';
+import { IQuery, IQueryCustomer } from '../utils/index.js';
 
 export class CustomerService {
   constructor() {}
@@ -144,5 +144,29 @@ export class CustomerService {
       console.log('error', error?.message);
       throw error;
     }
+  }
+
+  async getCustomerServices(customerId: string, query: IQuery) {
+    const total = await CustomerModel.countDocuments();
+    const queryOptions: any = CustomerServiceModel.find({
+      customerId,
+    });
+
+    if (!query?.unlimited) {
+      queryOptions.limit(query?.limit ?? 10);
+      queryOptions.offset(query?.offset ?? 0);
+    }
+    const customerServices = await queryOptions
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'customerId',
+        model: 'Customers',
+      })
+      .lean()
+      .exec();
+    return {
+      data: customerServices,
+      total,
+    };
   }
 }

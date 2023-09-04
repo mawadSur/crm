@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
-import { getConversationByCustomerId } from '../../libs/apis/index.js';
+import { getConversationByCustomerId, getCustomerServices } from '../../libs/apis/index.js';
 import { dateFormat, formatPhoneNumber } from '../../utils/index.js';
 import { Text, Title } from './style.js';
 
@@ -58,8 +58,9 @@ function TabPanel(props) {
 
 const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps) => {
   const [value, setValue] = React.useState(0);
-  const [loadingCustomer, setLoadingCustomer] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [customer, setCustomer] = React.useState({});
+  const [customerService, setCustomerService] = React.useState([]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -67,17 +68,29 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
   React.useEffect(() => {
     if (!opportunity?.customerId) return;
 
-    setLoadingCustomer(true);
+    setLoading(true);
 
     // Use an async function to fetch the conversation
-    const fetchCustomerConversation = async () => {
+    const fetching = async () => {
       const conversation = await getConversationByCustomerId(opportunity.customerId);
-      setCustomer(conversation);
-      //TODO use conversation data here
-      setLoadingCustomer(false);
+
+      const [responseConversation, responseCustomerService] = await Promise.all([
+        getConversationByCustomerId(opportunity.customerId),
+        getCustomerServices(opportunity.customerId),
+      ]);
+
+      if (responseConversation?.length > 0) {
+        setCustomer(conversation);
+      }
+
+      if (responseCustomerService?.data?.length > 0) {
+        setCustomerService(responseCustomerService.data);
+      }
+
+      setLoading(false);
     };
 
-    fetchCustomerConversation();
+    fetching();
   }, [opportunity?.customerId]);
 
   console.log('opportunity', opportunity);
@@ -224,18 +237,17 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
                   </TableHead>
                   <TableBody>
                     {/* Here you can map through your service requests and return a row for each one */}
-                    <TableRow>
-                      <TableCell>Oil Change</TableCell>
-                      <TableCell>Pending</TableCell>
-                      <TableCell>2023-07-31</TableCell>
-                      <TableCell>John Doe</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Tire Rotation</TableCell>
-                      <TableCell>Completed</TableCell>
-                      <TableCell>2023-07-30</TableCell>
-                      <TableCell>Jane Smith</TableCell>
-                    </TableRow>
+                    {customerService?.map((service) => {
+                      return (
+                        <TableRow id={service._id}>
+                          <TableCell>{service?.name ?? 'N/A'}</TableCell>
+                          <TableCell>{service.status ?? 'N/A'}</TableCell>
+                          <TableCell>{dateFormat(service.createdAt)}</TableCell>
+                          <TableCell>{service?.customer?.name ?? 'N/A'}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+
                     {/* Add more rows as needed */}
                   </TableBody>
                 </Table>

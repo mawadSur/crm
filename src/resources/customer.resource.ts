@@ -14,7 +14,18 @@ export const customerResource: ResourceWithOptions = {
       sortBy: 'updatedAt',
       direction: 'desc',
     },
-    properties: {},
+    properties: {
+      relationships: {
+        isVisible: { show: true, edit: false, list: false },
+        reference: 'customers',
+      },
+      createdAt: {
+        isVisible: { show: true, edit: false, list: true },
+      },
+      updatedAt: {
+        isVisible: { show: true, edit: false, list: true },
+      },
+    },
   },
   features: [importExportFeature({ componentLoader })],
 };

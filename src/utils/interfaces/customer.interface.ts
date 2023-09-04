@@ -1,6 +1,6 @@
 import { IQuery } from './common.interface.js';
 
-import { FormatString } from 'mongoose';
+import { FormatString, SchemaDefinitionProperty } from 'mongoose';
 
 export enum ECustomerGender {
   Male = 'Male',
@@ -32,8 +32,21 @@ export interface ICustomer {
   textPreferred: boolean;
   otherContacts: ICustomerOtherContact[];
   relationships: string[];
+  services: string[];
   updatedAt: Date;
   createdAt: Date;
+}
+
+export enum ECustomerServiceType {
+  Pending = 'Pending',
+  InProgress = 'InProgress',
+  Completed = 'Completed',
+}
+
+export interface ICustomerService extends Document {
+  name: string;
+  status: ECustomerServiceType;
+  customerId: SchemaDefinitionProperty<string>;
 }
 
 export interface IQueryCustomer extends IQuery {

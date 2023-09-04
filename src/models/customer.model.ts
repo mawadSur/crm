@@ -61,7 +61,7 @@ customerSchema.index({ homeNumber: 1 });
 customerSchema.index({ cellNumber: 1 });
 customerSchema.index({ workNumber: 1 });
 customerSchema.index({ email: 1 });
-
+customerSchema.index({ relationships: 1 });
 customerSchema.index({ 'otherContacts.name': 1 });
 customerSchema.index({ 'otherContacts.phone': 1 });
 customerSchema.index({ 'otherContacts.email': 1 });

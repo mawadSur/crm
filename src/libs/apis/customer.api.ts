@@ -9,3 +9,18 @@ export const getConversationByCustomerId = async (customerId: string) => {
     return [];
   }
 };
+
+export const getCustomerServices = async (customerId: string) => {
+  try {
+    const response = await fetch(
+      `${ENV_VARIABLES.API_URL}/customers/${customerId}/services?unlimited=true`,
+    );
+    return await response.json();
+  } catch (error) {
+    console.log('error', error);
+    return {
+      data: [],
+      total: 0,
+    };
+  }
+};

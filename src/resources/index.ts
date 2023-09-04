@@ -5,3 +5,4 @@ export * from './chatConversation.resource.js';
 export * from './customer.resource.js';
 export * from './desklog.resource.js';
 export * from './salesRep.resource.js';
+export * from './serviceType.resource.js';
