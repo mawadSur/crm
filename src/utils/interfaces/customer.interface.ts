@@ -45,8 +45,13 @@ export enum ECustomerServiceType {
 }
 
 export interface ICustomerService extends Document {
-  name: string;
+  serviceTypeId: SchemaDefinitionProperty<string>;
   status: ECustomerServiceType;
+  customerId: SchemaDefinitionProperty<string>;
+}
+
+export interface ICustomerActivity extends Document {
+  activityId: SchemaDefinitionProperty<string>;
   customerId: SchemaDefinitionProperty<string>;
 }
 
@@ -55,6 +60,13 @@ export interface ICustomerInsurance extends Document {
   policyNumber: string;
   expiryDate: Schema.Types.Date;
   customerId: SchemaDefinitionProperty<string>;
+}
+export interface ICustomerVehicle extends Document {
+  customerId: SchemaDefinitionProperty<string>;
+  make: string;
+  model: string;
+  year: string;
+  equity: string;
 }
 
 export interface IQueryCustomer extends IQuery {

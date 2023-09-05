@@ -3,7 +3,7 @@ import { ResourceWithOptions } from 'adminjs';
 import { componentLoader } from '../components/index.js';
 import { CustomerServiceModel } from '../models/index.js';
 
-export const customerService: ResourceWithOptions = {
+export const customerServiceResource: ResourceWithOptions = {
   resource: CustomerServiceModel,
   options: {
     id: 'customerServices',
@@ -16,8 +16,12 @@ export const customerService: ResourceWithOptions = {
     },
     properties: {
       customerId: {
-        isVisible: { show: true, edit: true, list: false },
+        isVisible: { show: true, edit: true, list: true },
         reference: 'customers',
+      },
+      serviceTypeId: {
+        isVisible: { show: true, edit: true, list: true },
+        reference: 'serviceTypes',
       },
       createdAt: {
         isVisible: { show: true, edit: false, list: true },

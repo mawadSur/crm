@@ -1,12 +1,12 @@
 import importExportFeature from '@adminjs/import-export';
 import { ResourceWithOptions } from 'adminjs';
 import { componentLoader } from '../components/index.js';
-import { CustomerInsuranceModel } from '../models/index.js';
+import { CustomerVehicleModel } from '../models/index.js';
 
-export const customerInsuranceResource: ResourceWithOptions = {
-  resource: CustomerInsuranceModel,
+export const customerVehicleResource: ResourceWithOptions = {
+  resource: CustomerVehicleModel,
   options: {
-    id: 'customerInsurances',
+    id: 'customerVehicles',
     navigation: {
       name: 'Customers',
     },

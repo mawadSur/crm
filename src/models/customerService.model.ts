@@ -3,18 +3,17 @@ import { ECustomerServiceType, ICustomerService } from '../utils/index.js';
 
 export interface ICustomerServiceMethods {}
 
-type CustomerServiceModel = Model<ICustomerService, {}, ICustomerServiceMethods>;
+type CustomerServiceTypeModel = Model<ICustomerService, {}, ICustomerServiceMethods>;
 
 const customerServiceSchema: Schema<ICustomerService, ICustomerServiceMethods> = new Schema<
   ICustomerService,
   ICustomerServiceMethods
 >(
   {
-    name: {
-      type: String,
-      required: true,
-      minlength: 1,
-      maxlength: 256,
+    serviceTypeId: {
+      ref: 'ServiceTypes',
+      type: Schema.Types.ObjectId,
+      require: true,
     },
     customerId: {
       ref: 'Customers',
@@ -46,7 +45,6 @@ customerServiceSchema.set('toJSON', {
 customerServiceSchema.set('toObject', { transform: true });
 
 //* Configure indexes
-customerServiceSchema.index({ name: 1 });
 customerServiceSchema.index({ status: 1 });
 customerServiceSchema.index({ customerId: 1 });
 
@@ -54,7 +52,7 @@ customerServiceSchema.index({ customerId: 1 });
 
 //* Methods
 
-export const CustomerServiceModel = mongoose.model<ICustomerService, CustomerServiceModel>(
+export const CustomerServiceModel = mongoose.model<ICustomerService, CustomerServiceTypeModel>(
   'CustomerServices',
   customerServiceSchema,
 );

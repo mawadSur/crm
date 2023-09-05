@@ -8,12 +8,15 @@ import { Components, componentLoader } from './components/index.js';
 import { Database as CoreDB } from './core/database/index.js';
 import { CustomerModel } from './models/customer.model.js';
 import {
+  activityResource,
   appointmentResource,
   blastResource,
   carResource,
-  customerInsurance,
+  customerActivityResource,
+  customerInsuranceResource,
   customerResource,
-  customerService,
+  customerServiceResource,
+  customerVehicleResource,
   desklogResource,
   salesRepResource,
   serviceTypeResource,
@@ -44,15 +47,19 @@ const start = async () => {
       salesRepResource,
 
       customerResource,
-      customerService,
-      customerInsurance,
+      customerServiceResource,
+      customerInsuranceResource,
+      customerVehicleResource,
+      customerActivityResource,
 
       carResource,
       appointmentResource,
       desklogResource,
       blastResource,
       serviceTypeResource,
+      activityResource,
     ],
+
     dashboard: {
       component: Components.Dashboard,
     },

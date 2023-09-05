@@ -46,3 +46,12 @@ export const formatPhoneNumber = (phoneNumber) => {
 
   return phoneNumber;
 };
+
+export const formatPrice = (price: string) => {
+  if (!price) return 'N/A';
+
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(Number(price));
+};

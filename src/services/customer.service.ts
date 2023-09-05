@@ -1,9 +1,11 @@
 import httpRequest from '../libs/httpsRequest.js';
 import {
   BlastModel,
+  CustomerActivityModel,
   CustomerInsuranceModel,
   CustomerModel,
   CustomerServiceModel,
+  CustomerVehicleModel,
 } from '../models/index.js';
 import { IQuery, IQueryCustomer } from '../utils/index.js';
 
@@ -167,6 +169,10 @@ export class CustomerService {
         path: 'customerId',
         model: 'Customers',
       })
+      .populate({
+        path: 'serviceTypeId',
+        model: 'ServiceTypes',
+      })
       .lean()
       .exec();
     return {
@@ -185,7 +191,7 @@ export class CustomerService {
       queryOptions.limit(query?.limit ?? 10);
       queryOptions.offset(query?.offset ?? 0);
     }
-    const customerServices = await queryOptions
+    const customerInsurances = await queryOptions
       .sort({ createdAt: -1 })
       .populate({
         path: 'customerId',
@@ -194,7 +200,59 @@ export class CustomerService {
       .lean()
       .exec();
     return {
-      data: customerServices,
+      data: customerInsurances,
+      total,
+    };
+  }
+
+  async getCustomerVehicles(customerId: string, query: IQuery) {
+    const total = await CustomerVehicleModel.countDocuments();
+    const queryOptions: any = CustomerVehicleModel.find({
+      customerId,
+    });
+
+    if (!query?.unlimited) {
+      queryOptions.limit(query?.limit ?? 10);
+      queryOptions.offset(query?.offset ?? 0);
+    }
+    const customerVehicles = await queryOptions
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'customerId',
+        model: 'Customers',
+      })
+      .lean()
+      .exec();
+    return {
+      data: customerVehicles,
+      total,
+    };
+  }
+
+  async getCustomerActivities(customerId: string, query: IQuery) {
+    const total = await CustomerActivityModel.countDocuments();
+    const queryOptions: any = CustomerActivityModel.find({
+      customerId,
+    });
+
+    if (!query?.unlimited) {
+      queryOptions.limit(query?.limit ?? 10);
+      queryOptions.offset(query?.offset ?? 0);
+    }
+    const customerActivities = await queryOptions
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'customerId',
+        model: 'Customers',
+      })
+      .populate({
+        path: 'activityId',
+        model: 'Activities',
+      })
+      .lean()
+      .exec();
+    return {
+      data: customerActivities,
       total,
     };
   }

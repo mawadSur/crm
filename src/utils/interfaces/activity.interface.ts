@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
 
-export interface IServiceType extends Document {
+export interface IActivity extends Document {
   name: string;
 }

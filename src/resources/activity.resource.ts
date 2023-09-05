@@ -1,12 +1,12 @@
 import { ResourceWithOptions } from 'adminjs';
-import { ServiceType } from '../models/index.js';
+import { ActivityModel } from '../models/index.js';
 
-export const serviceTypeResource: ResourceWithOptions = {
-  resource: ServiceType,
+export const activityResource: ResourceWithOptions = {
+  resource: ActivityModel,
   options: {
-    id: 'serviceTypes',
+    id: 'activities',
     navigation: {
-      icon: 'Menu',
+      icon: 'Activity',
     },
     sort: {
       sortBy: 'updatedAt',
