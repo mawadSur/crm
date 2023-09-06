@@ -18,7 +18,7 @@ import { ESaleStatus, Order, dateFormat } from '../../../utils/index.js';
 import { Title } from '../../common/index.js';
 import styles from './styles.js';
 
-const DeskLog = () => {
+const DeskLog = React.memo(({ apiURI }: { apiURI: string }) => {
   const [openTransactionModal, setOpenTransactionModal] = React.useState(false);
   const [currentLog, setCurrentLog] = React.useState();
   const [deskLogData, setDeskLogData] = React.useState([]);
@@ -49,7 +49,7 @@ const DeskLog = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `${ENV_VARIABLES.API_URL}/desklogs` + '?offset=' + offset + '&limit=' + limit,
+          `${apiURI}/desklogs` + '?offset=' + offset + '&limit=' + limit,
         );
         const data = await response.json();
         if (data?.items?.length) {
@@ -66,13 +66,13 @@ const DeskLog = () => {
     };
 
     fetchData();
-  }, [offset, limit]);
+  }, [offset, limit, apiURI]);
 
   const handleSetPagination = React.useCallback(
     (_, value) => {
       setOffset((value - 1) * limit);
     },
-    [offset, limit],
+    [offset, limit, apiURI],
   );
 
   const sortTimeInTable = (property: string) => (event: React.MouseEvent<unknown>) => {
@@ -219,6 +219,6 @@ const DeskLog = () => {
       </Card>
     </React.Fragment>
   );
-};
+});
 
 export default DeskLog;

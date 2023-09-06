@@ -5,6 +5,7 @@ import mongoStore from 'connect-mongo';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import { Components, componentLoader } from './components/index.js';
+import { ENV_VARIABLES } from './config/environment.js';
 import { Database as CoreDB } from './core/database/index.js';
 import { CustomerModel } from './models/customer.model.js';
 import {
@@ -62,14 +63,19 @@ const start = async () => {
 
     dashboard: {
       component: Components.Dashboard,
+      handler: async () => {
+        return {
+          apiURI: ENV_VARIABLES.API_URL,
+        };
+      },
     },
     pages: {
       calculator: {
         // name, will be used to build an URL
         handler: async (request, response, context) => {
-          // fetch values from your database
-          // const value = await Car.find({});
-          // return { data: { inventory: car.value } };
+          return {
+            apiURI: ENV_VARIABLES.API_URL,
+          };
         },
         component: Components.Calculator,
         icon: 'Plus',
@@ -79,7 +85,7 @@ const start = async () => {
         handler: async (request, response, context) => {
           // fetch values from your database
           const customerCount = await CustomerModel.countDocuments();
-          return { data: { customerCount } };
+          return { data: { customerCount }, apiURI: ENV_VARIABLES.API_URL };
         },
         component: Components.Campaign,
         icon: 'Zap',
@@ -87,9 +93,9 @@ const start = async () => {
       followUp: {
         // name, will be used to build an URL
         handler: async (request, response, context) => {
-          // fetch values from your database
-          // const value = await Car.find({});
-          // return { data: { inventory: car.value } };
+          return {
+            apiURI: ENV_VARIABLES.API_URL,
+          };
         },
         component: Components.FollowUp,
         icon: 'Campaign',
