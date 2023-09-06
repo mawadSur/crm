@@ -49,7 +49,7 @@ const DeskLog = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `${ENV_VARIABLES.APP_URL}/api/desklogs` + '?offset=' + offset + '&limit=' + limit,
+          `${ENV_VARIABLES.API_URL}/desklogs` + '?offset=' + offset + '&limit=' + limit,
         );
         const data = await response.json();
         if (data?.items?.length) {
