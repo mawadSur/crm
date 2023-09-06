@@ -81,8 +81,6 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
 
     // Use an async function to fetch the conversation
     const fetching = async () => {
-      const conversation = await getConversationByCustomerId(opportunity.customerId);
-
       const [
         responseConversation,
         responseCustomerService,
@@ -98,7 +96,7 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
       ]);
 
       if (responseConversation.status === 'fulfilled' && responseConversation.value?.length > 0) {
-        setCustomer(conversation);
+        setCustomer(responseConversation.value);
       }
 
       if (
