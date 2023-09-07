@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import React from 'react';
 import { Card, Title } from '../../common/index.js';
 import { ENV_VARIABLES } from '../../../config/environment.js';
+import axios from 'axios';
 
 const AppointmentsToday = React.memo(() => {
   const [appointments, setAppointments] = React.useState([]);
@@ -19,6 +20,29 @@ const AppointmentsToday = React.memo(() => {
   const [offset, setOffset] = React.useState(0);
   const [limit, _] = React.useState(10);
   const [loading, setLoading] = React.useState(false);
+  const [file, setFile] = React.useState();
+  const [vin, setVin] = React.useState('');
+  const [images, setImages] = React.useState([]);
+
+  async function postImage({ image, vin }) {
+    const formData = new FormData();
+    formData.append('image', image);
+    formData.append('VIN', vin);
+    const result = await axios.post(
+      `${ENV_VARIABLES.APP_URL}/api/cars/images?VIN=${vin}`,
+      formData,
+      { headers: { 'Content-Type': 'multipart/form-data' } },
+    );
+    console.log('car data aa aa aljb ljkbg kj');
+    console.log(result.data);
+    return result.data;
+  }
+
+  const submit = async (event) => {
+    event.preventDefault();
+    const result = await postImage({ image: file, vin });
+    setImages([result.image, ...images]);
+  };
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -52,9 +76,19 @@ const AppointmentsToday = React.memo(() => {
     [offset, limit],
   );
 
+  const fileSelected = (event) => {
+    const file = event.target.files[0];
+    setFile(file);
+  };
+
   return (
     <Card>
-      <Title>Today's Appointments</Title>
+      <form onSubmit={submit}>
+        <input onChange={fileSelected} type="file" accept="image/*"></input>
+        <input value={vin} onChange={(e) => setVin(e.target.value)} type="text"></input>
+        <button type="submit">Submit</button>
+      </form>
+      <Title>Today's Appointments archit</Title>
       <TableContainer component={Paper} style={{ maxHeight: 400, overflow: 'auto' }}>
         <Table stickyHeader>
           <TableHead>
