@@ -1,6 +1,11 @@
 import React from 'react';
 
 import { ApiClient } from 'adminjs';
+import dayjs from 'dayjs';
+import {
+  lunchCampaignToAllCustomers,
+  lunchCampaignToCustomers,
+} from '../../libs/apis/customer.api.js';
 import {
   convertPropertyNameToDisplayName,
   isDateFormat,
@@ -8,8 +13,6 @@ import {
 } from '../../utils/functions.js';
 import { Input } from '../common/index.js';
 import CampaignStyle from './style.js';
-import dayjs from 'dayjs';
-import { ENV_VARIABLES } from '../../config/environment.js';
 
 const BlastCampaignCard = React.memo(() => {
   const [apiURI, setApiURI] = React.useState('');
@@ -119,17 +122,11 @@ const BlastCampaignCard = React.memo(() => {
       resetData();
       try {
         setLaunchLoading(true);
-        const response = await fetch(`${apiURI}/customers/launch`, {
-          method: 'POST',
-          body: JSON.stringify({
-            customerIds: customers.map((customer) => customer._id),
-            context: prompt,
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        const data = await response.json();
+        const data = await lunchCampaignToCustomers(
+          customers.map((customer) => customer._id),
+          prompt,
+          apiURI,
+        );
         console.log(data);
         if (data) {
           setTotalLaunchFailed(data?.totalFailed);
@@ -150,17 +147,7 @@ const BlastCampaignCard = React.memo(() => {
       resetData();
       try {
         setLaunchLoading(true);
-        const response = await fetch(`${apiURI}/customers/launch-all`, {
-          method: 'POST',
-          body: JSON.stringify({
-            context: prompt,
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        const data = await response.json();
-        console.log(data);
+        const data = await lunchCampaignToAllCustomers(prompt, apiURI);
         if (data) {
           setTotalLaunchFailed(data?.totalFailed);
           setTotalLaunchSuccess(data?.totalSuccess);

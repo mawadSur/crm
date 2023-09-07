@@ -31,6 +31,7 @@ export interface ITransactionModalProps {
   open: boolean;
   onClose: () => void;
   opportunity: any;
+  apiURI: string;
 }
 
 const style = {
@@ -62,7 +63,7 @@ function TabPanel(props) {
   );
 }
 
-const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps) => {
+const TransactionModal = ({ open, onClose, opportunity, apiURI }: ITransactionModalProps) => {
   const [value, setValue] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
   const [customer, setCustomer] = React.useState({});
@@ -88,11 +89,11 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
         responseVehicle,
         responseActivity,
       ] = await Promise.allSettled([
-        getConversationByCustomerId(opportunity.customerId),
-        getCustomerServices(opportunity.customerId),
-        getCustomerInsurances(opportunity.customerId),
-        getCustomerVehicles(opportunity.customerId),
-        getCustomerActivities(opportunity.customerId),
+        getConversationByCustomerId(opportunity.customerId, apiURI),
+        getCustomerServices(opportunity.customerId, apiURI),
+        getCustomerInsurances(opportunity.customerId, apiURI),
+        getCustomerVehicles(opportunity.customerId, apiURI),
+        getCustomerActivities(opportunity.customerId, apiURI),
       ]);
 
       if (responseConversation.status === 'fulfilled' && responseConversation.value?.length > 0) {
