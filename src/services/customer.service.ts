@@ -128,6 +128,36 @@ export class CustomerService {
     };
   }
 
+  async launchAllCampaign(payload: { context: string }) {
+    const limit = 10;
+    let offset = 0;
+    const totalCustomers = await CustomerModel.countDocuments();
+
+    let _totalSuccess = 0;
+    let _totalFailed = 0;
+
+    while (offset < totalCustomers) {
+      try {
+        const customers = await CustomerModel.find().skip(offset).limit(limit).lean().exec();
+        const { totalSuccess, totalFailed } = await this.launchCampaign({
+          customerIds: customers.map((customer) => String(customer._id)),
+          context: payload.context,
+        });
+        offset += limit;
+        _totalSuccess += totalSuccess;
+        _totalFailed += totalFailed;
+      } catch (error) {
+        console.log('error', error?.message ?? error);
+        offset += limit;
+      }
+    }
+
+    return {
+      totalFailed: _totalFailed,
+      totalSuccess: _totalSuccess,
+    };
+  }
+
   private async requestLaunch(payload: { phone: string; context: string }) {
     try {
       const url = process.env.AWS_SEND_MESSAGE_URI;
@@ -145,7 +175,6 @@ export class CustomerService {
           maxBodyLength: Infinity,
         },
       );
-      console.log(response);
       return response.data;
     } catch (error) {
       console.log('error', error?.message);

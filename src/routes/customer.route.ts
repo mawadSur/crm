@@ -16,6 +16,7 @@ export class CustomerRoute {
     this.router.get('/:customerId/vehicles', this.getCustomerVehicles.bind(this));
     this.router.get('/:customerId/activities', this.getCustomerActivities.bind(this));
     this.router.post('/launch', this.launchCampaign.bind(this));
+    this.router.post('/launch-all', this.launchAllCampaign.bind(this));
     this.customerService = new CustomerService();
     this.conversationService = new ConversationService();
   }
@@ -53,6 +54,23 @@ export class CustomerRoute {
     } catch (error) {
       console.log('error', error);
       res.status(500).json({ message: 'Error while launching campaign' });
+    }
+  }
+
+  async launchAllCampaign(req: express.Request, res: express.Response) {
+    const schema = Joi.object({
+      context: Joi.string().required(),
+    });
+    const { error, value } = schema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.message });
+    }
+    try {
+      const result = await this.customerService.launchAllCampaign(value);
+      res.status(200).json(result);
+    } catch (error) {
+      console.log('error', error);
+      res.status(500).json({ message: 'Error while launching all campaign' });
     }
   }
 
