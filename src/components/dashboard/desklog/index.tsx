@@ -95,6 +95,7 @@ const DeskLog = React.memo(({ apiURI }: { apiURI: string }) => {
   return (
     <React.Fragment>
       <TransactionModal
+        apiURI={apiURI}
         open={openTransactionModal}
         onClose={closeTransactionModal}
         opportunity={currentLog}
