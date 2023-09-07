@@ -25,7 +25,7 @@ import {
   getCustomerVehicles,
 } from '../../libs/apis/index.js';
 import { dateFormat, formatPhoneNumber, formatPrice } from '../../utils/index.js';
-import { Text, Title } from './style.js';
+import { Text, TextAlert, Title } from './style.js';
 
 export interface ITransactionModalProps {
   open: boolean;
@@ -125,6 +125,8 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
   }, [opportunity?.customerId]);
 
   console.log('opportunity', opportunity);
+  const otherContracts = opportunity?.customer?.otherContacts ?? [];
+  const relationships = opportunity?.customer?.relationships ?? [];
   return (
     <Modal
       open={open}
@@ -240,8 +242,9 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
                       <TableCell>Phone</TableCell>
                     </TableRow>
                   </TableHead>
+
                   <TableBody>
-                    {opportunity?.customer?.otherContacts?.map((contact) => {
+                    {otherContracts.map((contact) => {
                       return (
                         <TableRow key={contact._id}>
                           <TableCell>{contact.name}</TableCell>
@@ -252,6 +255,7 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
                     })}
                   </TableBody>
                 </Table>
+                {otherContracts?.length === 0 && <TextAlert>There are no contacts added</TextAlert>}
               </TableContainer>
             </TabPanel>
             <TabPanel value={value} index={1}>
@@ -280,12 +284,15 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
 
                     {/* Add more rows as needed */}
                   </TableBody>
+                  {customerServices?.length === 0 && (
+                    <TextAlert>There is no Service History</TextAlert>
+                  )}
                 </Table>
               </TableContainer>
             </TabPanel>
             <TabPanel value={value} index={2}>
               <List>
-                {opportunity?.customer?.relationships?.map((rel) => {
+                {relationships?.map((rel) => {
                   return (
                     <ListItem>
                       <ListItemText
@@ -295,6 +302,8 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
                     </ListItem>
                   );
                 })}
+
+                {relationships?.length === 0 && <TextAlert>There are no Relationships</TextAlert>}
               </List>
             </TabPanel>
             <TabPanel value={value} index={3}>
@@ -318,6 +327,7 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
                       );
                     })}
                   </TableBody>
+                  {customerInsurances?.length === 0 && <TextAlert>No insurance uploaded</TextAlert>}
                 </Table>
               </TableContainer>
             </TabPanel>
@@ -358,13 +368,15 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
                       );
                     })}
                   </TableBody>
+                  {customerVehicles?.length === 0 && (
+                    <TextAlert>There are no records of Vehicles</TextAlert>
+                  )}
                 </Table>
               </TableContainer>
             </TabPanel>
             <TabPanel value={value} index={6}>
               <List>
                 {customerActivities?.map((activity) => {
-                  console.log('activity', activity);
                   return (
                     <ListItem key={activity._id}>
                       <ListItemText
@@ -375,6 +387,9 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
                   );
                 })}
               </List>
+              {customerActivities?.length === 0 && (
+                <TextAlert>There are no logs recorded</TextAlert>
+              )}
             </TabPanel>
           </Box>
         </>
