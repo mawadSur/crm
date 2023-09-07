@@ -144,6 +144,36 @@ const BlastCampaignCard = React.memo(() => {
     [apiURI],
   );
 
+  const handleLaunchAll = React.useCallback(
+    async (prompt) => {
+      if (!prompt) return;
+      resetData();
+      try {
+        setLaunchLoading(true);
+        const response = await fetch(`${apiURI}/customers/launch-all`, {
+          method: 'POST',
+          body: JSON.stringify({
+            context: prompt,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
+        console.log(data);
+        if (data) {
+          setTotalLaunchFailed(data?.totalFailed);
+          setTotalLaunchSuccess(data?.totalSuccess);
+        }
+        setLaunchLoading(false);
+      } catch (error) {
+        setLaunchLoading(false);
+        console.log('error', error);
+      }
+    },
+    [apiURI],
+  );
+
   const resetData = React.useCallback(() => {
     setCustomers([]);
     setTotalLaunchSuccess(null);
@@ -332,12 +362,25 @@ const BlastCampaignCard = React.memo(() => {
 
         <CampaignStyle.LaunchFormWrapper>
           <CampaignStyle.Textarea defaultValue={prompt} onChange={handleChangePrompt} />
-          <CampaignStyle.LaunchButton
-            disabled={customers?.length === 0 || !prompt}
-            onClick={() => handleLaunch(customers, prompt)}
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+            }}
           >
-            Launch
-          </CampaignStyle.LaunchButton>
+            <CampaignStyle.LaunchButton
+              disabled={customers?.length === 0 || !prompt || loading || launchLoading}
+              onClick={() => handleLaunch(customers, prompt)}
+            >
+              Launch
+            </CampaignStyle.LaunchButton>
+            <CampaignStyle.LaunchButton
+              disabled={!prompt || loading || launchLoading}
+              onClick={() => handleLaunchAll(prompt)}
+            >
+              Launch All
+            </CampaignStyle.LaunchButton>
+          </div>
         </CampaignStyle.LaunchFormWrapper>
 
         <div style={{ marginTop: '10px' }}>
