@@ -51,3 +51,12 @@ export const Text = styled.div`
   line-height: 1.43;
   letter-spacing: 0.01071em;
 `;
+
+export const TextAlert = styled.div`
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 4rem;
+  letter-spacing: 0.01071em;
+  text-align: center;
+`;
