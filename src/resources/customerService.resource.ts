@@ -1,12 +1,12 @@
-import { ResourceWithOptions } from 'adminjs';
 import importExportFeature from '@adminjs/import-export';
-import { CustomerModel } from '../models/index.js';
+import { ResourceWithOptions } from 'adminjs';
 import { componentLoader } from '../components/index.js';
+import { CustomerServiceModel } from '../models/index.js';
 
-export const customerResource: ResourceWithOptions = {
-  resource: CustomerModel,
+export const customerServiceResource: ResourceWithOptions = {
+  resource: CustomerServiceModel,
   options: {
-    id: 'customers',
+    id: 'customerServices',
     navigation: {
       name: 'Customers',
     },
@@ -15,9 +15,13 @@ export const customerResource: ResourceWithOptions = {
       direction: 'desc',
     },
     properties: {
-      relationships: {
-        isVisible: { show: true, edit: false, list: false },
+      customerId: {
+        isVisible: { show: true, edit: true, list: true },
         reference: 'customers',
+      },
+      serviceTypeId: {
+        isVisible: { show: true, edit: true, list: true },
+        reference: 'serviceTypes',
       },
       createdAt: {
         isVisible: { show: true, edit: false, list: true },

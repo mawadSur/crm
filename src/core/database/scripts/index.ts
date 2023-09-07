@@ -1,12 +1,20 @@
 import dotenv from 'dotenv';
-import { Database } from '../index.js';
+import mongoose from 'mongoose';
+import { CustomerModel } from '../../../models/customer.model.js';
+import { CustomerInsuranceModel } from '../../../models/customerInsurance.model.js';
 dotenv.config();
 
-const db = new Database(process.env.DATABASE_URL as string);
-db.connect();
+mongoose
+  .connect(process.env.MONGO_URL as string)
+  .then(() => {
+    const script = async () => {
+      //TODO add script logic to modify database
+    };
 
-const script = async () => {};
-
-script().then(() => {
-  db.close();
-});
+    script().then(() => {
+      mongoose.connection.close();
+    });
+  })
+  .catch((error) => {
+    console.log('🧨 Connection database error', error);
+  });

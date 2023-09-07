@@ -1,17 +1,16 @@
 import React from 'react';
 import { BotMessage, CustomerMessage, MessageContainer, MessageDetails } from './style.js';
-import { ENV_VARIABLES } from '../../config/environment.js';
 
-const ChatConversations = () => {
+const ChatConversations = React.memo(({ apiURI }: { apiURI: string }) => {
   const [messages, setMessages] = React.useState([]);
 
   React.useEffect(() => {
+    if (!apiURI) return;
     const fetchData = async () => {
       try {
-        const response = await fetch(`${ENV_VARIABLES.APP_URL}/api/chats`);
+        const response = await fetch(`${apiURI}/chats`);
         const data = await response.json();
         if (data?.length && data[0].messages) {
-          console.log('data', data);
           setMessages(data[0].messages);
         }
       } catch (error) {
@@ -20,7 +19,7 @@ const ChatConversations = () => {
     };
 
     fetchData();
-  }, []);
+  }, [apiURI]);
 
   // Sample data
   // const conversationData = {
@@ -110,6 +109,6 @@ const ChatConversations = () => {
         ))}
     </MessageContainer>
   );
-};
+});
 
 export default ChatConversations;

@@ -7,7 +7,7 @@
 ```bash
 NODE_ENV=development
 PORT=3434
-APP_URL=http://54.242.249.213
+API_URI=http://localhost:3434/api
 
 # Staging DB
 # MONGO_URL=mongodb+srv://mawad:1DmY1ROUtJNfHYj3@cluster0.pd1pdsf.mongodb.net/

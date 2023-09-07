@@ -17,6 +17,10 @@ export class DesklogService {
         {
           path: 'customerId',
           model: 'Customers',
+          populate: {
+            path: 'relationships',
+            model: 'Customers',
+          },
         },
         {
           path: 'salesRepId',
@@ -29,6 +33,7 @@ export class DesklogService {
       .skip(query.offset)
       .limit(query.limit)
       .exec();
+
     const total = await DeskLogModel.countDocuments();
     return {
       data,
