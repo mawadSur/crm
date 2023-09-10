@@ -9,6 +9,10 @@ import Followup from '../dist/components/followUp/index'
 AdminJS.UserComponents.Followup = Followup
 import Chat from '../dist/components/conversation/index'
 AdminJS.UserComponents.Chat = Chat
+import UploadCarImage from '../dist/components/uploadCarImage/index'
+AdminJS.UserComponents.UploadCarImage = UploadCarImage
+import CarImages from '../dist/components/carImages/index'
+AdminJS.UserComponents.CarImages = CarImages
 import ImportComponent from '../node_modules/@adminjs/import-export/lib/components/ImportComponent'
 AdminJS.UserComponents.ImportComponent = ImportComponent
 import ExportComponent from '../node_modules/@adminjs/import-export/lib/components/ExportComponent'

@@ -1,7 +1,8 @@
-import { ResourceWithOptions } from 'adminjs';
 import importExportFeature from '@adminjs/import-export';
+import { ResourceWithOptions } from 'adminjs';
+import { Components, componentLoader } from '../components/index.js';
+import { ENV_VARIABLES } from '../config/environment.js';
 import { CarModel } from '../models/index.js';
-import { componentLoader } from '../components/index.js';
 
 export const carResource: ResourceWithOptions = {
   resource: CarModel,
@@ -14,7 +15,26 @@ export const carResource: ResourceWithOptions = {
       sortBy: 'updatedAt',
       direction: 'desc',
     },
-    properties: {},
+    properties: {
+      pictures: {
+        isVisible: { show: true, edit: false, list: false },
+        components: {
+          show: Components.CarImages,
+        },
+      },
+    },
+    actions: {
+      uploadImage: {
+        actionType: 'record',
+        component: Components.UploadCarImage,
+        handler: async (req, res, context) => {
+          const { record, currentAdmin } = context;
+          return {
+            record: { apiURI: ENV_VARIABLES.API_URI, ...record.toJSON(currentAdmin) },
+          };
+        },
+      },
+    },
   },
   features: [importExportFeature({ componentLoader })],
 };

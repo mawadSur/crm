@@ -1,9 +1,7 @@
-import { Car, CarModel } from '../models/index.js';
-import { IQuery } from 'src/utils/interfaces/index.js';
-import mongoose, { Document, Schema } from 'mongoose';
-import fs from 'fs';
 import AWS from 'aws-sdk';
+import fs from 'fs';
 import util from 'util';
+import { CarModel } from '../models/index.js';
 
 const unlinkFile = util.promisify(fs.unlink);
 const bucketName = process.env.AWS_BUCKET_NAME;
@@ -42,13 +40,13 @@ export class CarsService {
 
   async upload(
     file: any,
-    vin: string,
+    id: string,
   ): Promise<{
     message: string;
     imageUrl: string;
   }> {
     const s3Data = await this.uploadFileToS3(file);
-    await CarModel.updateOne({ VIN: vin }, { $push: { pictures: s3Data.Key || '' } });
+    await CarModel.updateOne({ id }, { $push: { pictures: s3Data.Key || '' } });
     await unlinkFile(file.path);
     return {
       message: 'Image uploaded successfully',
