@@ -58,3 +58,13 @@ export const Input = styled.input`
     flex: 0 0 100%;
   }
 `;
+
+export const Label = styled.p`
+  display: block;
+  font-family: Roboto, sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  color: rgb(137, 138, 154);
+  margin-bottom: 4px;
+  font-weight: 300;
+`;
