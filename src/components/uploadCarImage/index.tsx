@@ -1,12 +1,15 @@
 import React from 'react';
 import UploadStyle from './style.js';
 import { uploadCarImage } from '../../libs/apis/car.api.js';
+import { useNavigate } from 'react-router-dom';
 
 const UploadCarImage = (props: any) => {
+  const navigate = useNavigate();
   const inputRef = React.useRef();
   const [selectedImage, setSelectedImage] = React.useState(null);
   const [file, setFile] = React.useState(null);
   const [error, setError] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
 
   const handleDrop = React.useCallback((event) => {
     event.preventDefault();
@@ -41,10 +44,14 @@ const UploadCarImage = (props: any) => {
   }, [inputRef]);
 
   const submit = React.useCallback(async () => {
+    setLoading(true);
     try {
       await uploadCarImage(props.record.params.id, file, props.record.apiURI);
+      navigate(-1);
+      setLoading(false);
     } catch (error) {
       console.log('---', error);
+      setLoading(false);
       setError('Upload failed, please try again later');
     }
   }, [selectedImage]);
@@ -71,7 +78,7 @@ const UploadCarImage = (props: any) => {
               Remove Image
             </UploadStyle.RemoveButton>
 
-            <UploadStyle.UploadButton disabled={!selectedImage} onClick={submit}>
+            <UploadStyle.UploadButton disabled={!selectedImage || loading} onClick={submit}>
               Upload
             </UploadStyle.UploadButton>
           </UploadStyle.ImageViewer>

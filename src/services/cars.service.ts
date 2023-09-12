@@ -1,13 +1,14 @@
 import AWS from 'aws-sdk';
 import fs from 'fs';
 import util from 'util';
+import { ENV_VARIABLES } from '../config/environment.js';
 import { CarModel } from '../models/index.js';
 
 const unlinkFile = util.promisify(fs.unlink);
-const bucketName = process.env.AWS_BUCKET_NAME;
-const region = process.env.AWS_BUCKET_REGION;
-const accessKeyId = process.env.AWS_ACCESS_KEY;
-const secretAccessKey = process.env.AWS_SECRET_KEY;
+const bucketName = ENV_VARIABLES.AWS_BUCKET_NAME;
+const region = ENV_VARIABLES.AWS_BUCKET_REGION;
+const accessKeyId = ENV_VARIABLES.AWS_ACCESS_KEY;
+const secretAccessKey = ENV_VARIABLES.AWS_SECRET_KEY;
 
 AWS.config.update({
   accessKeyId,
@@ -46,11 +47,12 @@ export class CarsService {
     imageUrl: string;
   }> {
     const s3Data = await this.uploadFileToS3(file);
-    await CarModel.updateOne({ id }, { $push: { pictures: s3Data.Key || '' } });
+    const url = `https://${bucketName}.s3.amazonaws.com/${s3Data.Key}`;
+    await CarModel.updateOne({ _id: id }, { $push: { pictures: url || '' } });
     await unlinkFile(file.path);
     return {
       message: 'Image uploaded successfully',
-      imageUrl: s3Data.Key,
+      imageUrl: url,
     };
   }
 
@@ -59,9 +61,8 @@ export class CarsService {
     const uploadParams = {
       Bucket: bucketName,
       Body: fileStream,
-      Key: file.filename,
+      Key: 'car-images/' + file.filename,
     };
-    console.log(uploadParams);
     return s3.upload(uploadParams).promise();
   }
 }
