@@ -75,6 +75,8 @@ const TransactionModal = ({ open, onClose, opportunity, apiURI }: ITransactionMo
     setValue(newValue);
   };
 
+  console.log(opportunity, 'a[iUri');
+
   React.useEffect(() => {
     if (!opportunity?.customerId) return;
 
@@ -125,9 +127,15 @@ const TransactionModal = ({ open, onClose, opportunity, apiURI }: ITransactionMo
     fetching();
   }, [opportunity?.customerId]);
 
-  console.log('opportunity', opportunity);
   const otherContracts = opportunity?.customer?.otherContacts ?? [];
   const relationships = opportunity?.customer?.relationships ?? [];
+
+  const handleButtonClick = () => {
+    const { _id } = opportunity;
+    const urlWithQuery = `./admin/pages/calculator?id=${_id}`;
+    window.location.href = urlWithQuery;
+  };
+
   return (
     <Modal
       open={open}
@@ -218,6 +226,19 @@ const TransactionModal = ({ open, onClose, opportunity, apiURI }: ITransactionMo
             <Text>
               <b>Manager Phone Call:</b> {opportunity?.managerPhoneCall ? 'Yes' : 'No'}
             </Text>
+          </Box>
+          <Box>
+            <button
+              onClick={handleButtonClick}
+              style={{
+                backgroundColor: 'black',
+                color: 'white',
+                marginTop: '20px',
+                marginLeft: '10px',
+              }}
+            >
+              Go to Calculator
+            </button>
           </Box>
         </Text>
         <>

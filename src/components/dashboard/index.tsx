@@ -21,6 +21,7 @@ const Dashboard: React.FC = (props) => {
     api
       .getDashboard()
       .then((response: any) => {
+        console.log('response >>>', response);
         if (response?.data?.apiURI) {
           setApiURI(response.data.apiURI);
         }
