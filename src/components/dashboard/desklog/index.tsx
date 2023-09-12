@@ -17,6 +17,7 @@ import { ENV_VARIABLES } from '../../../config/environment.js';
 import { ESaleStatus, Order, dateFormat } from '../../../utils/index.js';
 import { Title } from '../../common/index.js';
 import styles from './styles.js';
+import { error } from 'console';
 
 const DeskLog = React.memo(({ apiURI }: { apiURI: string }) => {
   const [openTransactionModal, setOpenTransactionModal] = React.useState(false);
@@ -33,10 +34,35 @@ const DeskLog = React.memo(({ apiURI }: { apiURI: string }) => {
   }, []);
 
   // Function to handle status change
-  const handleStatusChange = (event, logId) => {
-    // Implement your logic to update the sale status for the corresponding logId
-    // For example, you can update the status in the deskLogData array
-    console.log(`New status for logId ${logId}:`, event.target.value);
+  const handleStatusChange = async (event, logId) => {
+    try {
+      const newStatus = event.target.value;
+      // Send an API request to update the sale status
+      const response = await fetch(`http://localhost:3434/api/desklogs/updateSaleStatus/${logId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ saleStatus: newStatus }),
+      });
+
+      if (response.ok) {
+        const updatedDeskLogData = deskLogData.map((log) => {
+          if (log.id === logId) {
+            return { ...log, saleStatus: newStatus };
+          }
+          return log;
+        });
+
+        setDeskLogData(updatedDeskLogData);
+
+        console.log(`New status for logId ${logId}:`, newStatus);
+      } else {
+        console.error('Failed to update sale status');
+      }
+    } catch (error) {
+      console.error('Error updating sale status:', error);
+    }
   };
 
   const handleRowClick = (log) => {
@@ -176,10 +202,11 @@ const DeskLog = React.memo(({ apiURI }: { apiURI: string }) => {
                   <TableRow
                     key={log.id}
                     className={`saleStatus-${log.saleStatus.replace(/\s+/g, '-')}`}
-                    onClick={() => handleRowClick(log)}
                   >
-                    <TableCell>{log?.customer?.name ?? ''}</TableCell>
-                    <TableCell>{log?.vehicle?.model}</TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>
+                      {log?.customer?.name ?? ''}
+                    </TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>{log?.vehicle?.model}</TableCell>
                     <TableCell>
                       {/* Dropdown to change sale status */}
                       <Select
@@ -191,19 +218,29 @@ const DeskLog = React.memo(({ apiURI }: { apiURI: string }) => {
                         <MenuItem value={ESaleStatus.Lost}>Lost</MenuItem>
                       </Select>
                     </TableCell>
-                    <TableCell>{log?.tradeIn ?? ''}</TableCell>
-                    <TableCell>{log?.financing ?? ''}</TableCell>
-                    <TableCell>{log?.timeIn ? dateFormat(log?.timeIn, true) : ''}</TableCell>
-                    <TableCell>{log?.timeOut ? dateFormat(log?.timeOut, true) : ''}</TableCell>
-                    <TableCell>{log?.referralSource ?? ''}</TableCell>
-                    <TableCell>{log?.salesRep?.name ?? ''}</TableCell>
-                    <TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>{log?.tradeIn ?? ''}</TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>
+                      {log?.financing ?? ''}
+                    </TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>
+                      {log?.timeIn ? dateFormat(log?.timeIn, true) : ''}
+                    </TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>
+                      {log?.timeOut ? dateFormat(log?.timeOut, true) : ''}
+                    </TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>
+                      {log?.referralSource ?? ''}
+                    </TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>
+                      {log?.salesRep?.name ?? ''}
+                    </TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>
                       {/* Display phone numbers */}
                       <div>Home: {log?.phoneNumberHome ?? ''}</div>
                       <div>Cell: {log?.phoneNumberCell ?? ''}</div>
                       <div>Work: {log?.phoneNumberWork ?? ''}</div>
                     </TableCell>
-                    <TableCell>{log?.comments ?? ''}</TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>{log?.comments ?? ''}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>

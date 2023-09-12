@@ -12,7 +12,9 @@ export const MessageBubble = styled.div`
   border-radius: 20px;
   margin: 5px;
   position: relative;
-  transition: background-color 0.2s, transform 0.2s;
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
   cursor: pointer;
 
   &:hover {
@@ -46,4 +48,43 @@ export const MessageDetails = styled.div`
   opacity: 0;
   font-size: 12px;
   transition: opacity 0.2s;
+`;
+
+export const BackButton = styled.button`
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #555;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  &:hover {
+    background-color: #333;
+  }
+`;
+
+export const InputContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+`;
+
+export const StyledInput = styled.input`
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+`;
+
+export const SendButton = styled.button`
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 15px;
+  margin-left: 10px;
+  cursor: pointer;
 `;

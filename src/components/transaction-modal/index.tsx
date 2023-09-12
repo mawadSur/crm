@@ -16,7 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import dayjs from 'dayjs';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   getConversationByCustomerId,
   getCustomerActivities,
@@ -71,9 +71,24 @@ const TransactionModal = ({ open, onClose, opportunity, apiURI }: ITransactionMo
   const [customerInsurances, setCustomerInsurances] = React.useState([]);
   const [customerVehicles, setCustomerVehicles] = React.useState([]);
   const [customerActivities, setCustomerActivities] = React.useState([]);
+  const [deskLogData, setDeskLogData] = useState([]);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    if (open) {
+      fetch(`${apiURI}/desklogs`)
+        .then((response) => response.json())
+        .then((data) => {
+          setDeskLogData(data.items); // Assuming 'items' is the array of data in the API response
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
+    }
+  }, [open]);
 
   React.useEffect(() => {
     if (!opportunity?.customerId) return;
