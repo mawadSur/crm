@@ -4,9 +4,11 @@ import { ConversationService } from '../services/index.js';
 export class ChatRoute {
   private router;
   private conversationService: ConversationService;
+
   constructor() {
     this.router = express.Router();
     this.router.get('/', this.getChats.bind(this));
+
     this.router.get('/getAllChats', this.getChats.bind(this));
     this.router.get('/getChat/:customerId', this.getChat.bind(this));
     this.router.post('/sendMessage/:customerId', this.sendMessage.bind(this));

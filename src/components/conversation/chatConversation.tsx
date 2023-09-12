@@ -62,8 +62,8 @@ const ChatConversations = ({ customerId, onBackClick }) => {
   React.useEffect(() => {
     const fetchUrl =
       process.env.USE_LOCAL === 'true'
-        ? `${process.env.FETCH_URL}/api/chats/getChat`
-        : '/api/chats/getChat';
+        ? `${process.env.FETCH_URL}/api/chats/sendMessage`
+        : 'api/chats/sendMessage';
 
     const fetchData = async () => {
       try {

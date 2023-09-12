@@ -45,7 +45,6 @@ export class DesklogRoute {
       res.status(500).json({ message: error });
     }
   }
-
   getRouter() {
     return this.router;
   }

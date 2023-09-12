@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from 'react';
+
 import {
   Box,
   List,
@@ -16,7 +18,6 @@ import {
   Typography,
 } from '@mui/material';
 import dayjs from 'dayjs';
-import React, { useState, useEffect } from 'react';
 import {
   getConversationByCustomerId,
   getCustomerActivities,
@@ -187,6 +188,7 @@ const TransactionModal = ({ open, onClose, opportunity, apiURI }: ITransactionMo
                 ? dateFormat(opportunity.customer.updatedAt, true)
                 : 'N/A'}
             </Text>
+            <div>{/* <b>Text Preferred:</b> {customer?.textPreferred ? 'Yes' : 'No'} */}</div>
           </Box>
 
           <Box style={{ marginTop: '20px', marginRight: '10px', width: '50%' }}>
@@ -203,9 +205,9 @@ const TransactionModal = ({ open, onClose, opportunity, apiURI }: ITransactionMo
             <Text>
               <b>Sales Team:</b> {opportunity?.salesRep?.name ?? ''}
             </Text>
-            {/* <Text>
-              <b>Up Type:</b> {'opportunity.upType'}
-            </Text> */}
+            <Text>
+              <b>Up Type:</b> {opportunity?.customer?.upType}
+            </Text>
             <Text>
               <b>Source:</b> {opportunity?.referralSource ?? 'N/A'}
             </Text>
