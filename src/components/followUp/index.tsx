@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { FunnelChart, Tooltip, Funnel, Cell, ResponsiveContainer } from 'recharts';
-import followUpStyle from './style.js';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#fd6b19']; // sample colors, adjust as necessary
 

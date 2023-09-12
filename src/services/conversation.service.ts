@@ -1,12 +1,20 @@
 import mongoose from 'mongoose';
 import { ConversationModel, CustomerModel } from '../models/index.js';
 import httpRequest from '../libs/httpsRequest.js';
-
 export class ConversationService {
   constructor() {}
 
   async list() {
     return ConversationModel.find();
+  }
+
+  async getConversationByCustomerId(customerId: string) {
+    return ConversationModel.findOne({ customerId })
+      .sort({
+        createdAt: -1,
+      })
+      .lean()
+      .exec();
   }
 
   async getChat(customerId) {

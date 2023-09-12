@@ -11,24 +11,40 @@ import SalesVolume from './sales-volume/index.js';
 //! Common Components
 import { Flex, Page, Section } from '../common/index.js';
 import LeadConversionRate from './lead-conversion-rate/index.js';
-// import ChatConversations from '../conversation/index.js';
+import { ApiClient } from 'adminjs';
+import ChatConversations from '../conversation/customersList.js';
 
-const Dashboard: React.FC = () => {
+const Dashboard: React.FC = (props) => {
+  const [apiURI, setApiURI] = React.useState('');
+  const api = new ApiClient();
+  React.useEffect(() => {
+    api
+      .getDashboard()
+      .then((response: any) => {
+        if (response?.data?.apiURI) {
+          setApiURI(response.data.apiURI);
+        }
+      })
+      .catch((error) => {
+        // handle any errors
+      });
+  }, []);
+
   return (
     <Page>
-      {/* <ChatConversations /> */}
+      <ChatConversations />
       <Flex>
         <Section $width="60%">
-          <AppointmentsToday />
+          <AppointmentsToday apiURI={apiURI} />
         </Section>
         <Section $width="40%">
           <SalesVolume />
         </Section>
       </Flex>
       <Flex>
-        <DeskLog />
+        <DeskLog apiURI={apiURI} />
       </Flex>
-      <Flex>
+      {/* <Flex>
         <Section $width="24%">
           <GrossRevenue />
         </Section>
@@ -41,7 +57,7 @@ const Dashboard: React.FC = () => {
         <Section $width="24%">
           <LeadConversionRate />
         </Section>
-      </Flex>
+      </Flex> */}
     </Page>
   );
 };

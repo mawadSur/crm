@@ -8,7 +8,6 @@ export class DesklogRoute {
     this.router = express.Router();
     this.router.get('/', this.list.bind(this));
     this.router.put('/updateSaleStatus/:logId', this.updateSaleStatus.bind(this));
-
     this.desklogService = new DesklogService();
   }
 

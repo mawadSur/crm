@@ -1,28 +1,39 @@
 import React, { useState, useEffect } from 'react';
 
 import {
-  Tab,
-  Tabs,
   Box,
-  Typography,
   List,
   ListItem,
   ListItemText,
   Modal,
+  Paper,
+  Tab,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
+  Tabs,
+  Typography,
 } from '@mui/material';
-import { Title } from './style.js';
+import dayjs from 'dayjs';
+import React, { useState, useEffect } from 'react';
+import {
+  getConversationByCustomerId,
+  getCustomerActivities,
+  getCustomerInsurances,
+  getCustomerServices,
+  getCustomerVehicles,
+} from '../../libs/apis/index.js';
+import { dateFormat, formatPhoneNumber, formatPrice } from '../../utils/index.js';
+import { Text, TextAlert, Title } from './style.js';
 
 export interface ITransactionModalProps {
   open: boolean;
   onClose: () => void;
   opportunity: any;
+  apiURI: string;
 }
 
 const style = {
@@ -44,23 +55,33 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} {...other}>
+    <Text role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} {...other}>
       {value === index && (
         <Box sx={{ p: 3 }}>
           <Typography>{children}</Typography>
         </Box>
       )}
-    </div>
+    </Text>
   );
 }
 
-const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps) => {
-  const [value, setValue] = useState(0);
+const TransactionModal = ({ open, onClose, opportunity, apiURI }: ITransactionModalProps) => {
+  const [value, setValue] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
+  const [customer, setCustomer] = React.useState({});
+  const [customerServices, setCustomerServices] = React.useState([]);
+  const [customerInsurances, setCustomerInsurances] = React.useState([]);
+  const [customerVehicles, setCustomerVehicles] = React.useState([]);
+  const [customerActivities, setCustomerActivities] = React.useState([]);
   const [deskLogData, setDeskLogData] = useState([]);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   useEffect(() => {
     if (open) {
-      fetch('http://localhost:3434/api/desklogs')
+      fetch(`${apiURI}/desklogs`)
         .then((response) => response.json())
         .then((data) => {
           setDeskLogData(data.items); // Assuming 'items' is the array of data in the API response
@@ -71,9 +92,59 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
     }
   }, [open]);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  React.useEffect(() => {
+    if (!opportunity?.customerId) return;
+
+    setLoading(true);
+
+    // Use an async function to fetch the conversation
+    const fetching = async () => {
+      const [
+        responseConversation,
+        responseCustomerService,
+        responseInsurance,
+        responseVehicle,
+        responseActivity,
+      ] = await Promise.allSettled([
+        getConversationByCustomerId(opportunity.customerId, apiURI),
+        getCustomerServices(opportunity.customerId, apiURI),
+        getCustomerInsurances(opportunity.customerId, apiURI),
+        getCustomerVehicles(opportunity.customerId, apiURI),
+        getCustomerActivities(opportunity.customerId, apiURI),
+      ]);
+
+      if (responseConversation.status === 'fulfilled' && responseConversation.value?.length > 0) {
+        setCustomer(responseConversation.value);
+      }
+
+      if (
+        responseCustomerService.status === 'fulfilled' &&
+        responseCustomerService.value?.data?.length > 0
+      ) {
+        setCustomerServices(responseCustomerService.value.data);
+      }
+
+      if (responseInsurance.status === 'fulfilled' && responseInsurance.value?.data?.length > 0) {
+        setCustomerInsurances(responseInsurance.value.data);
+      }
+
+      if (responseVehicle.status === 'fulfilled' && responseVehicle.value?.data?.length > 0) {
+        setCustomerVehicles(responseVehicle.value.data);
+      }
+
+      if (responseActivity.status === 'fulfilled' && responseActivity.value?.data?.length > 0) {
+        setCustomerActivities(responseActivity.value.data);
+      }
+
+      setLoading(false);
+    };
+
+    fetching();
+  }, [opportunity?.customerId]);
+
+  console.log('opportunity', opportunity);
+  const otherContracts = opportunity?.customer?.otherContacts ?? [];
+  const relationships = opportunity?.customer?.relationships ?? [];
   return (
     <Modal
       open={open}
@@ -82,85 +153,92 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <div style={{ display: 'flex' }}>
+        <Text style={{ display: 'flex' }}>
           <Box style={{ marginTop: '20px', width: '50%' }}>
             <Title>Customer</Title>
-            <div>
-              <b>Customer Name:</b> {opportunity?.customer?.name}
-            </div>
-            <div>
-              <b>Address:</b> {opportunity?.customer?.address}
-            </div>
-            <div>
-              <b>Home Number:</b> {opportunity?.customer?.homeNumber}
-            </div>
-            <div>
-              <b>Cell Number:</b> {opportunity?.customer?.cellNumber}
-            </div>
-            <div>
-              <b>Work Number:</b> {opportunity?.customer?.workNumber}
-            </div>
-            <div>
-              <b>Preferred Email:</b> {opportunity?.customer?.email}
-            </div>
-            <div>
-              <b>Other Email:</b> {opportunity?.customer?.otherEmail}
-            </div>
-            <div>
-              <b>Birthday:</b> {new Date(opportunity?.customer?.dateOfBirth).toDateString()}
-            </div>
-            <div>
-              <b>Last Modified:</b> {new Date(opportunity?.customer?.updatedAt).toLocaleString()}
-            </div>
+            <Text>
+              <b>Customer Name:</b> {opportunity?.customer?.name ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Address:</b> {opportunity?.customer?.address ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Home Number:</b> {formatPhoneNumber(opportunity?.customer?.homeNumber) ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Cell Number:</b> {formatPhoneNumber(opportunity?.customer?.cellNumber) ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Work Number:</b> {formatPhoneNumber(opportunity?.customer?.workNumber) ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Preferred Email:</b> {opportunity?.customer?.preferredContactMethod ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Other Email:</b> {opportunity?.customer?.email ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Birthday:</b>{' '}
+              {opportunity?.customer?.dateOfBirth
+                ? dayjs(opportunity.customer.dateOfBirth).format('YYYY-MM-DD')
+                : 'N/A'}
+            </Text>
+            <Text>
+              <b>Last Modified:</b>{' '}
+              {opportunity?.customer?.updatedAt
+                ? dateFormat(opportunity.customer.updatedAt, true)
+                : 'N/A'}
+            </Text>
             <div>{/* <b>Text Preferred:</b> {customer?.textPreferred ? 'Yes' : 'No'} */}</div>
+
           </Box>
 
           <Box style={{ marginTop: '20px', marginRight: '10px', width: '50%' }}>
             <Title>Opportunity</Title>
-            <div>
-              <b>Vehicle:</b> {opportunity?.customer?.vehicle}
-            </div>
-            <div>
-              <b>Stock Number:</b> {opportunity?.customer?.stock}
-            </div>
-            <div>
+            <Text>
+              <b>Vehicle:</b> {opportunity?.vehicle?.model ?? ''} {opportunity?.vehicle?.make ?? ''}
+            </Text>
+            <Text>
+              <b>Stock Number:</b> 10
+            </Text>
+            <Text>
               <b>Trade:</b> {opportunity?.trade ? 'Yes' : 'No'}
-            </div>
-            <div>
-              <b>Sales Team:</b> {opportunity?.customer?.salesTeam}
-            </div>
-            <div>
+            </Text>
+            <Text>
+              <b>Sales Team:</b> {opportunity?.salesRep?.name ?? ''}
+            </Text>
+            <Text>
               <b>Up Type:</b> {opportunity?.customer?.upType}
-            </div>
-            <div>
-              <b>Source:</b> {opportunity?.customer?.source}
-            </div>
-            <div>
-              <b>Date/Time Due:</b> {new Date(opportunity?.customer.dateTimeDue).toLocaleString()}
-            </div>
-            <div>
-              <b>Sales Status:</b> {'opportunity.salesStatus'}
-            </div>
-            <div>
+            </Text>
+            <Text>
+              <b>Source:</b> {opportunity?.referralSource ?? 'N/A'}
+            </Text>
+            <Text>
+              <b>Date/Time Due:</b> {dateFormat(new Date().toISOString())}
+            </Text>
+            <Text>
+              <b>Sales Status:</b> {opportunity?.saleStatus ?? 'N/A'}
+            </Text>
+            <Text>
               <b>In Showroom:</b> {opportunity?.inShowroom ? 'Yes' : 'No'}
-            </div>
-            <div>
+            </Text>
+            <Text>
               <b>Demo:</b> {opportunity?.demo ? 'Yes' : 'No'}
-            </div>
-            <div>
+            </Text>
+            <Text>
               <b>Ask Money Down:</b> {opportunity?.askMoneyDown ? 'Yes' : 'No'}
-            </div>
-            <div>
+            </Text>
+            <Text>
               <b>Write Up:</b> {opportunity?.writeUp ? 'Yes' : 'No'}
-            </div>
-            <div>
+            </Text>
+            <Text>
               <b>TO:</b> {opportunity?.to ? 'Yes' : 'No'}
-            </div>
-            <div>
+            </Text>
+            <Text>
               <b>Manager Phone Call:</b> {opportunity?.managerPhoneCall ? 'Yes' : 'No'}
-            </div>
+            </Text>
           </Box>
-        </div>
+        </Text>
         <>
           <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -172,7 +250,6 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
                 <Tab label="Lifetime Value" />
                 <Tab label="Vehicles" />
                 <Tab label="Audit Trail" />
-                <Tab label="Equity" />
               </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
@@ -185,21 +262,20 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
                       <TableCell>Phone</TableCell>
                     </TableRow>
                   </TableHead>
+
                   <TableBody>
-                    {/* Here you can map through your contacts and return a row for each one */}
-                    <TableRow>
-                      <TableCell>John Doe</TableCell>
-                      <TableCell>john.doe@example.com</TableCell>
-                      <TableCell>123-456-7890</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Jane Smith</TableCell>
-                      <TableCell>jane.smith@example.com</TableCell>
-                      <TableCell>098-765-4321</TableCell>
-                    </TableRow>
-                    {/* Add more rows as needed */}
+                    {otherContracts.map((contact) => {
+                      return (
+                        <TableRow key={contact._id}>
+                          <TableCell>{contact.name}</TableCell>
+                          <TableCell>{contact.email}</TableCell>
+                          <TableCell>{formatPhoneNumber(contact.phone)}</TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
+                {otherContracts?.length === 0 && <TextAlert>There are no contacts added</TextAlert>}
               </TableContainer>
             </TabPanel>
             <TabPanel value={value} index={1}>
@@ -215,33 +291,39 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
                   </TableHead>
                   <TableBody>
                     {/* Here you can map through your service requests and return a row for each one */}
-                    <TableRow>
-                      <TableCell>Oil Change</TableCell>
-                      <TableCell>Pending</TableCell>
-                      <TableCell>2023-07-31</TableCell>
-                      <TableCell>John Doe</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Tire Rotation</TableCell>
-                      <TableCell>Completed</TableCell>
-                      <TableCell>2023-07-30</TableCell>
-                      <TableCell>Jane Smith</TableCell>
-                    </TableRow>
+                    {customerServices?.map((service) => {
+                      return (
+                        <TableRow id={service._id}>
+                          <TableCell>{service?.serviceTypeId?.name ?? 'N/A'}</TableCell>
+                          <TableCell>{service.status ?? 'N/A'}</TableCell>
+                          <TableCell>{dateFormat(service.createdAt)}</TableCell>
+                          <TableCell>{service?.customerId?.name ?? 'N/A'}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+
                     {/* Add more rows as needed */}
                   </TableBody>
+                  {customerServices?.length === 0 && (
+                    <TextAlert>There is no Service History</TextAlert>
+                  )}
                 </Table>
               </TableContainer>
             </TabPanel>
             <TabPanel value={value} index={2}>
               <List>
-                {/* Here you can map through your contacts and return a ListItem for each one */}
-                <ListItem>
-                  <ListItemText primary="John Doe" secondary="Referred by: Jane Smith" />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="Alice Johnson" secondary="Referred by: John Doe" />
-                </ListItem>
-                {/* Add more items as needed */}
+                {relationships?.map((rel) => {
+                  return (
+                    <ListItem>
+                      <ListItemText
+                        primary={rel.name}
+                        secondary={`Referred by: ${opportunity.customer?.name}`}
+                      />
+                    </ListItem>
+                  );
+                })}
+
+                {relationships?.length === 0 && <TextAlert>There are no Relationships</TextAlert>}
               </List>
             </TabPanel>
             <TabPanel value={value} index={3}>
@@ -255,19 +337,17 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {/* Here you can map through your insurance policies and return a row for each one */}
-                    <TableRow>
-                      <TableCell>Car Insurance</TableCell>
-                      <TableCell>12345</TableCell>
-                      <TableCell>2024-01-01</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Health Insurance</TableCell>
-                      <TableCell>67890</TableCell>
-                      <TableCell>2023-12-31</TableCell>
-                    </TableRow>
-                    {/* Add more rows as needed */}
+                    {customerInsurances.map((insurance) => {
+                      return (
+                        <TableRow key={insurance._id}>
+                          <TableCell>{insurance?.policyType ?? 'N/A'}</TableCell>
+                          <TableCell>{insurance?.policyNumber ?? 'N/A'}</TableCell>
+                          <TableCell>{dateFormat(insurance.expiryDate)}</TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
+                  {customerInsurances?.length === 0 && <TextAlert>No insurance uploaded</TextAlert>}
                 </Table>
               </TableContainer>
             </TabPanel>
@@ -292,56 +372,44 @@ const TransactionModal = ({ open, onClose, opportunity }: ITransactionModalProps
                       <TableCell>Make</TableCell>
                       <TableCell>Model</TableCell>
                       <TableCell>Year</TableCell>
+                      <TableCell>Equity</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {/* Here you can map through your vehicles and return a row for each one */}
-                    <TableRow>
-                      <TableCell>John Doe</TableCell>
-                      <TableCell>Ford</TableCell>
-                      <TableCell>Mustang</TableCell>
-                      <TableCell>2023</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Jane Smith</TableCell>
-                      <TableCell>Toyota</TableCell>
-                      <TableCell>Corolla</TableCell>
-                      <TableCell>2022</TableCell>
-                    </TableRow>
-                    {/* Add more rows as needed */}
+                    {customerVehicles?.map((vehicle) => {
+                      return (
+                        <TableRow key={vehicle._id}>
+                          <TableCell>{vehicle?.customerId?.name ?? 'N/A'}</TableCell>
+                          <TableCell>{vehicle?.make ?? 'N/A'}</TableCell>
+                          <TableCell>{vehicle?.model ?? 'N/A'}</TableCell>
+                          <TableCell>{vehicle?.year ?? 'N/A'}</TableCell>
+                          <TableCell>{formatPrice(vehicle?.equity) ?? 'N/A'}</TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
+                  {customerVehicles?.length === 0 && (
+                    <TextAlert>There are no records of Vehicles</TextAlert>
+                  )}
                 </Table>
               </TableContainer>
             </TabPanel>
             <TabPanel value={value} index={6}>
               <List>
-                {/* Here you can map through your audit trail entries and return a ListItem for each one */}
-                <ListItem>
-                  <ListItemText
-                    primary="John Doe updated contact details"
-                    secondary="2023-07-31 10:30 AM"
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemText
-                    primary="Jane Smith made a purchase"
-                    secondary="2023-07-30 2:45 PM"
-                  />
-                </ListItem>
-                {/* Add more items as needed */}
+                {customerActivities?.map((activity) => {
+                  return (
+                    <ListItem key={activity._id}>
+                      <ListItemText
+                        primary={`${activity?.customerId?.name} ${activity?.activityId?.name}`}
+                        secondary={dateFormat(activity?.createdAt, true)}
+                      />
+                    </ListItem>
+                  );
+                })}
               </List>
-            </TabPanel>
-            <TabPanel value={value} index={7}>
-              <List>
-                {/* Here you can map through your contacts and return a ListItem for each one */}
-                <ListItem>
-                  <ListItemText primary="John Doe" secondary="Equity: $5000" />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="Jane Smith" secondary="Equity: $10000" />
-                </ListItem>
-                {/* Add more items as needed */}
-              </List>
+              {customerActivities?.length === 0 && (
+                <TextAlert>There are no logs recorded</TextAlert>
+              )}
             </TabPanel>
           </Box>
         </>

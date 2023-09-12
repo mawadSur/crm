@@ -10,7 +10,7 @@ export interface IAdminMethods {
   comparePassword(password: string): Promise<boolean>;
 }
 
-type AdminUserModel = Model<IAdminUser, {}, IAdminMethods>;
+type AdminUserTypeModel = Model<IAdminUser, {}, IAdminMethods>;
 
 const adminSchema: Schema<IAdminUser, IAdminMethods> = new Schema<IAdminUser, IAdminMethods>(
   {
@@ -35,7 +35,7 @@ const adminSchema: Schema<IAdminUser, IAdminMethods> = new Schema<IAdminUser, IA
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 //* Configure the 'toJSON' and 'toObject' options
@@ -65,4 +65,4 @@ adminSchema.method('comparePassword', async function comparePassword(password: s
   return await bcrypt.compare(password, this.password);
 });
 
-export const AdminUser = mongoose.model<IAdminUser, AdminUserModel>('Admin', adminSchema);
+export const AdminUser = mongoose.model<IAdminUser, AdminUserTypeModel>('Admin', adminSchema);

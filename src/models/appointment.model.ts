@@ -22,6 +22,7 @@ export const appointmentSchema = new Schema<Appointment>(
     salesRepId: { type: Schema.Types.ObjectId, ref: 'SalesRep' },
   },
   {
+    suppressReservedKeysWarning: true,
     timestamps: true,
   },
 );

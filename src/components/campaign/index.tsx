@@ -1,6 +1,11 @@
 import React from 'react';
 
 import { ApiClient } from 'adminjs';
+import dayjs from 'dayjs';
+import {
+  lunchCampaignToAllCustomers,
+  lunchCampaignToCustomers,
+} from '../../libs/apis/customer.api.js';
 import {
   convertPropertyNameToDisplayName,
   isDateFormat,
@@ -8,9 +13,9 @@ import {
 } from '../../utils/functions.js';
 import { Input } from '../common/index.js';
 import CampaignStyle from './style.js';
-import dayjs from 'dayjs';
 
 const BlastCampaignCard = React.memo(() => {
+  const [apiURI, setApiURI] = React.useState('');
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [totalCustomers, setTotalCustomers] = React.useState(0);
   const [customers, setCustomers] = React.useState([]);
@@ -57,6 +62,9 @@ const BlastCampaignCard = React.memo(() => {
         if (data?.data?.customerCount) {
           setTotalCustomers(data.data.customerCount);
         }
+        if (data?.apiURI) {
+          setApiURI(data.apiURI);
+        }
       } catch (error) {
         console.log('error', error);
       }
@@ -66,6 +74,7 @@ const BlastCampaignCard = React.memo(() => {
   }, []);
 
   React.useEffect(() => {
+    if (!apiURI) return;
     const delayDebounceFn = setTimeout(async () => {
       (async () => {
         try {
@@ -76,9 +85,8 @@ const BlastCampaignCard = React.memo(() => {
             return;
           }
           setLoading(true);
-          const response = await fetch(`http://34.201.244.19/api/customers?${query}`);
+          const response = await fetch(`${apiURI}/customers?${query}`);
           const data = await response.json();
-          console.log('data', data);
           if (data?.total > 0) {
             setCustomers(data.items);
             setTotalCustomerValid(data.total);
@@ -94,7 +102,7 @@ const BlastCampaignCard = React.memo(() => {
     return () => {
       clearTimeout(delayDebounceFn);
     };
-  }, [filterValue]);
+  }, [filterValue, apiURI]);
 
   const handleClick = React.useCallback(() => {
     setIsMenuOpen(!isMenuOpen);
@@ -108,33 +116,50 @@ const BlastCampaignCard = React.memo(() => {
     });
   }, []);
 
-  const handleLaunch = React.useCallback(async (customers, prompt) => {
-    if (!customers || !prompt) return;
-    resetData();
-    try {
-      setLaunchLoading(true);
-      const response = await fetch('http://34.201.244.19/api/customers/launch', {
-        method: 'POST',
-        body: JSON.stringify({
-          customerIds: customers.map((customer) => customer._id),
-          context: prompt,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await response.json();
-      console.log(data);
-      if (data) {
-        setTotalLaunchFailed(data?.totalFailed);
-        setTotalLaunchSuccess(data?.totalSuccess);
+  const handleLaunch = React.useCallback(
+    async (customers, prompt) => {
+      if (!customers || !prompt) return;
+      resetData();
+      try {
+        setLaunchLoading(true);
+        const data = await lunchCampaignToCustomers(
+          customers.map((customer) => customer._id),
+          prompt,
+          apiURI,
+        );
+        console.log(data);
+        if (data) {
+          setTotalLaunchFailed(data?.totalFailed);
+          setTotalLaunchSuccess(data?.totalSuccess);
+        }
+        setLaunchLoading(false);
+      } catch (error) {
+        setLaunchLoading(false);
+        console.log('error', error);
       }
-      setLaunchLoading(false);
-    } catch (error) {
-      setLaunchLoading(false);
-      console.log('error', error);
-    }
-  }, []);
+    },
+    [apiURI],
+  );
+
+  const handleLaunchAll = React.useCallback(
+    async (prompt) => {
+      if (!prompt) return;
+      resetData();
+      try {
+        setLaunchLoading(true);
+        const data = await lunchCampaignToAllCustomers(prompt, apiURI);
+        if (data) {
+          setTotalLaunchFailed(data?.totalFailed);
+          setTotalLaunchSuccess(data?.totalSuccess);
+        }
+        setLaunchLoading(false);
+      } catch (error) {
+        setLaunchLoading(false);
+        console.log('error', error);
+      }
+    },
+    [apiURI],
+  );
 
   const resetData = React.useCallback(() => {
     setCustomers([]);
@@ -324,12 +349,25 @@ const BlastCampaignCard = React.memo(() => {
 
         <CampaignStyle.LaunchFormWrapper>
           <CampaignStyle.Textarea defaultValue={prompt} onChange={handleChangePrompt} />
-          <CampaignStyle.LaunchButton
-            disabled={customers?.length === 0 || !prompt}
-            onClick={() => handleLaunch(customers, prompt)}
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+            }}
           >
-            Launch
-          </CampaignStyle.LaunchButton>
+            <CampaignStyle.LaunchButton
+              disabled={customers?.length === 0 || !prompt || loading || launchLoading}
+              onClick={() => handleLaunch(customers, prompt)}
+            >
+              Launch
+            </CampaignStyle.LaunchButton>
+            <CampaignStyle.LaunchButton
+              disabled={!prompt || loading || launchLoading}
+              onClick={() => handleLaunchAll(prompt)}
+            >
+              Launch All
+            </CampaignStyle.LaunchButton>
+          </div>
         </CampaignStyle.LaunchFormWrapper>
 
         <div style={{ marginTop: '10px' }}>

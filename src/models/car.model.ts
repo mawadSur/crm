@@ -1,10 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { CarModels } from '../core/database/seed/data.seed.js';
-
-const carMakes = CarModels.makeOptions;
-const carModels = Object.values(CarModels.modelOptions).flat();
-const carYears = CarModels.yearOptions;
-const carStatuses = CarModels.statusOptions;
+import { carMakes, carModels, carStatuses, carYears } from '../utils/index.js';
 
 export interface Car {
   make: string;

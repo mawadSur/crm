@@ -10,17 +10,16 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
-import React from 'react';
-import { Title } from '../../common/index.js';
-import TransactionModal from '../../../components/transaction-modal/index.js';
-import { ESaleStatus } from '../../../models/desklog.model.js';
 import { Pagination, Skeleton, TableSortLabel } from '@mui/material';
+import React from 'react';
+import TransactionModal from '../../../components/transaction-modal/index.js';
+import { ENV_VARIABLES } from '../../../config/environment.js';
+import { ESaleStatus, Order, dateFormat } from '../../../utils/index.js';
+import { Title } from '../../common/index.js';
 import styles from './styles.js';
 import { error } from 'console';
 
-type Order = 'asc' | 'desc';
-
-const DeskLog = () => {
+const DeskLog = React.memo(({ apiURI }: { apiURI: string }) => {
   const [openTransactionModal, setOpenTransactionModal] = React.useState(false);
   const [currentLog, setCurrentLog] = React.useState();
   const [deskLogData, setDeskLogData] = React.useState([]);
@@ -69,18 +68,15 @@ const DeskLog = () => {
   const handleRowClick = (log) => {
     setOpenTransactionModal(true);
     setCurrentLog(log);
-    // dispatch(modalReducerJs.setTransactionId('id'));
-    // dispatch(modalReducerJs.openModal());
   };
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const fetchUrl =
-          'http://localhost:3434/api/desklogs' + '?offset=' + offset + '&limit=' + limit;
-        const response = await fetch(fetchUrl);
-
+        const response = await fetch(
+          `${apiURI}/desklogs` + '?offset=' + offset + '&limit=' + limit,
+        );
         const data = await response.json();
         if (data?.items?.length) {
           setDeskLogData(data.items);
@@ -96,13 +92,13 @@ const DeskLog = () => {
     };
 
     fetchData();
-  }, [offset, limit]);
+  }, [offset, limit, apiURI]);
 
   const handleSetPagination = React.useCallback(
     (_, value) => {
       setOffset((value - 1) * limit);
     },
-    [offset, limit],
+    [offset, limit, apiURI],
   );
 
   const sortTimeInTable = (property: string) => (event: React.MouseEvent<unknown>) => {
@@ -125,6 +121,7 @@ const DeskLog = () => {
   return (
     <React.Fragment>
       <TransactionModal
+        apiURI={apiURI}
         open={openTransactionModal}
         onClose={closeTransactionModal}
         opportunity={currentLog}
@@ -205,10 +202,11 @@ const DeskLog = () => {
                   <TableRow
                     key={log.id}
                     className={`saleStatus-${log.saleStatus.replace(/\s+/g, '-')}`}
-                    //onClick={() => handleRowClick(log)}
                   >
-                    <TableCell>{log?.customer?.name ?? ''}</TableCell>
-                    <TableCell>{log?.vehicle?.model}</TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>
+                      {log?.customer?.name ?? ''}
+                    </TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>{log?.vehicle?.model}</TableCell>
                     <TableCell>
                       {/* Dropdown to change sale status */}
                       <Select
@@ -220,22 +218,29 @@ const DeskLog = () => {
                         <MenuItem value={ESaleStatus.Lost}>Lost</MenuItem>
                       </Select>
                     </TableCell>
-                    <TableCell>{log?.tradeIn ?? ''}</TableCell>
-                    <TableCell>{log?.financing ?? ''}</TableCell>
-                    <TableCell>{log?.timeIn ?? ''}</TableCell>
-                    <TableCell>{log?.timeOut ?? ''}</TableCell>
-                    <TableCell>{log?.referralSource ?? ''}</TableCell>
-                    <TableCell>{log?.salesRep?.name ?? ''}</TableCell>
-                    <TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>{log?.tradeIn ?? ''}</TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>
+                      {log?.financing ?? ''}
+                    </TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>
+                      {log?.timeIn ? dateFormat(log?.timeIn, true) : ''}
+                    </TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>
+                      {log?.timeOut ? dateFormat(log?.timeOut, true) : ''}
+                    </TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>
+                      {log?.referralSource ?? ''}
+                    </TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>
+                      {log?.salesRep?.name ?? ''}
+                    </TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>
                       {/* Display phone numbers */}
                       <div>Home: {log?.phoneNumberHome ?? ''}</div>
                       <div>Cell: {log?.phoneNumberCell ?? ''}</div>
                       <div>Work: {log?.phoneNumberWork ?? ''}</div>
                     </TableCell>
-                    <TableCell>{log?.comments ?? ''}</TableCell>
-                    <TableCell onClick={() => handleRowClick(log)}>
-                      <h3> Show info</h3>
-                    </TableCell>
+                    <TableCell onClick={() => handleRowClick(log)}>{log?.comments ?? ''}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
@@ -252,6 +257,6 @@ const DeskLog = () => {
       </Card>
     </React.Fragment>
   );
-};
+});
 
 export default DeskLog;

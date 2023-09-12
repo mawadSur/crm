@@ -12,7 +12,7 @@ import dayjs from 'dayjs';
 import React from 'react';
 import { Card, Title } from '../../common/index.js';
 
-const AppointmentsToday = React.memo(() => {
+const AppointmentsToday = React.memo(({ apiURI }: { apiURI: string }) => {
   const [appointments, setAppointments] = React.useState([]);
   const [total, setTotal] = React.useState(0);
   const [offset, setOffset] = React.useState(0);
@@ -20,11 +20,12 @@ const AppointmentsToday = React.memo(() => {
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
+    if (!apiURI) return;
     const fetchData = async () => {
       try {
         setLoading(true);
         const response = await fetch(
-          'http://34.201.244.19/api/appointments' + '?offset=' + offset + '&limit=' + limit,
+          `${apiURI}/appointments` + '?offset=' + offset + '&limit=' + limit,
         );
         console.log('response', response);
         const data = await response.json();
@@ -42,13 +43,13 @@ const AppointmentsToday = React.memo(() => {
     };
 
     fetchData();
-  }, [offset, limit]);
+  }, [offset, limit, apiURI]);
 
   const handleSetPagination = React.useCallback(
     (_, value) => {
       setOffset((value - 1) * limit);
     },
-    [offset, limit],
+    [offset, limit, apiURI],
   );
 
   return (

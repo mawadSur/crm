@@ -47,6 +47,7 @@ const LaunchButton = styled.button`
   padding: 8px 16px;
   border-radius: 5px;
   border: none;
+  width: fit-content;
   background-color: #007bff; // A nice shade of blue.
   color: white;
   cursor: pointer;
@@ -114,7 +115,7 @@ const LaunchFormWrapper = styled.div`
 `;
 
 const Textarea = styled.textarea`
-  width: 450px;
+  width: 420px;
   height: fit-content;
   min-height: 100px;
 `;

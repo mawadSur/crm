@@ -1,24 +1,29 @@
 import AdminJSExpress from '@adminjs/express';
 import { Database, Resource } from '@adminjs/mongoose';
 import AdminJS from 'adminjs';
+import mongoStore from 'connect-mongo';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import { Components, componentLoader } from './components/index.js';
+import { ENV_VARIABLES } from './config/environment.js';
 import { Database as CoreDB } from './core/database/index.js';
 import { CustomerModel } from './models/customer.model.js';
 import {
+  activityResource,
   appointmentResource,
   blastResource,
   carResource,
+  customerActivityResource,
+  customerInsuranceResource,
   customerResource,
+  customerServiceResource,
+  customerVehicleResource,
   desklogResource,
   salesRepResource,
+  serviceTypeResource,
 } from './resources/index.js';
 import { BaseRoute } from './routes/index.js';
 import { adminAuthenticate } from './services/auth.service.js';
-import session from 'express-session';
-import mongoStore from 'connect-mongo';
-
 dotenv.config();
 
 const PORT = process.env.PORT || 3123;
@@ -41,24 +46,48 @@ const start = async () => {
     componentLoader,
     resources: [
       salesRepResource,
+
       customerResource,
+      customerServiceResource,
+      customerInsuranceResource,
+      customerVehicleResource,
+      customerActivityResource,
+
       carResource,
       appointmentResource,
       desklogResource,
       blastResource,
+      serviceTypeResource,
+      activityResource,
     ],
+
     dashboard: {
       component: Components.Dashboard,
+      handler: async () => {
+        return {
+          apiURI: ENV_VARIABLES.API_URL,
+        };
+      },
     },
     pages: {
       calculator: {
+        // name, will be used to build an URL
+        handler: async (request, response, context) => {
+          return {
+            apiURI: ENV_VARIABLES.API_URL,
+          };
+        },
+        component: Components.Calculator,
+        icon: 'Plus',
+      },
+      Chat: {
         // name, will be used to build an URL
         handler: async (request, response, context) => {
           // fetch values from your database
           // const value = await Car.find({});
           // return { data: { inventory: car.value } };
         },
-        component: Components.Calculator,
+        component: Components.Chat,
         icon: 'Plus',
       },
       Chat: {
@@ -76,7 +105,7 @@ const start = async () => {
         handler: async (request, response, context) => {
           // fetch values from your database
           const customerCount = await CustomerModel.countDocuments();
-          return { data: { customerCount } };
+          return { data: { customerCount }, apiURI: ENV_VARIABLES.API_URL };
         },
         component: Components.Campaign,
         icon: 'Zap',
@@ -84,9 +113,9 @@ const start = async () => {
       followUp: {
         // name, will be used to build an URL
         handler: async (request, response, context) => {
-          // fetch values from your database
-          // const value = await Car.find({});
-          // return { data: { inventory: car.value } };
+          return {
+            apiURI: ENV_VARIABLES.API_URL,
+          };
         },
         component: Components.FollowUp,
         icon: 'Campaign',
@@ -132,6 +161,8 @@ const start = async () => {
   /* Watch for changes */
   if (process.env.NODE_ENV !== 'production') {
     admin.watch();
+  } else {
+    admin.initialize();
   }
 
   app.use(
@@ -144,7 +175,9 @@ const start = async () => {
   app.use('/api', route.router);
 
   app.listen(PORT, () => {
-    console.log(`🚀 AdminJS started on http://localhost:${PORT}${admin.options.rootPath}`);
+    console.log(
+      `🚀 AdminJS started on http://localhost:${PORT}${admin.options.rootPath} - with env ${process.env.NODE_ENV}`,
+    );
   });
 };
 

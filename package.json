@@ -14,7 +14,8 @@
     "start:dev": "yarn cache clean && yarn && yarn build && yarn start",
     "dev": "npx tsc --watch & nodemon --max-old-space-size=4096 -q dist/index.js",
     "prepare": "husky install",
-    "seed": "node dist/core/database/seed/index.js"
+    "seed": "node dist/core/database/seed/index.js",
+    "script": "node dist/core/database/scripts/index.js"
   },
   "author": "Sur Consulting, LLC",
   "license": "ISC",
@@ -32,9 +33,9 @@
     "adminjs": "^7.2.0",
     "axios": "^1.4.0",
     "bcryptjs": "^2.4.3",
-    "concurrently": "^8.2.0",
     "connect-mongo": "^5.0.0",
     "dayjs": "^1.11.9",
+    "dom-to-image": "^2.6.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-formidable": "^1.2.0",
