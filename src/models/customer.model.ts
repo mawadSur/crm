@@ -28,6 +28,7 @@ export const customerSchema = new Schema<ICustomer>(
       required: true,
       validate: validateEmailRegex,
     },
+    phone: { type: String, required: false, validate: /^(\d{10})?$/ },
     homeNumber: { type: String, required: false, validate: /^(\d{10})?$/ },
     cellNumber: { type: String, required: false, validate: /^(\d{10})?$/ },
     workNumber: { type: String, required: false, validate: /^(\d{10})?$/ },

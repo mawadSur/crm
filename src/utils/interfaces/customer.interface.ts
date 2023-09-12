@@ -21,6 +21,7 @@ export interface ICustomer {
   address: string;
   email: string;
   otherEmail: string;
+  phone: FormatString;
   homeNumber: FormatString;
   cellNumber: FormatString;
   workNumber: FormatString;

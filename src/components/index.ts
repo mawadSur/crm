@@ -7,5 +7,5 @@ export const Components = {
   Calculator: componentLoader.add('Calculator', './calculator/index.js'),
   Campaign: componentLoader.add('Campaign', './campaign/index.js'),
   FollowUp: componentLoader.add('Followup', './followUp/index.js'),
-  Chat: componentLoader.add('Chat', './conversation/index.js'),
+  Chat: componentLoader.add('Chat', './conversation/customersList.js'),
 };
