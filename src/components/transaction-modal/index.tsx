@@ -18,7 +18,6 @@ import {
   Typography,
 } from '@mui/material';
 import dayjs from 'dayjs';
-import React, { useState, useEffect } from 'react';
 import {
   getConversationByCustomerId,
   getCustomerActivities,
@@ -190,7 +189,6 @@ const TransactionModal = ({ open, onClose, opportunity, apiURI }: ITransactionMo
                 : 'N/A'}
             </Text>
             <div>{/* <b>Text Preferred:</b> {customer?.textPreferred ? 'Yes' : 'No'} */}</div>
-
           </Box>
 
           <Box style={{ marginTop: '20px', marginRight: '10px', width: '50%' }}>
