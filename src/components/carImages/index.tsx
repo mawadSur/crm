@@ -1,14 +1,26 @@
 import React from 'react';
 import { Label } from '../common/index.js';
+import { ENV_VARIABLES } from '../../config/environment.js';
+import { deleteCarImage } from '../../libs/apis/car.api.js';
 
 const CarImages = (props: any) => {
   console.log('props', props);
   const pictures = [];
+  const carId = props.record.id;
   Object.keys(props.record.params).forEach((key) => {
     if (`${key}`.includes('pictures.')) {
       pictures.push(props.record.params[key]);
     }
   });
+
+  const deleteImage = React.useCallback(async (imageUrl: string) => {
+    try {
+      await deleteCarImage(carId, imageUrl, ENV_VARIABLES.API_URI);
+      console.log('Image Deleted Succesfully');
+    } catch (error) {
+      console.log('---', error);
+    }
+  }, []);
 
   console.log('pictures', pictures);
   return (
@@ -18,15 +30,18 @@ const CarImages = (props: any) => {
         <div style={{ whiteSpace: 'nowrap' }}>
           {pictures.map((picture) => {
             return (
-              <img
-                style={{
-                  maxWidth: '100%',
-                  height: '300px',
-                  display: 'inline-block', // To keep images inline
-                }}
-                key={picture}
-                src={picture}
-              />
+              <>
+                <button onClick={(e) => deleteImage(picture)}>Delete image</button>
+                <img
+                  style={{
+                    maxWidth: '100%',
+                    height: '300px',
+                    display: 'inline-block', // To keep images inline
+                  }}
+                  key={picture}
+                  src={picture}
+                />
+              </>
             );
           })}
         </div>
