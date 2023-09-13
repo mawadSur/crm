@@ -38,7 +38,7 @@ const DeskLog = React.memo(({ apiURI }: { apiURI: string }) => {
     try {
       const newStatus = event.target.value;
       // Send an API request to update the sale status
-      const response = await fetch(`http://localhost:3434/api/desklogs/updateSaleStatus/${logId}`, {
+      const response = await fetch(`${apiURI}/desklogs/updateSaleStatus/${logId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
