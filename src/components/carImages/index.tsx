@@ -1,27 +1,34 @@
 import React from 'react';
 import { Label } from '../common/index.js';
-import { ENV_VARIABLES } from '../../config/environment.js';
 import { deleteCarImage } from '../../libs/apis/car.api.js';
+import { Trash2 } from 'react-feather';
 
 const CarImages = (props: any) => {
-  const pictures = [];
+  let carImages = [];
+  const [pictures, setPictures] = React.useState([]);
+  console.log(props);
 
-  Object.keys(props.record.params).forEach((key) => {
-    if (`${key}`.includes('pictures.')) {
-      pictures.push(props.record.params[key]);
-    }
-  });
+  React.useEffect(() => {
+    const pics = [];
+    Object.keys(props.record.params).forEach((key) => {
+      if (`${key}`.includes('pictures.')) {
+        pics.push(props.record.params[key]);
+      }
+    });
+    carImages = [...pics];
+    setPictures(pics);
+  }, []);
 
   const deleteImage = React.useCallback(async (imageUrl: string) => {
     try {
       await deleteCarImage(props?.property?.props?.apiURI, props.record.id, imageUrl);
-      console.log('Image Deleted Successfully');
+      carImages = carImages.filter((x) => x !== imageUrl);
+      setPictures(carImages);
     } catch (error) {
       console.log('---', error);
     }
   }, []);
 
-  console.log('pictures', pictures);
   return (
     <div style={{ marginBottom: '24px' }}>
       <Label>Pictures</Label>
@@ -30,16 +37,28 @@ const CarImages = (props: any) => {
           {pictures.map((picture) => {
             return (
               <>
-                <button onClick={(e) => deleteImage(picture)}>Delete image</button>
-                <img
+                <div
                   style={{
-                    maxWidth: '100%',
+                    position: 'relative',
+                    display: 'inline-block',
                     height: '300px',
-                    display: 'inline-block', // To keep images inline
+                    margin: '8px',
                   }}
-                  key={picture}
-                  src={picture}
-                />
+                >
+                  <Trash2
+                    onClick={(e) => deleteImage(picture)}
+                    key={`${picture}-trash`}
+                    style={{ position: 'absolute', top: '4px', right: '4px', color: 'c20012' }}
+                  />
+                  <img
+                    style={{
+                      maxWidth: '100%',
+                      height: '300px',
+                    }}
+                    key={picture}
+                    src={picture}
+                  />
+                </div>
               </>
             );
           })}
