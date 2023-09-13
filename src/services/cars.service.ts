@@ -29,12 +29,7 @@ export class CarsService {
   }
 
   async deleteImage(_id: string, imageUrl: string) {
-    console.log('In service');
-    console.log(imageUrl);
-    console.log(_id);
-
     await s3.deleteObject({ Bucket: bucketName, Key: imageUrl });
-    console.log('Deleted successfully');
     await CarModel.updateOne({ _id }, { $pull: { pictures: imageUrl } });
     return {
       message: 'Image deleted successfully',
