@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import calculatorStyle from './style.js';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { ENV_VARIABLES } from '../../config/environment.js';
 
 const LoanPaymentMatrix = () => {
   const [marketValue, setMarketValue] = useState('0');
@@ -11,8 +12,12 @@ const LoanPaymentMatrix = () => {
   const [nontaxFees, setNontaxFees] = useState('0');
   const [apr, setApr] = useState('0');
   const container = useRef(null);
+  const [total, setTotal] = React.useState(0);
+  const [offset, setOffset] = React.useState(0);
+  const [limit] = React.useState(10);
   const [opportunity, setOpportunity] = useState(null);
   const [loading, setLoading] = useState(true);
+  const apiURI = ENV_VARIABLES.API_URL;
 
   const calculatePayment = (loanTerm) => {
     const principal =
@@ -30,26 +35,31 @@ const LoanPaymentMatrix = () => {
     const fetchData = async () => {
       setLoading(true);
       const queryParams = new URLSearchParams(window.location.search);
-      const id = queryParams.get('id');
-      if (id) {
+      const opportunityId = queryParams.get('id');
+      if (opportunityId) {
         try {
-          const origin = window.location.origin;
-          const response = await fetch(`${origin}/api/desklogs`);
-          if (response.status === 200) {
-            const data = await response.json();
+          setLoading(true);
+          const response = await fetch(
+            `${apiURI}/desklogs` + '?offset=' + offset + '&limit=' + limit,
+          );
+          const data = await response.json();
+          if (data?.items?.length) {
             const { items } = data;
-            const opportunityData = items.find((item: any) => item.id === id);
+            const opportunityData = items.find((item: any) => item.id === opportunityId);
             setOpportunity(opportunityData);
-            setLoading(false);
           }
-        } catch (error) {
-          console.error('Error parsing JSON data:', error);
+          if (data?.total) {
+            setTotal(data.total);
+          }
           setLoading(false);
+        } catch (error) {
+          setLoading(false);
+          console.error('Error fetching data:', error);
         }
       }
     };
     fetchData();
-  }, []);
+  }, [offset, limit, apiURI]);
 
   const handlePDFDownload = async () => {
     if (container.current) {

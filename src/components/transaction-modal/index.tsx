@@ -75,8 +75,6 @@ const TransactionModal = ({ open, onClose, opportunity, apiURI }: ITransactionMo
     setValue(newValue);
   };
 
-  console.log(opportunity, 'a[iUri');
-
   React.useEffect(() => {
     if (!opportunity?.customerId) return;
 
