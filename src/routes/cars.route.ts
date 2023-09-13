@@ -10,13 +10,17 @@ export class CarsRoute {
     this.router = express.Router();
     // this.router.get('/images', this.getCarImages.bind(this));
     this.router.post('/:id/image/upload', upload.single('image'), this.uploadCarImage.bind(this));
-    this.router.delete('/image/delete/:s3Url/:vin', this.deleteCarImage.bind(this));
+    this.router.delete('/:id/image/delete', this.deleteCarImage.bind(this));
     this.carsService = new CarsService();
   }
 
   async deleteCarImage(request: express.Request, res: express.Response) {
     try {
-      const data = await this.carsService.deleteImage(request.params.s3Url, request.params.vin);
+      console.log(request.query);
+      const data = await this.carsService.deleteImage(
+        request.params.id,
+        request.query.imageUrl as string,
+      );
       res.json(data);
     } catch (error) {
       console.log(error);
