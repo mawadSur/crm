@@ -4,7 +4,6 @@ import { ENV_VARIABLES } from '../../config/environment.js';
 import { deleteCarImage } from '../../libs/apis/car.api.js';
 
 const CarImages = (props: any) => {
-  console.log('props', props);
   const pictures = [];
 
   Object.keys(props.record.params).forEach((key) => {
@@ -15,7 +14,7 @@ const CarImages = (props: any) => {
 
   const deleteImage = React.useCallback(async (imageUrl: string) => {
     try {
-      await deleteCarImage(props.property.apiURI, props.record.id, imageUrl);
+      await deleteCarImage(props?.property?.props?.apiURI, props.record.id, imageUrl);
       console.log('Image Deleted Successfully');
     } catch (error) {
       console.log('---', error);
