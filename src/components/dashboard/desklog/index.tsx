@@ -13,11 +13,9 @@ import {
 import { Pagination, Skeleton, TableSortLabel } from '@mui/material';
 import React from 'react';
 import TransactionModal from '../../../components/transaction-modal/index.js';
-import { ENV_VARIABLES } from '../../../config/environment.js';
 import { ESaleStatus, Order, dateFormat } from '../../../utils/index.js';
 import { Title } from '../../common/index.js';
 import styles from './styles.js';
-import { error } from 'console';
 
 const DeskLog = React.memo(({ apiURI }: { apiURI: string }) => {
   const [openTransactionModal, setOpenTransactionModal] = React.useState(false);
