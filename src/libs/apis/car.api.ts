@@ -12,17 +12,12 @@ export const uploadCarImage = async (carId: string, file: any, apiURI: string) =
   }
 };
 
-// apiURI: string
-// `http://localhost:3434/api/cars/${carId}/image/delete?imageUrl=${imageUrl}`
-// ${apiURI}
-export const deleteCarImage = async (carId: string, imageUrl: string) => {
+export const deleteCarImage = async (apiURI: string, carId: string, imageUrl: string) => {
+  if (!apiURI) return;
   imageUrl = encodeURIComponent(imageUrl);
-  const response = await fetch(
-    `http://localhost:3434/api/cars/${carId}/image/delete?imageUrl=${imageUrl}`,
-    {
-      method: 'DELETE',
-    },
-  );
+  const response = await fetch(`${apiURI}/cars/${carId}/image/delete?imageUrl=${imageUrl}`, {
+    method: 'DELETE',
+  });
   if (response.ok) {
     return await response.json();
   } else {

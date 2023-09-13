@@ -6,30 +6,21 @@ import { deleteCarImage } from '../../libs/apis/car.api.js';
 const CarImages = (props: any) => {
   console.log('props', props);
   const pictures = [];
+
   Object.keys(props.record.params).forEach((key) => {
     if (`${key}`.includes('pictures.')) {
       pictures.push(props.record.params[key]);
     }
   });
 
-  // const deleteImage = React.useCallback(async (imageUrl: string) => {
-  //   try {
-  //     imageUrl = encodeURIComponent(imageUrl);
-  //     await deleteCarImage(props.record.id, imageUrl, ENV_VARIABLES.API_URI);
-  //     console.log('Image Deleted Succesfully');
-  //   } catch (error) {
-  //     console.log('---', error);
-  //   }
-  // }, []);
-
-  const deleteImage = async (imageUrl: string) => {
+  const deleteImage = React.useCallback(async (imageUrl: string) => {
     try {
-      await deleteCarImage(props.record.id, imageUrl);
-      console.log('Image Deleted Succesfully');
+      await deleteCarImage(props.property.apiURI, props.record.id, imageUrl);
+      console.log('Image Deleted Successfully');
     } catch (error) {
       console.log('---', error);
     }
-  };
+  }, []);
 
   console.log('pictures', pictures);
   return (
