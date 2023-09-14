@@ -21,6 +21,9 @@ export const carResource: ResourceWithOptions = {
         components: {
           show: Components.CarImages,
         },
+        props: {
+          apiURI: ENV_VARIABLES.API_URI,
+        },
       },
     },
     actions: {
