@@ -174,6 +174,7 @@ const DeskLog = React.memo(({ apiURI }: { apiURI: string }) => {
               {!loading &&
                 deskLogData.map((log) => (
                   <TableRow
+                    style={{ cursor: 'pointer' }}
                     key={log.id}
                     className={`saleStatus-${log.saleStatus.replace(/\s+/g, '-')}`}
                     onClick={() => handleRowClick(log)}

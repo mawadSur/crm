@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import calculatorStyle from './style.js';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { ENV_VARIABLES } from '../../config/environment.js';
+import { ApiClient } from 'adminjs';
 
 const LoanPaymentMatrix = () => {
   const [marketValue, setMarketValue] = useState('0');
@@ -17,7 +17,24 @@ const LoanPaymentMatrix = () => {
   const [limit] = React.useState(10);
   const [opportunity, setOpportunity] = useState(null);
   const [loading, setLoading] = useState(true);
-  const apiURI = ENV_VARIABLES.API_URL;
+  const [apiURI, setApiURI] = React.useState('');
+  const api = new ApiClient();
+
+  React.useEffect(() => {
+    setLoading(true);
+    api
+      .getDashboard()
+      .then((response: any) => {
+        if (response?.data?.apiURI) {
+          setApiURI(response.data.apiURI);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        throw error;
+      });
+  }, []);
 
   const calculatePayment = (loanTerm) => {
     const principal =
@@ -49,7 +66,7 @@ const LoanPaymentMatrix = () => {
             setOpportunity(opportunityData);
           }
           if (data?.total) {
-            setTotal(data.total);
+            setTotal(data?.total);
           }
           setLoading(false);
         } catch (error) {
@@ -81,13 +98,24 @@ const LoanPaymentMatrix = () => {
           display: 'flex',
           alignSelf: 'flex-end',
           margin: '10px 20px 5px',
+          cursor: 'pointer',
         }}
         onClick={handlePDFDownload}
       >
         Download PDF
       </button>
       {loading ? (
-        <div>Loading...</div>
+        <div
+          style={{
+            display: 'flex',
+            height: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: 900,
+          }}
+        >
+          Loading...
+        </div>
       ) : (
         <div className="calculator-container" style={{ padding: 16 }}>
           <div

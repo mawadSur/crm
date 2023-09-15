@@ -233,9 +233,12 @@ const TransactionModal = ({ open, onClose, opportunity, apiURI }: ITransactionMo
                 color: 'white',
                 marginTop: '20px',
                 marginLeft: '10px',
+                borderRadius: 6,
+                padding: 6,
+                cursor: 'pointer',
               }}
             >
-              Go to Calculator
+              Go to calculator
             </button>
           </Box>
         </Text>
