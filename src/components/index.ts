@@ -10,4 +10,10 @@ export const Components = {
   UploadCarImage: componentLoader.add('UploadCarImage', './uploadCarImage/index.js'),
   CarImages: componentLoader.add('CarImages', './carImages/index.js'),
   Chat: componentLoader.add('Chat', './conversation/customersList.js'),
+
+  //! Customers
+  CustomerReferences: componentLoader.add(
+    'CustomerReferences',
+    './customers/customerReferences/index.js',
+  ),
 };

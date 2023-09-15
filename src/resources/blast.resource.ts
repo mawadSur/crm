@@ -1,5 +1,6 @@
 import { ResourceWithOptions } from 'adminjs';
 import { BlastModel } from '../models/index.js';
+import { Components } from '../components/index.js';
 
 export const blastResource: ResourceWithOptions = {
   resource: BlastModel,
@@ -28,6 +29,10 @@ export const blastResource: ResourceWithOptions = {
           edit: false,
           filter: true,
           show: true,
+        },
+        components: {
+          list: Components.CustomerReferences,
+          show: Components.CustomerReferences,
         },
       },
     },
