@@ -2,11 +2,12 @@ import React from 'react';
 import { Label } from '../common/index.js';
 import { deleteCarImage } from '../../libs/apis/car.api.js';
 import { Trash2 } from 'react-feather';
+import { LinearProgress } from '@mui/material';
 
 const CarImages = (props: any) => {
   let carImages = [];
   const [pictures, setPictures] = React.useState([]);
-  console.log(props);
+  const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
     const pics = [];
@@ -21,10 +22,13 @@ const CarImages = (props: any) => {
 
   const deleteImage = React.useCallback(async (imageUrl: string) => {
     try {
+      setLoading(true);
       await deleteCarImage(props?.property?.props?.apiURI, props.record.id, imageUrl);
       carImages = carImages.filter((x) => x !== imageUrl);
       setPictures(carImages);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log('---', error);
     }
   }, []);
@@ -45,11 +49,23 @@ const CarImages = (props: any) => {
                     margin: '8px',
                   }}
                 >
-                  <Trash2
-                    onClick={(e) => deleteImage(picture)}
-                    key={`${picture}-trash`}
-                    style={{ position: 'absolute', top: '4px', right: '4px', color: 'c20012' }}
-                  />
+                  <button
+                    disabled={loading}
+                    style={{
+                      position: 'absolute',
+                      top: '4px',
+                      right: '4px',
+                      cursor: 'pointer',
+                      backgroundImage: 'linear-gradient(#d9d9d9, #5f5f5f, #444444)',
+                    }}
+                  >
+                    <Trash2
+                      onClick={(e) => deleteImage(picture)}
+                      key={`${picture}-trash`}
+                      style={{ color: '#d7d7d7' }}
+                    />
+                  </button>
+                  {loading ? <LinearProgress /> : ''}
                   <img
                     style={{
                       maxWidth: '100%',
