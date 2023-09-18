@@ -1,30 +1,29 @@
 import React, { useEffect, useState } from 'react';
 
-const fetchUrl =
-  process.env.USE_LOCAL === 'true'
-    ? `${process.env.FETCH_URL}/api/customers`
-    : 'http://localhost:3434/api/customers/customer-followup';
-
-const Custoist = ({ onDataUpdate, selectedSection }) => {
+const CustomerList = ({ onDataUpdate, selectedSection }) => {
   const [customers, setCustomers] = useState([]);
   const [filteredCustomers, setFilteredCustomers] = useState([]);
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch(fetchUrl);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      setCustomers(data.items);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+  const fetchUrl =
+    process.env.USE_LOCAL === 'true'
+      ? `${process.env.FETCH_URL}/api/customers`
+      : 'http://localhost:3434/api/customers/customer-followup';
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(fetchUrl);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setCustomers(data.items);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
     fetchData();
-  }, []);
+  }, [fetchUrl]);
 
   useEffect(() => {
     const totalCustomers = customers.length;
@@ -105,4 +104,4 @@ const Custoist = ({ onDataUpdate, selectedSection }) => {
   );
 };
 
-export default Custoist;
+export default CustomerList;
