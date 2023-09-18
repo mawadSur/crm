@@ -8,6 +8,7 @@ import {
   TableHead,
   TableBody,
   Badge,
+  Loader,
 } from '@adminjs/design-system';
 import Pagination from '../common/pagination/index.js';
 import { dateFormat } from '../../utils/functions.js';
@@ -69,6 +70,10 @@ const BlastNewest = () => {
     },
     [offset, limit, apiURI],
   );
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div
