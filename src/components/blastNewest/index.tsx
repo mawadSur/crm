@@ -1,21 +1,21 @@
-import { ApiClient } from 'adminjs';
-import React from 'react';
 import {
-  Table,
-  TableRow,
-  TableCell,
-  TableCaption,
-  TableHead,
-  TableBody,
   Badge,
   Loader,
+  Pagination,
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableRow,
 } from '@adminjs/design-system';
-import Pagination from '../common/pagination/index.js';
+import { ApiClient } from 'adminjs';
+import React from 'react';
 import { dateFormat } from '../../utils/functions.js';
 
 const BlastNewest = () => {
   const api = new ApiClient();
-  const [limit, setLimit] = React.useState(50);
+  const [limit] = React.useState(10);
   const [total, setTotal] = React.useState(0);
   const [offset, setOffset] = React.useState(0);
   const [page, setPage] = React.useState(1);
@@ -47,7 +47,7 @@ const BlastNewest = () => {
     (async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${apiURI}/blasts/newest?limit=${limit}&offset=0`);
+        const response = await fetch(`${apiURI}/blasts/newest?limit=${limit}&offset=${offset}`);
         const data = await response.json();
         if (data?.items?.length) {
           setBlasts(data.items);
@@ -61,10 +61,11 @@ const BlastNewest = () => {
         setLoading(false);
       }
     })();
-  }, [apiURI]);
+  }, [apiURI, limit, offset]);
 
   const handleSetPagination = React.useCallback(
-    (_, value) => {
+    (value) => {
+      console.log('value', value);
       setOffset((value - 1) * limit);
       setPage(value);
     },
@@ -74,6 +75,8 @@ const BlastNewest = () => {
   if (loading) {
     return <Loader />;
   }
+
+  console.log('===>', total);
 
   return (
     <div
@@ -109,7 +112,9 @@ const BlastNewest = () => {
           ))}
         </TableBody>
       </Table>
-      <Pagination onChange={handleSetPagination} total={total} perPage={limit} page={page} />
+      <div style={{ marginTop: '20px', margin: 'auto', width: 'fit-content' }}>
+        <Pagination onChange={handleSetPagination} total={total} perPage={limit} page={page} />
+      </div>
     </div>
   );
 };

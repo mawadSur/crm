@@ -24,7 +24,9 @@ export class BlastService {
       .limit(query.limit)
       .exec();
 
-    const total = await BlastModel.countDocuments();
+    const total = await BlastModel.countDocuments({
+      isNewest: true,
+    });
     return {
       data,
       total,
