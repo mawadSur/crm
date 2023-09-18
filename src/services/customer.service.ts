@@ -1,5 +1,6 @@
 import httpRequest from '../libs/httpsRequest.js';
 import {
+  Blast,
   BlastModel,
   CustomerActivityModel,
   CustomerInsuranceModel,
@@ -53,7 +54,10 @@ export class CustomerService {
     };
   }
 
-  async launchCampaign(payload: { customerIds: string[]; context: string }) {
+  async launchCampaign(
+    payload: { customerIds: string[]; context: string },
+    ignoreUpdateNewest: boolean = false,
+  ) {
     const customers = await CustomerModel.find({
       _id: {
         $in: payload.customerIds,
@@ -72,7 +76,25 @@ export class CustomerService {
       customerId: customer._id,
       context: String(payload.context),
       isSendMessage: false,
+      isNewest: true,
     }));
+
+    if (!ignoreUpdateNewest) {
+      //! Update blast to older
+      await BlastModel.updateMany(
+        {
+          isNewest: true,
+        },
+        {
+          isNewest: false,
+        },
+        {
+          multi: true,
+        },
+      );
+    }
+
+    console.log('waitingList', waitingList);
 
     //! Create blast data
     const blasts = await BlastModel.insertMany(waitingList, {
@@ -105,7 +127,6 @@ export class CustomerService {
 
         if (!blastId) return;
 
-        console.log('blastId', blastId);
         updateBlastOperations.push({
           updateOne: {
             filter: { _id: blastId },
@@ -136,13 +157,28 @@ export class CustomerService {
     let _totalSuccess = 0;
     let _totalFailed = 0;
 
+    await BlastModel.updateMany(
+      {
+        isNewest: true,
+      },
+      {
+        isNewest: false,
+      },
+      {
+        multi: true,
+      },
+    );
+
     while (offset < totalCustomers) {
       try {
         const customers = await CustomerModel.find().skip(offset).limit(limit).lean().exec();
-        const { totalSuccess, totalFailed } = await this.launchCampaign({
-          customerIds: customers.map((customer) => String(customer._id)),
-          context: payload.context,
-        });
+        const { totalSuccess, totalFailed } = await this.launchCampaign(
+          {
+            customerIds: customers.map((customer) => String(customer._id)),
+            context: payload.context,
+          },
+          true,
+        );
         offset += limit;
         _totalSuccess += totalSuccess;
         _totalFailed += totalFailed;

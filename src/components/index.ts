@@ -16,4 +16,7 @@ export const Components = {
     'CustomerReferences',
     './customers/customerReferences/index.js',
   ),
+
+  //! Blast
+  BlastNewest: componentLoader.add('BlastNewest', './blastNewest/index.js'),
 };

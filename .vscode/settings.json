@@ -19,7 +19,8 @@
     "desklogs",
     "autorestart",
     "Roboto",
-    "Postive"
+    "Postive",
+    "testid"
   ],
   "editor.acceptSuggestionOnEnter": "on"
 }
