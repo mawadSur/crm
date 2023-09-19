@@ -2,7 +2,7 @@ import React from 'react';
 import UploadStyle from './style.js';
 import { uploadCarImage } from '../../libs/apis/car.api.js';
 import { useNavigate } from 'react-router-dom';
-import { LinearProgress } from '@mui/material';
+import { Loader } from '@adminjs/design-system';
 
 const UploadCarImage = (props: any) => {
   const navigate = useNavigate();
@@ -66,7 +66,7 @@ const UploadCarImage = (props: any) => {
 
   return (
     <>
-      <div style={{ marginBottom: '16px' }}>{loading ? <LinearProgress /> : ''}</div>
+      <div style={{ marginBottom: '16px' }}>{loading ? <Loader /> : ''}</div>
       {error ? <UploadStyle.Alert>{error ?? ''}</UploadStyle.Alert> : null}
       <div
         onClick={handleOpenUploader}

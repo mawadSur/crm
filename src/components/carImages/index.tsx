@@ -1,8 +1,8 @@
+import { Loader } from '@adminjs/design-system';
 import React from 'react';
-import { Label } from '../common/index.js';
-import { deleteCarImage } from '../../libs/apis/car.api.js';
 import { Trash2 } from 'react-feather';
-import { LinearProgress } from '@mui/material';
+import { deleteCarImage } from '../../libs/apis/car.api.js';
+import { Label } from '../common/index.js';
 
 const CarImages = (props: any) => {
   let carImages = [];
@@ -65,7 +65,7 @@ const CarImages = (props: any) => {
                       style={{ color: '#d7d7d7' }}
                     />
                   </button>
-                  {loading ? <LinearProgress /> : ''}
+                  {loading && <Loader />}
                   <img
                     style={{
                       maxWidth: '100%',

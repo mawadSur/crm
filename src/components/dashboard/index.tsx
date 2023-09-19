@@ -2,15 +2,15 @@ import React from 'react';
 
 //! Components
 import AppointmentsToday from './appointments/index.js';
-import AverageDayInventory from './average-days-inventory/index.js';
+// import AverageDayInventory from './average-days-inventory/index.js';
 import DeskLog from './desklog/index.js';
-import GrossRevenue from './gross-revenue/index.js';
-import InventoryTurnoverRate from './inventory-turnover-rate/index.js';
+// import GrossRevenue from './gross-revenue/index.js';
+// import InventoryTurnoverRate from './inventory-turnover-rate/index.js';
 import SalesVolume from './sales-volume/index.js';
 
 //! Common Components
 import { Flex, Page, Section } from '../common/index.js';
-import LeadConversionRate from './lead-conversion-rate/index.js';
+// import LeadConversionRate from './lead-conversion-rate/index.js';
 import { ApiClient } from 'adminjs';
 
 const Dashboard: React.FC = (props) => {
@@ -35,7 +35,7 @@ const Dashboard: React.FC = (props) => {
         <Section $width="60%">
           <AppointmentsToday apiURI={apiURI} />
         </Section>
-        <Section $width="40%">
+        <Section $width="39%">
           <SalesVolume />
         </Section>
       </Flex>
