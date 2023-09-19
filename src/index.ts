@@ -110,7 +110,7 @@ const start = async () => {
           };
         },
         component: Components.FollowUp,
-        icon: 'Campaign',
+        icon: 'BarChart2',
       },
       blast: {
         handler: async (request, response, context) => {

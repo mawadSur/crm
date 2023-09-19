@@ -11,10 +11,16 @@ import {
 } from '@adminjs/design-system';
 import { ApiClient } from 'adminjs';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { dateFormat } from '../../utils/functions.js';
 
-const BlastNewest = () => {
+interface Props {
+  caption?: string;
+}
+
+const BlastNewest = React.memo(({ caption = 'Blast Newest' }: Props) => {
   const api = new ApiClient();
+  const navigate = useNavigate();
   const [limit] = React.useState(10);
   const [total, setTotal] = React.useState(0);
   const [offset, setOffset] = React.useState(0);
@@ -72,11 +78,16 @@ const BlastNewest = () => {
     [offset, limit, apiURI],
   );
 
+  const handleRedirectToBlast = React.useCallback(() => {
+    console.log('total', total);
+    navigate(`/admin/pages/followUp`, {
+      state: { total: total },
+    });
+  }, [total]);
+
   if (loading) {
     return <Loader />;
   }
-
-  console.log('===>', total);
 
   return (
     <div
@@ -86,7 +97,7 @@ const BlastNewest = () => {
       }}
     >
       <Table>
-        <TableCaption>Blast Newest</TableCaption>
+        <TableCaption>{caption}</TableCaption>
         <TableHead>
           <TableRow>
             <TableCell>Id</TableCell>
@@ -100,13 +111,13 @@ const BlastNewest = () => {
         </TableHead>
         <TableBody>
           {blasts?.map((blast) => (
-            <TableRow onClick={() => console.log(blast)} key={blast?._id}>
+            <TableRow onClick={handleRedirectToBlast} key={blast?._id}>
               <TableCell>{blast?._id}</TableCell>
               <TableCell>{blast?.phone}</TableCell>
               <TableCell>{blast?.customerId?.name}</TableCell>
               <TableCell>{blast?.context}</TableCell>
               <TableCell>{blast?.isSendMessage ? <Badge>Yes</Badge> : <Badge>No</Badge>}</TableCell>
-              <TableCell>{blast?.isSendNewest ? <Badge>Yes</Badge> : <Badge>No</Badge>}</TableCell>
+              <TableCell>{blast?.isNewest ? <Badge>Yes</Badge> : <Badge>No</Badge>}</TableCell>
               <TableCell>{blast?.createdAt ? dateFormat(blast.createdAt, true) : ''}</TableCell>
             </TableRow>
           ))}
@@ -117,5 +128,5 @@ const BlastNewest = () => {
       </div>
     </div>
   );
-};
+});
 export default BlastNewest;
