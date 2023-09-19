@@ -1,18 +1,39 @@
 import React, { useEffect, useState } from 'react';
+import { ApiClient } from 'adminjs';
+
+// const fetchUrl =
+// process.env.USE_LOCAL === 'true'
+//   ? `${process.env.FETCH_URL}/api/customers`
+//   : 'http://localhost:3434/api/customers/customer-followup';
 
 const CustomerList = ({ onDataUpdate, selectedSection }) => {
+  const api = new ApiClient();
   const [customers, setCustomers] = useState([]);
   const [filteredCustomers, setFilteredCustomers] = useState([]);
-
-  const fetchUrl =
-    process.env.USE_LOCAL === 'true'
-      ? `${process.env.FETCH_URL}/api/customers`
-      : 'http://localhost:3434/api/customers/customer-followup';
+  const [apiURI, setApiURI] = useState('');
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchServerSide = async () => {
       try {
-        const response = await fetch(fetchUrl);
+        const response: any = await api.getPage({
+          pageName: 'followUp',
+        });
+        const { data } = response;
+
+        if (data?.apiURI) {
+          setApiURI(data.apiURI);
+        }
+      } catch (error) {
+        console.log('error', error);
+      }
+    };
+    fetchServerSide();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await fetch(`${apiURI}/customers/customer-followup`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -21,9 +42,8 @@ const CustomerList = ({ onDataUpdate, selectedSection }) => {
       } catch (error) {
         console.error('Error fetching data:', error);
       }
-    };
-    fetchData();
-  }, [fetchUrl]);
+    })();
+  }, [apiURI]);
 
   useEffect(() => {
     const totalCustomers = customers.length;
@@ -47,7 +67,7 @@ const CustomerList = ({ onDataUpdate, selectedSection }) => {
       visitedStoreCount,
       purchaseCount,
     });
-  }, [fetchUrl, customers]);
+  }, [apiURI, customers]);
 
   useEffect(() => {
     const selectedCustomers = customers.filter((customer) => {
