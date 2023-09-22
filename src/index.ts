@@ -121,7 +121,7 @@ const start = async () => {
       defaultPerPage: 10,
     },
     assets: {
-      styles: ['/sidebar.css'],
+      styles: ['/sidebar.css', '/customModal.css'],
     },
   });
 

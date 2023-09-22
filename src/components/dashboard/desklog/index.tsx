@@ -117,12 +117,14 @@ const DeskLog = React.memo(({ apiURI }: { apiURI: string }) => {
 
   return (
     <Card>
-      <TransactionModal
-        apiURI={apiURI}
-        open={openTransactionModal}
-        onClose={closeTransactionModal}
-        opportunity={currentLog}
-      />
+      {openTransactionModal && (
+        <TransactionModal
+          apiURI={apiURI}
+          onClose={closeTransactionModal}
+          opportunity={currentLog}
+          open={openTransactionModal}
+        />
+      )}
       <Title style={styles.DeskLogTitle}>Desk Log</Title>
       <Table width="100%" overflowX="scroll" overflowY="scroll">
         <TableHead>
