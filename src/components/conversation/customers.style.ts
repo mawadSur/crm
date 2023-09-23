@@ -4,7 +4,7 @@ export const Container = styled.div`
   background-color: #fff;
   border-radius: 5px;
   max-width: 1200px;
-  margin: 100px;
+  margin: 32px;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
 `;
@@ -45,7 +45,7 @@ export const StyledHeading = styled.h2`
   line-height: 40px;
   font-weight: 400;
   margin-bottom: 32px;
-  margin-top: 32px;
+  margin-top: 10px;
 `;
 
 export const ShowButton = styled.button`

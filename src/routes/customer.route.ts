@@ -23,8 +23,9 @@ export class CustomerRoute {
 
   async list(req: express.Request, res: express.Response) {
     try {
-      const { offset, limit, ...rest } = req.query;
+      const { offset, limit, unlimited, ...rest } = req.query;
       const { data, total } = await this.customerService.list({
+        unlimited: unlimited === 'true',
         offset: Number(offset),
         limit: Number(limit),
         query: rest,

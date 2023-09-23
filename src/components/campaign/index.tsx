@@ -1,18 +1,23 @@
 import React from 'react';
 
+import {
+  Badge,
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@adminjs/design-system';
 import { ApiClient } from 'adminjs';
-import dayjs from 'dayjs';
 import {
   lunchCampaignToAllCustomers,
   lunchCampaignToCustomers,
 } from '../../libs/apis/customer.api.js';
-import {
-  convertPropertyNameToDisplayName,
-  isDateFormat,
-  objectToQueryParams,
-} from '../../utils/functions.js';
+import { dateFormat, objectToQueryParams } from '../../utils/functions.js';
 import { Input } from '../common/index.js';
 import CampaignStyle from './style.js';
+import { Loader } from '@adminjs/design-system';
 
 const BlastCampaignCard = React.memo(() => {
   const [apiURI, setApiURI] = React.useState('');
@@ -85,7 +90,7 @@ const BlastCampaignCard = React.memo(() => {
             return;
           }
           setLoading(true);
-          const response = await fetch(`${apiURI}/customers?${query}`);
+          const response = await fetch(`${apiURI}/customers?${query}&unlimited=true`);
           const data = await response.json();
           if (data?.total > 0) {
             setCustomers(data.items);
@@ -176,8 +181,6 @@ const BlastCampaignCard = React.memo(() => {
       clearTimeout(delayDebounceFn);
     };
   }, []);
-
-  const titles = ['name', 'age', 'gender', 'email', 'address', 'dateOfBirth'];
 
   console.log('totalLaunchFailed', totalLaunchFailed);
   console.log('totalLaunchSuccess', totalLaunchSuccess);
@@ -362,7 +365,7 @@ const BlastCampaignCard = React.memo(() => {
               Launch
             </CampaignStyle.LaunchButton>
             <CampaignStyle.LaunchButton
-              disabled={!prompt || loading || launchLoading}
+              disabled={!prompt || loading || launchLoading || customers.length > 0}
               onClick={() => handleLaunchAll(prompt)}
             >
               Launch All
@@ -380,38 +383,38 @@ const BlastCampaignCard = React.memo(() => {
 
         <div style={{ marginTop: '10px' }}>
           {loading || launchLoading ? (
-            <div style={{ textAlign: 'center', width: '100%' }}>
-              <p>Loading...</p>
-            </div>
+            <Loader />
           ) : (
             customers?.length > 0 && (
-              <CampaignStyle.Table>
-                <colgroup>
-                  <col />
-                  <col />
-                  <col />
-                </colgroup>
-                <thead>
-                  <tr>
-                    {titles.map((title, index) => (
-                      <th key={index}>{convertPropertyNameToDisplayName(title)}</th>
+              <>
+                <Table>
+                  <TableCaption>{'Customers matched filter'}</TableCaption>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Email</TableCell>
+                      <TableCell>Name</TableCell>
+                      <TableCell>Age</TableCell>
+                      <TableCell>Gender</TableCell>
+                      <TableCell>Address</TableCell>
+                      <TableCell>Date of Birth</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {customers?.map((customer) => (
+                      <TableRow key={customer?._id}>
+                        <TableCell>{customer?.email}</TableCell>
+                        <TableCell>{customer?.name}</TableCell>
+                        <TableCell>{customer?.age}</TableCell>
+                        <TableCell>
+                          <Badge>{customer?.gender}</Badge>
+                        </TableCell>
+                        <TableCell>{customer?.address}</TableCell>
+                        <TableCell>{dateFormat(customer?.dateOfBirth)}</TableCell>
+                      </TableRow>
                     ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {customers?.map((item) => (
-                    <tr key={item.id}>
-                      {titles.map((title, index) => {
-                        let value = item[title];
-                        if (isDateFormat(value) && title !== 'age') {
-                          value = dayjs(value).format('MM/DD/YYYY');
-                        }
-                        return <td key={index}>{value}</td>;
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </CampaignStyle.Table>
+                  </TableBody>
+                </Table>
+              </>
             )
           )}
         </div>

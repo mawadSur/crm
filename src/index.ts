@@ -83,9 +83,9 @@ const start = async () => {
       Chat: {
         // name, will be used to build an URL
         handler: async (request, response, context) => {
-          // fetch values from your database
-          // const value = await Car.find({});
-          // return { data: { inventory: car.value } };
+          return {
+            apiURI: ENV_VARIABLES.API_URI,
+          };
         },
         component: Components.Chat,
         icon: 'Plus',

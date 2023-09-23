@@ -12,7 +12,7 @@ import { IQuery, IQueryCustomer } from '../utils/index.js';
 export class CustomerService {
   constructor() {}
 
-  async list({ query }: IQueryCustomer) {
+  async list({ query, offset, limit, unlimited = false }: IQueryCustomer) {
     const total = await CustomerModel.countDocuments();
     const queryOptions: any = {};
 
@@ -45,8 +45,14 @@ export class CustomerService {
     }
 
     //TODO update more conditions to query options
+    const _query = CustomerModel.find(queryOptions);
 
-    const data = await CustomerModel.find(queryOptions).exec();
+    if (!unlimited && offset && limit) {
+      _query.skip(offset);
+      _query.limit(limit);
+    }
+    const data = await _query.exec();
+
     return {
       data,
       total,

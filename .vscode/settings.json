@@ -19,7 +19,9 @@
     "desklogs",
     "autorestart",
     "Roboto",
-    "Postive"
+    "Postive",
+    "pegeus",
+    "domtoimage"
   ],
   "editor.acceptSuggestionOnEnter": "on"
 }
