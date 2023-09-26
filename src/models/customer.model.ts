@@ -17,6 +17,18 @@ export const otherContactSchema = new Schema({
   },
 });
 
+export const flagSchema = new Schema({
+  isBuying: { type: Boolean },
+  carInMind: { type: String },
+  didMakeAppointment: { type: Boolean },
+  didVisitStore: { type: Boolean },
+  didPurchase: { type: Boolean },
+  customerType: { type: String },
+  budgetRange: { type: Number },
+  financingInterest: { type: String },
+  tradeIn: { type: String },
+});
+
 export const customerSchema = new Schema<ICustomer>(
   {
     name: { type: String, required: true },
@@ -48,6 +60,10 @@ export const customerSchema = new Schema<ICustomer>(
         default: [],
       },
     ],
+    flags: {
+      type: [flagSchema],
+      default: [],
+    },
   },
   {
     timestamps: true,

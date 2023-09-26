@@ -54,6 +54,18 @@ export class CustomerService {
     };
   }
 
+  async followupList({ query }: IQueryCustomer) {
+    const total = await CustomerModel.countDocuments();
+
+    //TODO update more conditions to query options
+
+    const data = await CustomerModel.find({ flags: { $ne: null } }).exec();
+    return {
+      data,
+      total,
+    };
+  }
+
   async launchCampaign(
     payload: { customerIds: string[]; context: string },
     ignoreUpdateNewest: boolean = false,

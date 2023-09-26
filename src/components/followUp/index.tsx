@@ -1,28 +1,18 @@
 import { ApiClient } from 'adminjs';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { Cell, Funnel, FunnelChart, ResponsiveContainer, Tooltip } from 'recharts';
-import BlastNewest from '../blastNewest/index.js';
+import { Cell, Funnel, FunnelChart, FunnelProps, ResponsiveContainer, Tooltip } from 'recharts';
+import CustomersList from './CustomerList.js';
+import FollowUpStyle from './style.js';
 
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#fd6b19']; // sample colors, adjust as necessary
+const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#fd6b19', '#215a9f']; // sample colors, adjust as necessary
 
 const FollowUp = () => {
   const api = new ApiClient();
-  const [data, setData] = useState([]);
+  const [data, setData] = React.useState([]);
   const location = useLocation();
   const [apiURI, setApiURI] = React.useState('');
-
-  // Load animation by populating data after a delay (using useEffect and useState)
-  useEffect(() => {
-    const fetchData = [
-      { value: 100, name: 'Sent message' },
-      { value: 80, name: 'Postive Response' },
-      { value: 50, name: 'Made Appointment' },
-      { value: 20, name: 'Visited Store' },
-    ];
-
-    setTimeout(() => setData(fetchData), 500); // simulating loading data with a delay
-  }, []);
+  const [selectedSection, setSelectedSection] = React.useState(null);
 
   React.useEffect(() => {
     const fetchServerSide = async () => {
@@ -43,6 +33,18 @@ const FollowUp = () => {
 
     fetchServerSide();
   }, []);
+
+  // Load animation by populating data after a delay (using useEffect and useState)
+  const updateDataWithCounts = (customerCounts) => {
+    const funnelData = [
+      { value: customerCounts.totalCustomers, name: 'Sent message' },
+      { value: customerCounts.positiveResponseCount, name: 'Positive Response' },
+      { value: customerCounts.madeAppointmentCount, name: 'Made Appointment' },
+      { value: customerCounts.visitedStoreCount, name: 'Visited Store' },
+      { value: customerCounts.purchaseCount, name: 'Purchased' },
+    ];
+    setTimeout(() => setData(funnelData), 500); // simulating loading data with a delay
+  };
 
   React.useEffect(() => {
     let sentMessage = 0;
@@ -67,38 +69,44 @@ const FollowUp = () => {
     }
   }, [location?.state, apiURI, data.length]);
 
-  // const handleClick = (data, index) => {
-  //   alert(`${data.name}: ${data.value}`);
-  // };
+  const handleSectionClick = (data: any, index: number) => {
+    setSelectedSection(data.name); // Update selected section
+    console.log(data);
+  };
 
   return (
     <div>
-      <h1>Follow Up Page</h1>
-      <ResponsiveContainer width="80%" height={400}>
-        <FunnelChart>
-          <Tooltip />
-          <Funnel
-            data={data}
-            dataKey="value"
-            nameKey="name"
-            // onClick={handleClick}
-          >
-            {data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index]}
-                cursor="pointer"
-                stroke="none"
-                strokeWidth={1}
-                fillOpacity={0.7}
-                onMouseEnter={() => {}}
-              />
-            ))}
-          </Funnel>
-        </FunnelChart>
-      </ResponsiveContainer>
-
-      <BlastNewest caption="Customers" />
+      <FollowUpStyle.ContainerFollowUp>
+        <FollowUpStyle.Card>
+          <FollowUpStyle.Title>Follow Up Page</FollowUpStyle.Title>
+        </FollowUpStyle.Card>
+      </FollowUpStyle.ContainerFollowUp>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <ResponsiveContainer width="50%" height={400}>
+          <FunnelChart>
+            <Tooltip />
+            <Funnel
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              onClick={handleSectionClick as FunnelProps['onClick']}
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index]}
+                  cursor="pointer"
+                  stroke="none"
+                  strokeWidth={1}
+                  fillOpacity={0.7}
+                  onMouseEnter={() => {}}
+                />
+              ))}
+            </Funnel>
+          </FunnelChart>
+        </ResponsiveContainer>
+        <CustomersList onDataUpdate={updateDataWithCounts} selectedSection={selectedSection} />
+      </div>
     </div>
   );
 };

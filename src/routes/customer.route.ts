@@ -10,6 +10,7 @@ export class CustomerRoute {
   constructor() {
     this.router = express.Router();
     this.router.get('/', this.list.bind(this));
+    this.router.get('/customer-followup', this.followupList.bind(this));
     this.router.get('/:customerId/conversations', this.getCustomerConversations.bind(this));
     this.router.get('/:customerId/services', this.getCustomerServices.bind(this));
     this.router.get('/:customerId/insurances', this.getCustomerInsurances.bind(this));
@@ -31,6 +32,24 @@ export class CustomerRoute {
       } as IQueryCustomer);
       res.json({
         items: data.map((item) => item.toJSON()),
+        total,
+      });
+    } catch (error) {
+      console.log('error', error);
+      res.status(500).json({ message: 'Error fetching data' });
+    }
+  }
+
+  async followupList(req: express.Request, res: express.Response) {
+    try {
+      const { offset, limit, ...rest } = req.query;
+      const { data, total } = await this.customerService.followupList({
+        offset: Number(offset),
+        limit: Number(limit),
+        query: rest,
+      } as IQueryCustomer);
+      res.json({
+        items: data.map((item) => ({ name: item.name, flags: item.flags })),
         total,
       });
     } catch (error) {

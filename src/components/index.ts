@@ -19,4 +19,8 @@ export const Components = {
 
   //! Blast
   BlastNewest: componentLoader.add('BlastNewest', './blastNewest/index.js'),
+  // CustomerName: componentLoader.add('CustomerName', './customers/customerName/index.js'),
+
+  //! Common components
+  ChatProxy: componentLoader.add('chatProxy', './common/chatProxy/index.js'),
 };
