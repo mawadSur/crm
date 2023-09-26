@@ -10,7 +10,6 @@ export const Components = {
   UploadCarImage: componentLoader.add('UploadCarImage', './uploadCarImage/index.js'),
   CarImages: componentLoader.add('CarImages', './carImages/index.js'),
   Chat: componentLoader.add('Chat', './conversation/customersList.js'),
-
   //! Customers
   CustomerReferences: componentLoader.add(
     'CustomerReferences',
@@ -19,7 +18,6 @@ export const Components = {
 
   //! Blast
   BlastNewest: componentLoader.add('BlastNewest', './blastNewest/index.js'),
-  // CustomerName: componentLoader.add('CustomerName', './customers/customerName/index.js'),
 
   //! Common components
   ChatProxy: componentLoader.add('chatProxy', './common/chatProxy/index.js'),
