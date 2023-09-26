@@ -12,7 +12,6 @@ import SalesVolume from './sales-volume/index.js';
 import { Flex, Page, Section } from '../common/index.js';
 import LeadConversionRate from './lead-conversion-rate/index.js';
 import { ApiClient } from 'adminjs';
-// import ChatConversations from '../conversation/index.js';
 
 const Dashboard: React.FC = (props) => {
   const [apiURI, setApiURI] = React.useState('');
@@ -32,7 +31,6 @@ const Dashboard: React.FC = (props) => {
 
   return (
     <Page>
-      {/* <ChatConversations apiURI={apiURI} /> */}
       <Flex>
         <Section $width="60%">
           <AppointmentsToday apiURI={apiURI} />
@@ -44,7 +42,7 @@ const Dashboard: React.FC = (props) => {
       <Flex>
         <DeskLog apiURI={apiURI} />
       </Flex>
-      <Flex>
+      {/* <Flex>
         <Section $width="24%">
           <GrossRevenue />
         </Section>
@@ -57,7 +55,7 @@ const Dashboard: React.FC = (props) => {
         <Section $width="24%">
           <LeadConversionRate />
         </Section>
-      </Flex>
+      </Flex> */}
     </Page>
   );
 };

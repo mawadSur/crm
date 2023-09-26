@@ -33,6 +33,14 @@ export const carSchema = new Schema<Car>({
   options: { type: [String], required: false },
 });
 
+//* Configure the 'toJSON' and 'toObject' options
+carSchema.set('toJSON', {
+  transform: function (doc: any, ret) {
+    ret.id = doc._id;
+    return ret;
+  },
+});
+
 //* Indexes
 carSchema.index({ make: 1 });
 carSchema.index({ model: 1 });

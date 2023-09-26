@@ -40,4 +40,14 @@ export class DesklogService {
       total,
     };
   }
+
+  async updateSaleStatus(logId, newSaleStatus) {
+    const updatedLog = await DeskLogModel.findByIdAndUpdate(
+      logId,
+      { saleStatus: newSaleStatus },
+      { new: true },
+    ).exec();
+
+    return updatedLog;
+  }
 }

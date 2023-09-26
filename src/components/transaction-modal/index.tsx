@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from 'react';
+
 import {
   Box,
   List,
@@ -16,7 +18,6 @@ import {
   Typography,
 } from '@mui/material';
 import dayjs from 'dayjs';
-import React from 'react';
 import {
   getConversationByCustomerId,
   getCustomerActivities,
@@ -71,9 +72,24 @@ const TransactionModal = ({ open, onClose, opportunity, apiURI }: ITransactionMo
   const [customerInsurances, setCustomerInsurances] = React.useState([]);
   const [customerVehicles, setCustomerVehicles] = React.useState([]);
   const [customerActivities, setCustomerActivities] = React.useState([]);
+  const [deskLogData, setDeskLogData] = useState([]);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    if (open) {
+      fetch(`${apiURI}/desklogs`)
+        .then((response) => response.json())
+        .then((data) => {
+          setDeskLogData(data.items); // Assuming 'items' is the array of data in the API response
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
+    }
+  }, [open]);
 
   React.useEffect(() => {
     if (!opportunity?.customerId) return;
@@ -178,6 +194,7 @@ const TransactionModal = ({ open, onClose, opportunity, apiURI }: ITransactionMo
                 ? dateFormat(opportunity.customer.updatedAt, true)
                 : 'N/A'}
             </Text>
+            <div>{/* <b>Text Preferred:</b> {customer?.textPreferred ? 'Yes' : 'No'} */}</div>
           </Box>
 
           <Box style={{ marginTop: '20px', marginRight: '10px', width: '50%' }}>
@@ -194,9 +211,9 @@ const TransactionModal = ({ open, onClose, opportunity, apiURI }: ITransactionMo
             <Text>
               <b>Sales Team:</b> {opportunity?.salesRep?.name ?? ''}
             </Text>
-            {/* <Text>
-              <b>Up Type:</b> {'opportunity.upType'}
-            </Text> */}
+            <Text>
+              <b>Up Type:</b> {opportunity?.customer?.upType}
+            </Text>
             <Text>
               <b>Source:</b> {opportunity?.referralSource ?? 'N/A'}
             </Text>

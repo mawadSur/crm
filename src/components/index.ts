@@ -7,5 +7,13 @@ export const Components = {
   Calculator: componentLoader.add('Calculator', './calculator/index.js'),
   Campaign: componentLoader.add('Campaign', './campaign/index.js'),
   FollowUp: componentLoader.add('Followup', './followUp/index.js'),
-  Chat: componentLoader.add('Chat', './conversation/index.js'),
+  UploadCarImage: componentLoader.add('UploadCarImage', './uploadCarImage/index.js'),
+  CarImages: componentLoader.add('CarImages', './carImages/index.js'),
+  Chat: componentLoader.add('Chat', './conversation/customersList.js'),
+
+  //! Customers
+  CustomerReferences: componentLoader.add(
+    'CustomerReferences',
+    './customers/customerReferences/index.js',
+  ),
 };

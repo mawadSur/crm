@@ -65,7 +65,7 @@ const start = async () => {
       component: Components.Dashboard,
       handler: async () => {
         return {
-          apiURI: ENV_VARIABLES.API_URL,
+          apiURI: ENV_VARIABLES.API_URI,
         };
       },
     },
@@ -74,10 +74,20 @@ const start = async () => {
         // name, will be used to build an URL
         handler: async (request, response, context) => {
           return {
-            apiURI: ENV_VARIABLES.API_URL,
+            apiURI: ENV_VARIABLES.API_URI,
           };
         },
         component: Components.Calculator,
+        icon: 'Plus',
+      },
+      Chat: {
+        // name, will be used to build an URL
+        handler: async (request, response, context) => {
+          // fetch values from your database
+          // const value = await Car.find({});
+          // return { data: { inventory: car.value } };
+        },
+        component: Components.Chat,
         icon: 'Plus',
       },
       campaign: {
@@ -85,7 +95,7 @@ const start = async () => {
         handler: async (request, response, context) => {
           // fetch values from your database
           const customerCount = await CustomerModel.countDocuments();
-          return { data: { customerCount }, apiURI: ENV_VARIABLES.API_URL };
+          return { data: { customerCount }, apiURI: ENV_VARIABLES.API_URI };
         },
         component: Components.Campaign,
         icon: 'Zap',
@@ -94,7 +104,7 @@ const start = async () => {
         // name, will be used to build an URL
         handler: async (request, response, context) => {
           return {
-            apiURI: ENV_VARIABLES.API_URL,
+            apiURI: ENV_VARIABLES.API_URI,
           };
         },
         component: Components.FollowUp,
