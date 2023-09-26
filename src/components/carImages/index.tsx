@@ -40,7 +40,7 @@ const CarImages = (props: any) => {
         <div style={{ whiteSpace: 'nowrap' }}>
           {pictures.map((picture) => {
             return (
-              <>
+              <React.Fragment key={picture}>
                 <div
                   style={{
                     position: 'relative',
@@ -49,33 +49,19 @@ const CarImages = (props: any) => {
                     margin: '8px',
                   }}
                 >
-                  <button
-                    disabled={loading}
-                    style={{
-                      position: 'absolute',
-                      top: '4px',
-                      right: '4px',
-                      cursor: 'pointer',
-                      backgroundImage: 'linear-gradient(#d9d9d9, #5f5f5f, #444444)',
-                    }}
-                  >
-                    <Trash2
-                      onClick={(e) => deleteImage(picture)}
-                      key={`${picture}-trash`}
-                      style={{ color: '#d7d7d7' }}
-                    />
-                  </button>
-                  {loading ? <LinearProgress /> : ''}
+                  <Trash2
+                    onClick={(e) => deleteImage(picture)}
+                    style={{ position: 'absolute', top: '4px', right: '4px', color: 'c20012' }}
+                  />
                   <img
                     style={{
                       maxWidth: '100%',
                       height: '300px',
                     }}
-                    key={picture}
                     src={picture}
                   />
                 </div>
-              </>
+              </React.Fragment>
             );
           })}
         </div>

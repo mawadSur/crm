@@ -1,51 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import ChatConversations from './chatConversation.js';
 import {
   Container,
+  ShowButton,
+  StyledHeading,
   StyledTable,
+  TableCell,
   TableHeader,
   TableRow,
-  TableCell,
-  StyledHeading,
-  ShowButton,
 } from './customers.style.js';
-import ChatConversations from './chatConversation.js';
+import { ApiClient } from 'adminjs';
 
 function CustomersList() {
-  const [customers, setCustomers] = useState([]);
-  const [selectedCustomerId, setSelectedCustomerId] = useState(null);
-  const [showConversation, setShowConversation] = useState(false);
+  const api = new ApiClient();
+  const [apiURI, setApiURI] = React.useState('');
+  const [customers, setCustomers] = React.useState([]);
+  const [selectedCustomerId, setSelectedCustomerId] = React.useState(null);
+  const [showConversation, setShowConversation] = React.useState(false);
 
-  const fetchUrl =
-    process.env.USE_LOCAL === 'true'
-      ? `${process.env.FETCH_URL}/api/customers`
-      : 'http://localhost:3434/api/customers';
+  React.useEffect(() => {
+    const fetchServerSide = async () => {
+      try {
+        const response: any = await api.getPage({
+          pageName: 'chat',
+        });
 
-  useEffect(() => {
+        const { data } = response;
+
+        if (data?.apiURI) {
+          setApiURI(data.apiURI);
+        }
+      } catch (error) {
+        console.log('error', error);
+      }
+    };
+
+    fetchServerSide();
+  }, []);
+
+  React.useEffect(() => {
+    if (!apiURI) return;
     const fetchData = async () => {
       try {
-        const response = await fetch(fetchUrl);
+        const response = await fetch(`${apiURI}/customers`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        const testData = [
-          {
-            _id: '123',
-            name: 'd',
-            email: 'moe@example.com',
-            age: '1234',
-          },
-        ];
         setCustomers(data.items);
-
-        console.log('Fetched data:', data);
-        console.log('Customers data ' + customers.length);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchData();
-  }, [fetchUrl]);
+  }, [apiURI]);
 
   const handleCustomerClick = (customerId) => {
     setSelectedCustomerId(customerId);
@@ -59,7 +67,11 @@ function CustomersList() {
 
   if (showConversation) {
     return (
-      <ChatConversations customerId={selectedCustomerId} onBackClick={handleBackToCustomerList} />
+      <ChatConversations
+        customerId={selectedCustomerId}
+        onBackClick={handleBackToCustomerList}
+        titleBack="Back To Customers"
+      />
     );
   }
 
