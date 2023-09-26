@@ -2,11 +2,12 @@ import React from 'react';
 import { Label } from '../common/index.js';
 import { deleteCarImage } from '../../libs/apis/car.api.js';
 import { Trash2 } from 'react-feather';
+import { LinearProgress } from '@mui/material';
 
 const CarImages = (props: any) => {
   let carImages = [];
   const [pictures, setPictures] = React.useState([]);
-  console.log(props);
+  const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
     const pics = [];
@@ -21,10 +22,13 @@ const CarImages = (props: any) => {
 
   const deleteImage = React.useCallback(async (imageUrl: string) => {
     try {
+      setLoading(true);
       await deleteCarImage(props?.property?.props?.apiURI, props.record.id, imageUrl);
       carImages = carImages.filter((x) => x !== imageUrl);
       setPictures(carImages);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log('---', error);
     }
   }, []);
