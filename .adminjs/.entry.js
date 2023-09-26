@@ -15,6 +15,8 @@ import Chat from '../dist/components/conversation/customersList'
 AdminJS.UserComponents.Chat = Chat
 import CustomerReferences from '../dist/components/customers/customerReferences/index'
 AdminJS.UserComponents.CustomerReferences = CustomerReferences
+import BlastNewest from '../dist/components/blastNewest/index'
+AdminJS.UserComponents.BlastNewest = BlastNewest
 import chatProxy from '../dist/components/common/chatProxy/index'
 AdminJS.UserComponents.chatProxy = chatProxy
 import ImportComponent from '../node_modules/@adminjs/import-export/lib/components/ImportComponent'
