@@ -76,6 +76,7 @@ const LoanPaymentMatrix = () => {
           setLoading(false);
         }
       }
+      setLoading(false);
     };
     fetchData();
   }, [offset, limit, apiURI]);
