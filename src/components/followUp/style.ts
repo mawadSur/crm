@@ -1,5 +1,10 @@
 import { styled } from '@adminjs/design-system/styled-components';
 
+const ContainerFollowUp = styled.div`
+  padding: 2rem 4rem;
+  box-sizing: border-box;
+`;
+
 const Card = styled.div`
   width: 80%;
   padding: 20px;
@@ -66,6 +71,7 @@ const followUpStyle = {
   Dropdown,
   Input,
   LaunchButton,
+  ContainerFollowUp,
 };
 
 export default followUpStyle;

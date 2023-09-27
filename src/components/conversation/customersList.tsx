@@ -86,7 +86,11 @@ function CustomersList() {
 
   if (showConversation) {
     return (
-      <ChatConversations customerId={selectedCustomerId} onBackClick={handleBackToCustomerList} />
+      <ChatConversations
+        customerId={selectedCustomerId}
+        onBackClick={handleBackToCustomerList}
+        titleBack="Back To Customers"
+      />
     );
   }
 

@@ -69,6 +69,7 @@ const start = async () => {
         };
       },
     },
+
     pages: {
       calculator: {
         // name, will be used to build an URL
@@ -80,8 +81,14 @@ const start = async () => {
         component: Components.Calculator,
         icon: 'Plus',
       },
-      Chat: {
-        // name, will be used to build an URL
+      // chat: {
+      //   handler: async (request, response, context) => {
+      //     return { apiURI: ENV_VARIABLES.API_URI };
+      //   },
+      //   component: Components.Chat,
+      //   icon: 'Plus',
+      // },
+      chat: {
         handler: async (request, response, context) => {
           return {
             apiURI: ENV_VARIABLES.API_URI,

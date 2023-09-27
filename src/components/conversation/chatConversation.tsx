@@ -1,34 +1,59 @@
-import React, { useState } from 'react';
+import { ApiClient } from 'adminjs';
+import React from 'react';
 import {
+  BackButton,
   BotMessage,
   CustomerMessage,
+  InputContainer,
   MessageContainer,
   MessageDetails,
-  BackButton,
-  InputContainer,
-  StyledInput,
   SendButton,
+  StyledInput,
 } from './chatConversation.style.js';
 
-const ChatConversations = ({ customerId, onBackClick }) => {
-  const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [newMessage, setNewMessage] = useState('');
+interface Props {
+  customerId: string;
+  titleBack: string;
+  onBackClick: () => void;
+}
+
+const ChatConversations = ({ customerId, onBackClick, titleBack }: Props) => {
+  const api = new ApiClient();
+  const [messages, setMessages] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+  const [loadingSending, setLoadingSending] = React.useState(false);
+  const [newMessage, setNewMessage] = React.useState('');
+  const [apiURI, setApiURI] = React.useState('');
+
+  React.useEffect(() => {
+    const fetchServerSide = async () => {
+      try {
+        const response: any = await api.getPage({
+          pageName: 'chat',
+        });
+
+        const { data } = response;
+
+        if (data?.apiURI) {
+          setApiURI(data.apiURI);
+        }
+      } catch (error) {
+        console.log('error', error);
+      }
+    };
+
+    fetchServerSide();
+  }, []);
 
   const handleNewMessageChange = (event) => {
     setNewMessage(event.target.value);
   };
 
-  const handleSendMessage = async () => {
-    // Send the new message to the API and update the messages
-
-    const fetchUrl =
-      process.env.USE_LOCAL === 'true'
-        ? `${process.env.FETCH_URL}/api/chats/sendMessage`
-        : 'api/chats/sendMessage';
-
+  const handleSendMessage = React.useCallback(async () => {
     try {
-      const response = await fetch(`${fetchUrl}/${customerId}`, {
+      setLoadingSending(true);
+      setNewMessage('');
+      const response = await fetch(`${apiURI}/chats/customers/${customerId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,33 +70,29 @@ const ChatConversations = ({ customerId, onBackClick }) => {
 
       if (data?.messages) {
         setMessages(data.messages);
-
-        // Fetch customer information
         console.log('Msg sent');
+        setLoadingSending(false);
       }
 
       // Clear the input field
       setNewMessage('');
     } catch (error) {
-      console.log('error :' + error);
-
+      setLoadingSending(false);
       console.error('Error sending message:', error);
     }
-  };
+  }, [customerId, apiURI, newMessage, loadingSending]);
 
   React.useEffect(() => {
-    const fetchUrl =
-      process.env.USE_LOCAL === 'true'
-        ? `${process.env.FETCH_URL}/api/chats/sendMessage`
-        : 'api/chats/sendMessage';
-
+    if (!apiURI || !customerId) return;
     const fetchData = async () => {
       try {
-        const response = await fetch(`${fetchUrl}/${customerId}`);
+        setLoading(true);
+        const response = await fetch(`${apiURI}/chats/customers/${customerId}`);
         if (!response.ok) {
           throw new Error(`API request failed with status: ${response.status}`);
         }
         const data = await response.json();
+        console.log('data', data);
 
         if (data?.messages) {
           setMessages(data.messages);
@@ -84,34 +105,47 @@ const ChatConversations = ({ customerId, onBackClick }) => {
     };
 
     fetchData();
-  }, [customerId]);
+  }, [customerId, apiURI]);
 
   return (
-    <div>
-      <BackButton onClick={onBackClick}>Back to Customer List</BackButton>
+    <div
+      style={{
+        padding: '1em',
+        background: 'white',
+        borderRadius: '1em',
+      }}
+    >
+      <BackButton onClick={onBackClick}>{titleBack}</BackButton>
       <MessageContainer>
         {loading ? (
           <div>Loading...</div>
         ) : messages?.length > 0 ? (
-          messages.map((message) => (
-            <React.Fragment key={message._id}>
-              {message.sender === 'customer' ? (
-                <CustomerMessage>
-                  {message.message}
-                  <MessageDetails className="message-details">
-                    {new Date(message.timestamp).toLocaleString()}
-                  </MessageDetails>
-                </CustomerMessage>
-              ) : (
-                <BotMessage>
-                  {message.message}
-                  <MessageDetails className="message-details" alignRight>
-                    {new Date(message.timestamp).toLocaleString()}
-                  </MessageDetails>
-                </BotMessage>
-              )}
-            </React.Fragment>
-          ))
+          <>
+            {messages.map((message) => (
+              <React.Fragment key={message._id}>
+                {message.sender === 'customer' ? (
+                  <CustomerMessage>
+                    {message.message}
+                    <MessageDetails className="message-details">
+                      {new Date(message.timestamp).toLocaleString()}
+                    </MessageDetails>
+                  </CustomerMessage>
+                ) : (
+                  <BotMessage>
+                    {message.message}
+                    <MessageDetails className="message-details" alignRight>
+                      {new Date(message.timestamp).toLocaleString()}
+                    </MessageDetails>
+                  </BotMessage>
+                )}
+              </React.Fragment>
+            ))}
+            {loadingSending && (
+              <div style={{ width: '100%', textAlign: 'center', marginTop: '1rem' }}>
+                Sending...
+              </div>
+            )}
+          </>
         ) : (
           <div>No conversation data available for this customer.</div>
         )}

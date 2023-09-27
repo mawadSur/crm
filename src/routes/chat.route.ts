@@ -1,5 +1,6 @@
 import express from 'express';
 import { ConversationService } from '../services/index.js';
+import { EConversationSender } from '../utils/index.js';
 
 export class ChatRoute {
   private router;
@@ -8,10 +9,9 @@ export class ChatRoute {
   constructor() {
     this.router = express.Router();
     this.router.get('/', this.getChats.bind(this));
-
     this.router.get('/getAllChats', this.getChats.bind(this));
-    this.router.get('/getChat/:customerId', this.getChat.bind(this));
-    this.router.post('/sendMessage/:customerId', this.sendMessage.bind(this));
+    this.router.get('/customers/:customerId', this.getChat.bind(this));
+    this.router.post('/customers/:customerId', this.sendMessage.bind(this));
     this.conversationService = new ConversationService();
   }
 
@@ -40,7 +40,7 @@ export class ChatRoute {
       const message = req.body.message;
 
       // Assuming sender is always 'admin'
-      const sender = 'admin';
+      const sender = EConversationSender.Admin;
       const updatedConversation = await this.conversationService.sendMessage(
         customerId,
         message,

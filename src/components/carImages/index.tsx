@@ -40,7 +40,7 @@ const CarImages = (props: any) => {
         <div style={{ whiteSpace: 'nowrap' }}>
           {pictures.map((picture) => {
             return (
-              <>
+              <React.Fragment key={picture}>
                 <div
                   style={{
                     position: 'relative',
@@ -71,11 +71,10 @@ const CarImages = (props: any) => {
                       maxWidth: '100%',
                       height: '300px',
                     }}
-                    key={picture}
                     src={picture}
                   />
                 </div>
-              </>
+              </React.Fragment>
             );
           })}
         </div>
