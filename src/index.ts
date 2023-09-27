@@ -92,7 +92,9 @@ const start = async () => {
       // },
       chat: {
         handler: async (request, response, context) => {
-          return { apiURI: ENV_VARIABLES.API_URI };
+          return {
+            apiURI: ENV_VARIABLES.API_URI,
+          };
         },
         component: Components.Chat,
         icon: 'Plus',
@@ -137,7 +139,7 @@ const start = async () => {
       defaultPerPage: 10,
     },
     assets: {
-      styles: ['/sidebar.css'],
+      styles: ['/sidebar.css', '/customModal.css'],
     },
   });
 

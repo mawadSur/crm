@@ -20,6 +20,8 @@
     "autorestart",
     "Roboto",
     "Postive",
+    "pegeus",
+    "domtoimage",
     "testid"
   ],
   "editor.acceptSuggestionOnEnter": "on"

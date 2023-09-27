@@ -1,8 +1,8 @@
+import { Loader } from '@adminjs/design-system';
 import React from 'react';
-import { Label } from '../common/index.js';
-import { deleteCarImage } from '../../libs/apis/car.api.js';
 import { Trash2 } from 'react-feather';
-import { LinearProgress } from '@mui/material';
+import { deleteCarImage } from '../../libs/apis/car.api.js';
+import { Label } from '../common/index.js';
 
 const CarImages = (props: any) => {
   let carImages = [];
@@ -49,10 +49,23 @@ const CarImages = (props: any) => {
                     margin: '8px',
                   }}
                 >
-                  <Trash2
-                    onClick={(e) => deleteImage(picture)}
-                    style={{ position: 'absolute', top: '4px', right: '4px', color: 'c20012' }}
-                  />
+                  <button
+                    disabled={loading}
+                    style={{
+                      position: 'absolute',
+                      top: '4px',
+                      right: '4px',
+                      cursor: 'pointer',
+                      backgroundImage: 'linear-gradient(#d9d9d9, #5f5f5f, #444444)',
+                    }}
+                  >
+                    <Trash2
+                      onClick={(e) => deleteImage(picture)}
+                      key={`${picture}-trash`}
+                      style={{ color: '#d7d7d7' }}
+                    />
+                  </button>
+                  {loading && <Loader />}
                   <img
                     style={{
                       maxWidth: '100%',
