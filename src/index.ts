@@ -24,6 +24,8 @@ import {
 } from './resources/index.js';
 import { BaseRoute } from './routes/index.js';
 import { adminAuthenticate } from './services/auth.service.js';
+import { BlastModel } from './models/blast.model.js';
+import { BlastService } from './services/blast.service.js';
 dotenv.config();
 
 const PORT = process.env.PORT || 3123;
@@ -115,7 +117,16 @@ const start = async () => {
           };
         },
         component: Components.FollowUp,
-        icon: 'Campaign',
+        icon: 'BarChart2',
+      },
+      blast: {
+        handler: async (request, response, context) => {
+          return {
+            apiURI: ENV_VARIABLES.API_URI,
+          };
+        },
+        component: Components.BlastNewest,
+        icon: 'Volume2',
       },
     },
     branding: {

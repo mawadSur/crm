@@ -21,7 +21,8 @@
     "Roboto",
     "Postive",
     "pegeus",
-    "domtoimage"
+    "domtoimage",
+    "testid"
   ],
   "editor.acceptSuggestionOnEnter": "on"
 }

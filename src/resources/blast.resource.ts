@@ -5,7 +5,7 @@ import { Components } from '../components/index.js';
 export const blastResource: ResourceWithOptions = {
   resource: BlastModel,
   options: {
-    id: 'blast',
+    id: 'allBlasts',
     navigation: {
       icon: 'Volume2',
     },
