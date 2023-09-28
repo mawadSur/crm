@@ -6,6 +6,7 @@ import { ApiClient } from 'adminjs';
 //   ? `${process.env.FETCH_URL}/api/customers`
 //   : 'http://localhost:3434/api/customers/customer-followup';
 
+//! Logic component not correct //
 const CustomerList = ({ onDataUpdate, selectedSection }) => {
   const api = new ApiClient();
   const [customers, setCustomers] = useState([]);

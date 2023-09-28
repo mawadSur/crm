@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { Cell, Funnel, FunnelChart, FunnelProps, ResponsiveContainer, Tooltip } from 'recharts';
 import CustomersList from './CustomerList.js';
 import FollowUpStyle from './style.js';
+import BlastNewest from '../blastNewest/index.js';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#fd6b19', '#215a9f']; // sample colors, adjust as necessary
 
@@ -35,16 +36,20 @@ const FollowUp = () => {
   }, []);
 
   // Load animation by populating data after a delay (using useEffect and useState)
-  const updateDataWithCounts = (customerCounts) => {
+  const updateDataWithCounts = () => {
     const funnelData = [
-      { value: customerCounts.totalCustomers, name: 'Sent message' },
-      { value: customerCounts.positiveResponseCount, name: 'Positive Response' },
-      { value: customerCounts.madeAppointmentCount, name: 'Made Appointment' },
-      { value: customerCounts.visitedStoreCount, name: 'Visited Store' },
-      { value: customerCounts.purchaseCount, name: 'Purchased' },
+      { value: 100, name: 'Sent message' },
+      { value: 80, name: 'Positive Response' },
+      { value: 50, name: 'Made Appointment' },
+      { value: 30, name: 'Visited Store' },
+      { value: 40, name: 'Purchased' },
     ];
     setTimeout(() => setData(funnelData), 500); // simulating loading data with a delay
   };
+
+  React.useEffect(() => {
+    updateDataWithCounts();
+  }, []);
 
   React.useEffect(() => {
     let sentMessage = 0;
@@ -58,7 +63,6 @@ const FollowUp = () => {
         if (data?.total) sentMessage = data.total;
       })();
     }
-    console.log('sentMessage', sentMessage);
     if (sentMessage > 0) {
       const indexOfSentMessage = data.findIndex((item) => item.name === 'Sent message');
       console.log('indexOfSentMessage', indexOfSentMessage);
@@ -105,8 +109,9 @@ const FollowUp = () => {
             </Funnel>
           </FunnelChart>
         </ResponsiveContainer>
-        <CustomersList onDataUpdate={updateDataWithCounts} selectedSection={selectedSection} />
+        {/* <CustomersList onDataUpdate={updateDataWithCounts} selectedSection={selectedSection} /> */}
       </div>
+      <BlastNewest caption="Customers" />
     </div>
   );
 };
