@@ -128,6 +128,15 @@ const start = async () => {
         component: Components.BlastNewest,
         icon: 'Volume2',
       },
+      searchVin: {
+        handler: async (request, response, context) => {
+          return {
+            apiURI: ENV_VARIABLES.API_URI,
+          };
+        },
+        component: Components.SearchVin,
+        icon: 'Search',
+      },
     },
     branding: {
       companyName: 'Pegasus',
