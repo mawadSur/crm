@@ -55,3 +55,19 @@ export const formatPrice = (price: string) => {
     currency: 'USD',
   }).format(Number(price));
 };
+
+export const convertSnakeToCamel = (obj: Record<string, any>) => {
+  if (typeof obj !== 'object' || obj === null) {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(convertSnakeToCamel);
+  }
+
+  return Object.keys(obj).reduce((acc, key) => {
+    const camelKey = key.replace(/_([a-z])/g, (match, p1) => p1.toUpperCase());
+    acc[camelKey] = convertSnakeToCamel(obj[key]);
+    return acc;
+  }, {});
+};
