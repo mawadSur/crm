@@ -2,6 +2,7 @@ import AdminJSExpress from '@adminjs/express';
 import { Database, Resource } from '@adminjs/mongoose';
 import AdminJS from 'adminjs';
 import mongoStore from 'connect-mongo';
+import cors from 'cors';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import { Components, componentLoader } from './components/index.js';
@@ -24,6 +25,7 @@ import {
 } from './resources/index.js';
 import { BaseRoute } from './routes/index.js';
 import { adminAuthenticate } from './services/auth.service.js';
+
 dotenv.config();
 
 const PORT = process.env.PORT || 3123;
@@ -185,9 +187,25 @@ const start = async () => {
     process.env.NODE_ENV === 'development' ? adminRouter : adminAuthRouter,
   );
 
+  const whitelist = ['http://54.157.23.22'];
+  if (process.env.NODE_ENV === 'development') {
+    whitelist.push('http://localhost:3000');
+  }
+
+  const corsOptions = {
+    origin: function (origin, callback) {
+      console.log('origin', origin);
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+  };
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  app.use('/api', route.router);
+  app.use('/api', cors(corsOptions), route.router);
 
   app.listen(PORT, () => {
     console.log(
