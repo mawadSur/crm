@@ -9,10 +9,12 @@ import Followup from '../dist/components/followUp/index'
 AdminJS.UserComponents.Followup = Followup
 import UploadCarImage from '../dist/components/uploadCarImage/index'
 AdminJS.UserComponents.UploadCarImage = UploadCarImage
-import CarImages from '../dist/components/carImages/index'
-AdminJS.UserComponents.CarImages = CarImages
 import Chat from '../dist/components/conversation/customersList'
 AdminJS.UserComponents.Chat = Chat
+import CarImages from '../dist/components/carImages/index'
+AdminJS.UserComponents.CarImages = CarImages
+import SearchVin from '../dist/components/searchVin/index'
+AdminJS.UserComponents.SearchVin = SearchVin
 import CustomerReferences from '../dist/components/customers/customerReferences/index'
 AdminJS.UserComponents.CustomerReferences = CustomerReferences
 import BlastNewest from '../dist/components/blastNewest/index'
