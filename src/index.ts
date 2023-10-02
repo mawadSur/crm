@@ -205,7 +205,7 @@ const start = async () => {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  app.use('/api', cors(corsOptions), route.router);
+  app.use('/api', route.router);
 
   app.listen(PORT, () => {
     console.log(
