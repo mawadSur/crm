@@ -3,7 +3,6 @@ import { styled } from '@adminjs/design-system/styled-components';
 export const Container = styled.div`
   background-color: #fff;
   border-radius: 5px;
-  max-width: 1200px;
   margin: 32px;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;

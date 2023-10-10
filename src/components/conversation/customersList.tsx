@@ -29,7 +29,7 @@ function CustomersList() {
     const fetchServerSide = async () => {
       try {
         const response: any = await api.getPage({
-          pageName: 'Chat',
+          pageName: 'chat',
         });
 
         const { data } = response;
