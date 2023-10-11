@@ -72,8 +72,6 @@ const LoanPaymentMatrix = () => {
         } catch (error) {
           setLoading(false);
           console.error('Error fetching data:', error);
-        } finally {
-          setLoading(false);
         }
       }
       setLoading(false);
