@@ -9,9 +9,29 @@ import DeskLog from './desklog/index.js';
 import SalesVolume from './sales-volume/index.js';
 
 //! Common Components
-import { Flex, Page, Section } from '../common/index.js';
+import { Page } from '../common/index.js';
+import { styled } from '@adminjs/design-system/styled-components';
+
 // import LeadConversionRate from './lead-conversion-rate/index.js';
 import { ApiClient } from 'adminjs';
+
+const Flex = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    width: 100%;
+  }
+`;
+
+const Section = styled.div`
+width: ${(props) => (props.$width ? props.$width : '100%')};
+
+  @media (max-width: 768px) {
+    width: 100%;
+`;
 
 const Dashboard: React.FC = (props) => {
   const [apiURI, setApiURI] = React.useState('');

@@ -126,84 +126,86 @@ const DeskLog = React.memo(({ apiURI }: { apiURI: string }) => {
         />
       )}
       <Title style={styles.DeskLogTitle}>Desk Log</Title>
-      <Table width="100%" overflowX="scroll" overflowY="scroll">
-        <TableHead>
-          <TableRow>
-            <TableCell>Customer Name</TableCell>
-            <TableCell>Vehicle Interested</TableCell>
-            <TableCell>Sale Status</TableCell>
-            <TableCell>Trade-In</TableCell>
-            <TableCell>Financing</TableCell>
-            <TableCell>
-              Time In
-              {/* <TableSortLabel
+      <div style={{ width: '100%', overflow: 'auto' }}>
+        <Table style={{ minWidth: '100%' }} overflowX="scroll" overflowY="scroll">
+          <TableHead>
+            <TableRow>
+              <TableCell>Customer Name</TableCell>
+              <TableCell>Vehicle Interested</TableCell>
+              <TableCell>Sale Status</TableCell>
+              <TableCell>Trade-In</TableCell>
+              <TableCell>Financing</TableCell>
+              <TableCell>
+                Time In
+                {/* <TableSortLabel
                 active={true}
                 direction={timeInSortOrder as Order}
                 onClick={sortTimeInTable('asc')}
               ></TableSortLabel> */}
-            </TableCell>
-            <TableCell>
-              Time Out
-              {/* <TableSortLabel
+              </TableCell>
+              <TableCell>
+                Time Out
+                {/* <TableSortLabel
                 active={true}
                 direction={timeOutSortOrder as Order}
                 onClick={sortTimeOutTable('asc')}
               ></TableSortLabel> */}
-            </TableCell>
-            <TableCell>Referral Source</TableCell>
-            <TableCell>Sales Rep</TableCell>
-            <TableCell>Phone Numbers</TableCell>
-            <TableCell>Comments</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {!loading &&
-            deskLogData.map((log) => (
-              <TableRow
-                key={log.id}
-                className={`saleStatus-${log.saleStatus.replace(/\s+/g, '-')}`}
-              >
-                <TableCell onClick={() => handleRowClick(log)}>
-                  {log?.customer?.name ?? ''}
-                </TableCell>
-                <TableCell onClick={() => handleRowClick(log)}>{log?.vehicle?.model}</TableCell>
-                <TableCell>
-                  <Select
-                    styles={{ backgroundColor: 'white', with: '100px !important' } as any}
-                    defaultValue={{ value: log.saleStatus, label: log.saleStatus }}
-                    onChange={(e) => handleStatusChange(e, log.id)}
-                    options={[
-                      { value: ESaleStatus.InProgress, label: ESaleStatus.InProgress },
-                      { value: ESaleStatus.Completed, label: ESaleStatus.Completed },
-                      { value: ESaleStatus.Lost, label: ESaleStatus.Lost },
-                    ]}
-                  />
-                </TableCell>
-                <TableCell onClick={() => handleRowClick(log)}>{log?.tradeIn ?? ''}</TableCell>
-                <TableCell onClick={() => handleRowClick(log)}>{log?.financing ?? ''}</TableCell>
-                <TableCell onClick={() => handleRowClick(log)}>
-                  {log?.timeIn ? dateFormat(log?.timeIn, true) : ''}
-                </TableCell>
-                <TableCell onClick={() => handleRowClick(log)}>
-                  {log?.timeOut ? dateFormat(log?.timeOut, true) : ''}
-                </TableCell>
-                <TableCell onClick={() => handleRowClick(log)}>
-                  {log?.referralSource ?? ''}
-                </TableCell>
-                <TableCell onClick={() => handleRowClick(log)}>
-                  {log?.salesRep?.name ?? ''}
-                </TableCell>
-                <TableCell onClick={() => handleRowClick(log)}>
-                  {/* Display phone numbers */}
-                  <div>Home: {log?.phoneNumberHome ?? ''}</div>
-                  <div>Cell: {log?.phoneNumberCell ?? ''}</div>
-                  <div>Work: {log?.phoneNumberWork ?? ''}</div>
-                </TableCell>
-                <TableCell onClick={() => handleRowClick(log)}>{log?.comments ?? ''}</TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
+              </TableCell>
+              <TableCell>Referral Source</TableCell>
+              <TableCell>Sales Rep</TableCell>
+              <TableCell>Phone Numbers</TableCell>
+              <TableCell>Comments</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {!loading &&
+              deskLogData.map((log) => (
+                <TableRow
+                  key={log.id}
+                  className={`saleStatus-${log.saleStatus.replace(/\s+/g, '-')}`}
+                >
+                  <TableCell onClick={() => handleRowClick(log)}>
+                    {log?.customer?.name ?? ''}
+                  </TableCell>
+                  <TableCell onClick={() => handleRowClick(log)}>{log?.vehicle?.model}</TableCell>
+                  <TableCell>
+                    <Select
+                      styles={{ backgroundColor: 'white', with: '100px !important' } as any}
+                      defaultValue={{ value: log.saleStatus, label: log.saleStatus }}
+                      onChange={(e) => handleStatusChange(e, log.id)}
+                      options={[
+                        { value: ESaleStatus.InProgress, label: ESaleStatus.InProgress },
+                        { value: ESaleStatus.Completed, label: ESaleStatus.Completed },
+                        { value: ESaleStatus.Lost, label: ESaleStatus.Lost },
+                      ]}
+                    />
+                  </TableCell>
+                  <TableCell onClick={() => handleRowClick(log)}>{log?.tradeIn ?? ''}</TableCell>
+                  <TableCell onClick={() => handleRowClick(log)}>{log?.financing ?? ''}</TableCell>
+                  <TableCell onClick={() => handleRowClick(log)}>
+                    {log?.timeIn ? dateFormat(log?.timeIn, true) : ''}
+                  </TableCell>
+                  <TableCell onClick={() => handleRowClick(log)}>
+                    {log?.timeOut ? dateFormat(log?.timeOut, true) : ''}
+                  </TableCell>
+                  <TableCell onClick={() => handleRowClick(log)}>
+                    {log?.referralSource ?? ''}
+                  </TableCell>
+                  <TableCell onClick={() => handleRowClick(log)}>
+                    {log?.salesRep?.name ?? ''}
+                  </TableCell>
+                  <TableCell onClick={() => handleRowClick(log)}>
+                    {/* Display phone numbers */}
+                    <div>Home: {log?.phoneNumberHome ?? ''}</div>
+                    <div>Cell: {log?.phoneNumberCell ?? ''}</div>
+                    <div>Work: {log?.phoneNumberWork ?? ''}</div>
+                  </TableCell>
+                  <TableCell onClick={() => handleRowClick(log)}>{log?.comments ?? ''}</TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </div>
       {loading && <Loader />}
       <div style={{ margin: '20px auto', width: 'fit-content' }}>
         <Pagination onChange={handleSetPagination} total={total} perPage={limit} page={page} />
