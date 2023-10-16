@@ -54,9 +54,9 @@ const AppointmentsToday = React.memo(({ apiURI }: { apiURI: string }) => {
   );
 
   return (
-    <Card>
+    <Card style={{ width: '100%', overflow: 'auto' }}>
       <Title>Today's Appointments</Title>
-      <Table>
+      <Table style={{ minWidth: '100%' }}>
         <TableHead>
           <TableRow>
             <TableCell>Time</TableCell>
