@@ -1,0 +1,4 @@
+.ReactModal__Content--after-open {
+  width: 50% !important;
+  margin: 0 auto !important;
+}

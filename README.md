@@ -60,3 +60,11 @@ $ yarn build
 ```bash
 $ pm2 restart crm
 ```
+
+## Developer rules:
+
+Format code: Prettier (https://prettier.io/)
+
+UIUX: https://storybook.adminjs.co
+
+Commit code: https://www.conventionalcommits.org/en/v1.0.0/

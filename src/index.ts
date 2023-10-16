@@ -2,6 +2,7 @@ import AdminJSExpress from '@adminjs/express';
 import { Database, Resource } from '@adminjs/mongoose';
 import AdminJS from 'adminjs';
 import mongoStore from 'connect-mongo';
+import cors from 'cors';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import { Components, componentLoader } from './components/index.js';
@@ -24,6 +25,7 @@ import {
 } from './resources/index.js';
 import { BaseRoute } from './routes/index.js';
 import { adminAuthenticate } from './services/auth.service.js';
+
 dotenv.config();
 
 const PORT = process.env.PORT || 3123;
@@ -69,6 +71,7 @@ const start = async () => {
         };
       },
     },
+
     pages: {
       calculator: {
         // name, will be used to build an URL
@@ -80,12 +83,18 @@ const start = async () => {
         component: Components.Calculator,
         icon: 'Plus',
       },
-      Chat: {
-        // name, will be used to build an URL
+      // chat: {
+      //   handler: async (request, response, context) => {
+      //     return { apiURI: ENV_VARIABLES.API_URI };
+      //   },
+      //   component: Components.Chat,
+      //   icon: 'Plus',
+      // },
+      chat: {
         handler: async (request, response, context) => {
-          // fetch values from your database
-          // const value = await Car.find({});
-          // return { data: { inventory: car.value } };
+          return {
+            apiURI: ENV_VARIABLES.API_URI,
+          };
         },
         component: Components.Chat,
         icon: 'Plus',
@@ -108,7 +117,25 @@ const start = async () => {
           };
         },
         component: Components.FollowUp,
-        icon: 'Campaign',
+        icon: 'BarChart2',
+      },
+      blast: {
+        handler: async (request, response, context) => {
+          return {
+            apiURI: ENV_VARIABLES.API_URI,
+          };
+        },
+        component: Components.BlastNewest,
+        icon: 'Volume2',
+      },
+      searchVin: {
+        handler: async (request, response, context) => {
+          return {
+            apiURI: ENV_VARIABLES.API_URI,
+          };
+        },
+        component: Components.SearchVin,
+        icon: 'Search',
       },
     },
     branding: {
@@ -121,7 +148,7 @@ const start = async () => {
       defaultPerPage: 10,
     },
     assets: {
-      styles: ['/sidebar.css'],
+      styles: ['/sidebar.css', '/customModal.css'],
     },
   });
 
@@ -159,6 +186,22 @@ const start = async () => {
     admin.options.rootPath,
     process.env.NODE_ENV === 'development' ? adminRouter : adminAuthRouter,
   );
+
+  const whitelist = ['http://54.157.23.22'];
+  if (process.env.NODE_ENV === 'development') {
+    whitelist.push('http://localhost:3000');
+  }
+
+  const corsOptions = {
+    origin: function (origin, callback) {
+      console.log('origin', origin);
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+  };
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));

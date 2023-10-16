@@ -14,6 +14,19 @@ export interface ICustomerOtherContact {
   phone: string;
   name: string;
 }
+
+export interface ICustomerflags {
+  isBuying: boolean;
+  carInMind: string;
+  didMakeAppointment: boolean;
+  didVisitStore: boolean;
+  didPurchase: boolean;
+  customerType: string;
+  budgetRange: number;
+  financingInterest: string;
+  tradeIn: string;
+}
+
 export interface ICustomer {
   name: string;
   age: number;
@@ -33,6 +46,7 @@ export interface ICustomer {
   notes: string;
   textPreferred: boolean;
   otherContacts: ICustomerOtherContact[];
+  flags: ICustomerflags[];
   relationships: string[];
   services: string[];
   updatedAt: Date;

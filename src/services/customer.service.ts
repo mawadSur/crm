@@ -1,5 +1,6 @@
 import httpRequest from '../libs/httpsRequest.js';
 import {
+  Blast,
   BlastModel,
   CustomerActivityModel,
   CustomerInsuranceModel,
@@ -12,7 +13,7 @@ import { IQuery, IQueryCustomer } from '../utils/index.js';
 export class CustomerService {
   constructor() {}
 
-  async list({ query }: IQueryCustomer) {
+  async list({ query, offset, limit, unlimited = false }: IQueryCustomer) {
     const total = await CustomerModel.countDocuments();
     const queryOptions: any = {};
 
@@ -45,15 +46,36 @@ export class CustomerService {
     }
 
     //TODO update more conditions to query options
+    const _query = CustomerModel.find(queryOptions);
 
-    const data = await CustomerModel.find(queryOptions).exec();
+    if (!unlimited && offset && limit) {
+      _query.skip(offset);
+      _query.limit(limit);
+    }
+    const data = await _query.exec();
+
     return {
       data,
       total,
     };
   }
 
-  async launchCampaign(payload: { customerIds: string[]; context: string }) {
+  async followupList({ query }: IQueryCustomer) {
+    const total = await CustomerModel.countDocuments();
+
+    //TODO update more conditions to query options
+
+    const data = await CustomerModel.find({ flags: { $ne: null } }).exec();
+    return {
+      data,
+      total,
+    };
+  }
+
+  async launchCampaign(
+    payload: { customerIds: string[]; context: string },
+    ignoreUpdateNewest: boolean = false,
+  ) {
     const customers = await CustomerModel.find({
       _id: {
         $in: payload.customerIds,
@@ -72,7 +94,25 @@ export class CustomerService {
       customerId: customer._id,
       context: String(payload.context),
       isSendMessage: false,
+      isNewest: true,
     }));
+
+    if (!ignoreUpdateNewest) {
+      //! Update blast to older
+      await BlastModel.updateMany(
+        {
+          isNewest: true,
+        },
+        {
+          isNewest: false,
+        },
+        {
+          multi: true,
+        },
+      );
+    }
+
+    console.log('waitingList', waitingList);
 
     //! Create blast data
     const blasts = await BlastModel.insertMany(waitingList, {
@@ -105,7 +145,6 @@ export class CustomerService {
 
         if (!blastId) return;
 
-        console.log('blastId', blastId);
         updateBlastOperations.push({
           updateOne: {
             filter: { _id: blastId },
@@ -136,13 +175,28 @@ export class CustomerService {
     let _totalSuccess = 0;
     let _totalFailed = 0;
 
+    await BlastModel.updateMany(
+      {
+        isNewest: true,
+      },
+      {
+        isNewest: false,
+      },
+      {
+        multi: true,
+      },
+    );
+
     while (offset < totalCustomers) {
       try {
         const customers = await CustomerModel.find().skip(offset).limit(limit).lean().exec();
-        const { totalSuccess, totalFailed } = await this.launchCampaign({
-          customerIds: customers.map((customer) => String(customer._id)),
-          context: payload.context,
-        });
+        const { totalSuccess, totalFailed } = await this.launchCampaign(
+          {
+            customerIds: customers.map((customer) => String(customer._id)),
+            context: payload.context,
+          },
+          true,
+        );
         offset += limit;
         _totalSuccess += totalSuccess;
         _totalFailed += totalFailed;

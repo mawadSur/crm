@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
-import calculatorStyle from './style.js';
+import { Loader } from '@adminjs/design-system';
+import { ApiClient } from 'adminjs';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { ApiClient } from 'adminjs';
+import React, { useEffect, useRef, useState } from 'react';
+import calculatorStyle from './style.js';
 
 const LoanPaymentMatrix = () => {
   const [marketValue, setMarketValue] = useState('0');
@@ -92,7 +93,7 @@ const LoanPaymentMatrix = () => {
   };
 
   return (
-    <>
+    <div style={{ padding: '32px' }}>
       <button
         style={{
           width: 'max-content',
@@ -106,17 +107,7 @@ const LoanPaymentMatrix = () => {
         Download PDF
       </button>
       {loading ? (
-        <div
-          style={{
-            display: 'flex',
-            height: '100%',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 900,
-          }}
-        >
-          Loading...
-        </div>
+        <Loader />
       ) : (
         <div className="calculator-container" style={{ padding: 16 }}>
           <div
@@ -361,7 +352,7 @@ const LoanPaymentMatrix = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
