@@ -119,6 +119,13 @@ const TransactionModal = ({ onClose, opportunity, apiURI, open }: ITransactionMo
 
   const otherContracts = opportunity?.customer?.otherContacts ?? [];
   const relationships = opportunity?.customer?.relationships ?? [];
+
+  const handleButtonClick = () => {
+    const { _id } = opportunity;
+    const urlWithQuery = `./admin/pages/calculator?id=${_id}`;
+    window.location.href = urlWithQuery;
+  };
+
   return (
     <Modal styles={{ width: '450px !important' }} isOpen={open} ariaHideApp={true}>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -208,6 +215,22 @@ const TransactionModal = ({ onClose, opportunity, apiURI, open }: ITransactionMo
             <Text>
               <b>Manager Phone Call:</b> {opportunity?.managerPhoneCall ? 'Yes' : 'No'}
             </Text>
+          </Box>
+          <Box>
+            <button
+              onClick={handleButtonClick}
+              style={{
+                backgroundColor: 'black',
+                color: 'white',
+                marginTop: '20px',
+                marginLeft: '10px',
+                borderRadius: 6,
+                padding: 6,
+                cursor: 'pointer',
+              }}
+            >
+              Go to calculator
+            </button>
           </Box>
         </Text>
         <>

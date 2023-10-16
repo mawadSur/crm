@@ -1,6 +1,9 @@
-import domtoimage from 'dom-to-image';
-import React, { useRef, useState } from 'react';
-import CalculatorStyle from './style.js';
+import { Loader } from '@adminjs/design-system';
+import { ApiClient } from 'adminjs';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import React, { useEffect, useRef, useState } from 'react';
+import calculatorStyle from './style.js';
 
 const LoanPaymentMatrix = () => {
   const [marketValue, setMarketValue] = useState('0');
@@ -10,6 +13,29 @@ const LoanPaymentMatrix = () => {
   const [nontaxFees, setNontaxFees] = useState('0');
   const [apr, setApr] = useState('0');
   const container = useRef(null);
+  const [total, setTotal] = React.useState(0);
+  const [offset, setOffset] = React.useState(0);
+  const [limit] = React.useState(10);
+  const [opportunity, setOpportunity] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [apiURI, setApiURI] = React.useState('');
+  const api = new ApiClient();
+
+  React.useEffect(() => {
+    setLoading(true);
+    api
+      .getDashboard()
+      .then((response: any) => {
+        if (response?.data?.apiURI) {
+          setApiURI(response.data.apiURI);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        throw error;
+      });
+  }, []);
 
   const calculatePayment = (loanTerm) => {
     const principal =
@@ -23,17 +49,47 @@ const LoanPaymentMatrix = () => {
     return payment.toFixed(2);
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const queryParams = new URLSearchParams(window.location.search);
+      const opportunityId = queryParams.get('id');
+      if (opportunityId) {
+        try {
+          setLoading(true);
+          const response = await fetch(
+            `${apiURI}/desklogs` + '?offset=' + offset + '&limit=' + limit,
+          );
+          const data = await response.json();
+          if (data?.items?.length) {
+            const { items } = data;
+            const opportunityData = items.find((item: any) => item.id === opportunityId);
+            setOpportunity(opportunityData);
+          }
+          if (data?.total) {
+            setTotal(data?.total);
+          }
+          setLoading(false);
+        } catch (error) {
+          setLoading(false);
+          console.error('Error fetching data:', error);
+        }
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, [offset, limit, apiURI]);
+
   const handlePDFDownload = async () => {
-    const img = await domtoimage.toPng(container.current, {
-      scale: 4,
-      // width: '1200px',
-      // height: 'auto',
-    });
-    var a = document.createElement('a');
-    a.href = img;
-    const imgName = 'download';
-    a.download = `${imgName}.png`;
-    a.click();
+    if (container.current) {
+      const html2canvasInstance: any = html2canvas;
+      html2canvasInstance(container.current).then((canvas: any) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        pdf.addImage(imgData, 'PNG', 10, 10, 180, 0);
+        pdf.save(`${opportunity?.customer?.name}.pdf`);
+      });
+    }
   };
 
   return (
@@ -43,200 +99,259 @@ const LoanPaymentMatrix = () => {
           width: 'max-content',
           display: 'flex',
           alignSelf: 'flex-end',
+          margin: '10px 20px 5px',
+          cursor: 'pointer',
         }}
         onClick={handlePDFDownload}
       >
         Download PDF
       </button>
-      <div
-        id="pdf-container"
-        ref={container}
-        style={{ width: 'calc(100% - 20px)', color: 'black', backgroundColor: 'white' }}
-      >
-        <CalculatorStyle.CompanyInfo>
-          <CalculatorStyle.CompanyDetails>
-            <CalculatorStyle.CompanyBasicInfo>
-              <CalculatorStyle.CompanyTitle></CalculatorStyle.CompanyTitle>
-              <CalculatorStyle.CompanyName>
-                <span style={{ fontWeight: 900 }}>Stone Mountain Toyota</span>
-              </CalculatorStyle.CompanyName>
-              <CalculatorStyle.CompanyDescription>
-                2023 Premier Dealer
-              </CalculatorStyle.CompanyDescription>
-            </CalculatorStyle.CompanyBasicInfo>
-          </CalculatorStyle.CompanyDetails>
-          <CalculatorStyle.CompanyDetails>
-            <CalculatorStyle.CompanyEmployeeInfo>
-              <h4>Date</h4>
-              <CalculatorStyle.InputCommon value="1/02/2023" />
-            </CalculatorStyle.CompanyEmployeeInfo>
-            <CalculatorStyle.CompanyEmployeeInfo>
-              <h4>Sales Person</h4>
-              <CalculatorStyle.InputCommon value="Rakesh Sharma" />
-            </CalculatorStyle.CompanyEmployeeInfo>
-            <CalculatorStyle.CompanyEmployeeInfo>
-              <h4>Manager</h4>
-              <CalculatorStyle.InputCommon value="Rakesh Sharma" />
-            </CalculatorStyle.CompanyEmployeeInfo>
-          </CalculatorStyle.CompanyDetails>
-        </CalculatorStyle.CompanyInfo>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className="calculator-container" style={{ padding: 16 }}>
+          <div
+            id="pdf-container"
+            ref={container}
+            style={{
+              width: 'calc(100% - 20px)',
+              color: 'black',
+              backgroundColor: 'white',
+              height: '100vh',
+            }}
+          >
+            <calculatorStyle.CompanyInfo>
+              <calculatorStyle.CompanyDetails style={{ width: '60%' }}>
+                <calculatorStyle.CompanyBasicInfo>
+                  {/* <calculatorStyle.CompanyTitle></calculatorStyle.CompanyTitle> */}
+                  <calculatorStyle.CompanyName>
+                    <span style={{ fontWeight: 900 }}>Stone Mountain Toyota</span>
+                  </calculatorStyle.CompanyName>
+                  <calculatorStyle.CompanyDescription>
+                    2023 Premier Dealer
+                  </calculatorStyle.CompanyDescription>
+                </calculatorStyle.CompanyBasicInfo>
+              </calculatorStyle.CompanyDetails>
+              <calculatorStyle.CompanyDetails style={{ width: '40%' }}>
+                <calculatorStyle.CompanyEmployeeInfo>
+                  <h4 style={{ fontSize: '16px', width: '110px' }}>Date:</h4>
+                  <calculatorStyle.InputCommon
+                    value="1/02/2023"
+                    style={{
+                      flexGrow: 1,
+                      marginRight: '16px',
+                    }}
+                  />
+                </calculatorStyle.CompanyEmployeeInfo>
+                <calculatorStyle.CompanyEmployeeInfo>
+                  <h4 style={{ fontSize: '16px', width: '110px' }}>Sales Person:</h4>
+                  <calculatorStyle.InputCommon
+                    style={{
+                      flexGrow: 1,
+                      marginRight: '16px',
+                    }}
+                    name=""
+                    value={opportunity?.salesRep?.name}
+                    onChange={(e) => e.target.value}
+                  />
+                </calculatorStyle.CompanyEmployeeInfo>
+                <calculatorStyle.CompanyEmployeeInfo>
+                  <h4 style={{ fontSize: '16px', width: '110px' }}>Manager:</h4>
+                  <calculatorStyle.InputCommon
+                    value="Rakesh Sharma"
+                    style={{
+                      flexGrow: 1,
+                      marginRight: '16px',
+                    }}
+                  />
+                </calculatorStyle.CompanyEmployeeInfo>
+              </calculatorStyle.CompanyDetails>
+            </calculatorStyle.CompanyInfo>
 
-        {/* HeaderBottom */}
+            {/* HeaderBottom as Customer Info */}
 
-        <CalculatorStyle.CustomerInfo>
-          <CalculatorStyle.CustomerInfoType>FOR INTERNAL USE ONLY</CalculatorStyle.CustomerInfoType>
-          <CalculatorStyle.CustomerDetails>
-            <CalculatorStyle.CustomerDetailsInfo>
-              <CalculatorStyle.CustomerHeader>
-                <CalculatorStyle.CustomerDataInfo>
-                  <h1>CUSTOMER</h1>
-                  <CalculatorStyle.InputCommon value="Muhammad Awad" />
-                </CalculatorStyle.CustomerDataInfo>
-                <CalculatorStyle.CustomerDataInfo>
-                  <p>Home Phone</p>
-                  <CalculatorStyle.InputCommon value="0987654321" />
-                </CalculatorStyle.CustomerDataInfo>
-                <CalculatorStyle.CustomerDataInfo>
-                  <p>Address</p>
-                  <CalculatorStyle.InputCommon value="street-4, New Work" />
-                </CalculatorStyle.CustomerDataInfo>
-              </CalculatorStyle.CustomerHeader>
-              <CalculatorStyle.CustomerBasicInfo>
-                <CalculatorStyle.CustomerDataInfo>
-                  <p>Work Phone</p>
-                  <CalculatorStyle.InputCommon value="1234567890" />
-                </CalculatorStyle.CustomerDataInfo>
-                <CalculatorStyle.CustomerDataInfo>
-                  <p>E-Mail:</p>
-                  <CalculatorStyle.InputCommon value="a@gmail.com" />
-                </CalculatorStyle.CustomerDataInfo>
-                <CalculatorStyle.CustomerDataInfo>
-                  <p>Cell Phone:</p>
-                  <CalculatorStyle.InputCommon value="(404)791-9456" />
-                </CalculatorStyle.CustomerDataInfo>
-              </CalculatorStyle.CustomerBasicInfo>
-            </CalculatorStyle.CustomerDetailsInfo>
-          </CalculatorStyle.CustomerDetails>
-        </CalculatorStyle.CustomerInfo>
+            <calculatorStyle.CustomerInfo>
+              <calculatorStyle.CustomerInfoType>
+                FOR INTERNAL USE ONLY
+              </calculatorStyle.CustomerInfoType>
+              <calculatorStyle.CustomerDetails>
+                <calculatorStyle.CustomerDetailsInfo>
+                  <calculatorStyle.CustomerHeader>
+                    <calculatorStyle.CustomerDataInfo>
+                      <h1 style={{ fontSize: 18, fontWeight: 500, marginRight: '50px' }}>
+                        CUSTOMER
+                      </h1>
+                      <calculatorStyle.InputCommon
+                        style={{ width: '100%' }}
+                        value={opportunity?.customer?.name}
+                      />
+                    </calculatorStyle.CustomerDataInfo>
 
-        {/* MiddleRow as CarInfo*/}
+                    <calculatorStyle.CustomerDataInfo>
+                      <p>Address:</p>
+                      <calculatorStyle.InputCommon
+                        style={{ width: '100%' }}
+                        value={opportunity?.customer?.address}
+                      />
+                    </calculatorStyle.CustomerDataInfo>
+                    <calculatorStyle.CustomerDataInfo>
+                      <p style={{ width: '55px' }}>E-Mail:</p>
+                      <calculatorStyle.InputCommon
+                        style={{ width: '100%' }}
+                        value={opportunity?.customer?.email}
+                      />
+                    </calculatorStyle.CustomerDataInfo>
+                  </calculatorStyle.CustomerHeader>
+                  <calculatorStyle.CustomerBasicInfo>
+                    <calculatorStyle.CustomerDataInfo>
+                      <p>Home Phone:</p>
+                      <calculatorStyle.InputCommon value={opportunity?.customer?.homeNumber} />
+                    </calculatorStyle.CustomerDataInfo>
+                    <calculatorStyle.CustomerDataInfo>
+                      <p>Work Phone:</p>
+                      <calculatorStyle.InputCommon value={opportunity?.customer?.workNumber} />
+                    </calculatorStyle.CustomerDataInfo>
 
-        <CalculatorStyle.CarInfo>
-          <CalculatorStyle.CarType>
-            <p>VEHICLE</p>
-          </CalculatorStyle.CarType>
-          <CalculatorStyle.CarDetails>
-            <CalculatorStyle.CarDetailHeader>
-              Stock #:<CalculatorStyle.SpanCommon> N847488H</CalculatorStyle.SpanCommon>
-            </CalculatorStyle.CarDetailHeader>
-            <CalculatorStyle.CarDetailHeader>
-              New/Used:<CalculatorStyle.SpanCommon> Used</CalculatorStyle.SpanCommon>
-            </CalculatorStyle.CarDetailHeader>
-            <CalculatorStyle.CarDetailHeader>
-              VIN:<CalculatorStyle.SpanCommon> 7BHDOH8KUGBDJKD</CalculatorStyle.SpanCommon>
-            </CalculatorStyle.CarDetailHeader>
-            <CalculatorStyle.CarDetailHeader>
-              Mileage:<CalculatorStyle.SpanCommon> 54</CalculatorStyle.SpanCommon>
-            </CalculatorStyle.CarDetailHeader>
-          </CalculatorStyle.CarDetails>
-          <CalculatorStyle.CarBasicInfo>
-            <CalculatorStyle.CarBasicInfoHeader>
-              Vehicle:<CalculatorStyle.SpanCommon> 2023 Rivian R1S</CalculatorStyle.SpanCommon>
-            </CalculatorStyle.CarBasicInfoHeader>
-            <CalculatorStyle.CarBasicInfoHeader>
-              Color:<CalculatorStyle.SpanCommon> Launch Green</CalculatorStyle.SpanCommon>
-            </CalculatorStyle.CarBasicInfoHeader>
-          </CalculatorStyle.CarBasicInfo>
-          <CalculatorStyle.CarTypeInfo>
-            <p>
-              Type:
-              <CalculatorStyle.SpanCommon>
-                Launch Edition All-Wheel Drive Spor
-              </CalculatorStyle.SpanCommon>
-            </p>
-          </CalculatorStyle.CarTypeInfo>
-        </CalculatorStyle.CarInfo>
+                    <calculatorStyle.CustomerDataInfo>
+                      <p>Cell Phone:</p>
+                      <calculatorStyle.InputCommon value={opportunity?.customer?.cellNumber} />
+                    </calculatorStyle.CustomerDataInfo>
+                  </calculatorStyle.CustomerBasicInfo>
+                </calculatorStyle.CustomerDetailsInfo>
+              </calculatorStyle.CustomerDetails>
+            </calculatorStyle.CustomerInfo>
 
-        {/* Calculator */}
-        <CalculatorStyle.CalculatorWrapper>
-          <CalculatorStyle.Table>
-            <thead>
-              <tr style={{ borderBottom: '1px solid' }}>
-                <td style={{ padding: '10px' }}>Load Payments</td>
-                <td style={{ padding: '10px' }}>Estimated</td>
-              </tr>
-              <tr style={{ background: '#ccc' }}>
-                <CalculatorStyle.TableHeader>Term</CalculatorStyle.TableHeader>
-                <CalculatorStyle.TableHeader>Monthly Payment</CalculatorStyle.TableHeader>
-              </tr>
-            </thead>
-            <tbody>
-              {[48, 60, 72].map((term) => (
-                <CalculatorStyle.TableRow key={term}>
-                  <CalculatorStyle.TableCell>{term} months</CalculatorStyle.TableCell>
-                  <CalculatorStyle.TableCell>${calculatePayment(term)}</CalculatorStyle.TableCell>
-                </CalculatorStyle.TableRow>
-              ))}
-            </tbody>
-          </CalculatorStyle.Table>
+            {/* MiddleRow as CarInfo*/}
 
-          <CalculatorStyle.InputContainer>
-            <CalculatorStyle.InputRow>
-              <CalculatorStyle.Label>Market Value Selling Price:</CalculatorStyle.Label>
-              <CalculatorStyle.Input
-                type="number"
-                value={marketValue}
-                onChange={(e) => setMarketValue(e.target.value)}
-              />
-            </CalculatorStyle.InputRow>
-            <CalculatorStyle.InputRow>
-              <CalculatorStyle.Label>Taxable Fees:</CalculatorStyle.Label>
-              <CalculatorStyle.Input
-                type="number"
-                value={taxableFees}
-                onChange={(e) => setTaxableFees(e.target.value)}
-              />
-            </CalculatorStyle.InputRow>
-            <CalculatorStyle.InputRow>
-              <CalculatorStyle.Label>Doc Fee:</CalculatorStyle.Label>
-              <CalculatorStyle.Input
-                type="number"
-                value={docFee}
-                onChange={(e) => setDocFee(e.target.value)}
-              />
-            </CalculatorStyle.InputRow>
-            <CalculatorStyle.InputRow>
-              <CalculatorStyle.Label>GATAVT:</CalculatorStyle.Label>
-              <CalculatorStyle.Input
-                type="number"
-                value={gatavt}
-                onChange={(e) => setGatavt(e.target.value)}
-              />
-            </CalculatorStyle.InputRow>
-            <CalculatorStyle.InputRow>
-              <CalculatorStyle.Label>Non-Tax Fees:</CalculatorStyle.Label>
-              <CalculatorStyle.Input
-                type="number"
-                value={nontaxFees}
-                onChange={(e) => setNontaxFees(e.target.value)}
-              />
-            </CalculatorStyle.InputRow>
-            <CalculatorStyle.InputRow>
-              <CalculatorStyle.Label>APR: </CalculatorStyle.Label>
-              <CalculatorStyle.Input
-                type="number"
-                value={apr}
-                onChange={(e) => setApr(e.target.value)}
-              />
-            </CalculatorStyle.InputRow>
-          </CalculatorStyle.InputContainer>
+            <calculatorStyle.CarInfo>
+              <calculatorStyle.CarType>
+                <h1 style={{ fontSize: 18, fontWeight: 500, marginRight: '50px' }}>VEHICLE</h1>
+              </calculatorStyle.CarType>
+              <calculatorStyle.CarDetails>
+                <calculatorStyle.CarDetailHeader>
+                  Stock #:<calculatorStyle.SpanCommon> N847488H</calculatorStyle.SpanCommon>
+                </calculatorStyle.CarDetailHeader>
+                <calculatorStyle.CarDetailHeader>
+                  New/Used:<calculatorStyle.SpanCommon> Used</calculatorStyle.SpanCommon>
+                </calculatorStyle.CarDetailHeader>
+                <calculatorStyle.CarDetailHeader>
+                  VIN:
+                  <calculatorStyle.SpanCommon>
+                    {opportunity?.vehicle?.VIN}
+                  </calculatorStyle.SpanCommon>
+                </calculatorStyle.CarDetailHeader>
+                <calculatorStyle.CarDetailHeader>
+                  Mileage:
+                  <calculatorStyle.SpanCommon>
+                    {opportunity?.vehicle?.mileage}
+                  </calculatorStyle.SpanCommon>
+                </calculatorStyle.CarDetailHeader>
+              </calculatorStyle.CarDetails>
+              <calculatorStyle.CarBasicInfo>
+                <calculatorStyle.CarBasicInfoHeader>
+                  Vehicle:
+                  <calculatorStyle.SpanCommon>
+                    {opportunity?.vehicle?.model ?? ''} {opportunity?.vehicle?.make ?? ''}
+                  </calculatorStyle.SpanCommon>
+                </calculatorStyle.CarBasicInfoHeader>
+                <calculatorStyle.CarBasicInfoHeader>
+                  Color:<calculatorStyle.SpanCommon> Launch Green</calculatorStyle.SpanCommon>
+                </calculatorStyle.CarBasicInfoHeader>
+              </calculatorStyle.CarBasicInfo>
+              <calculatorStyle.CarTypeInfo>
+                <p>
+                  Type:
+                  <calculatorStyle.SpanCommon>
+                    Launch Edition All-Wheel Drive Spor
+                  </calculatorStyle.SpanCommon>
+                </p>
+              </calculatorStyle.CarTypeInfo>
+            </calculatorStyle.CarInfo>
 
-          <CalculatorStyle.Result>
-            Monthly Payment: ${calculatePayment('60')}{' '}
-            {/* Display the calculated payment for a specific term */}
-          </CalculatorStyle.Result>
-        </CalculatorStyle.CalculatorWrapper>
-      </div>
+            {/* Calculator */}
+            <calculatorStyle.CalculatorWrapper>
+              <calculatorStyle.Table>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid' }}>
+                    <td style={{ padding: '10px' }}>Load Payments</td>
+                    <td style={{ padding: '10px' }}>Estimated</td>
+                  </tr>
+                  <tr style={{ background: '#ccc' }}>
+                    <calculatorStyle.TableHeader>Term</calculatorStyle.TableHeader>
+                    <calculatorStyle.TableHeader>Monthly Payment</calculatorStyle.TableHeader>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[48, 60, 72].map((term) => (
+                    <calculatorStyle.TableRow key={term}>
+                      <calculatorStyle.TableCell>{term} months</calculatorStyle.TableCell>
+                      <calculatorStyle.TableCell>
+                        ${calculatePayment(term)}
+                      </calculatorStyle.TableCell>
+                    </calculatorStyle.TableRow>
+                  ))}
+                </tbody>
+              </calculatorStyle.Table>
+
+              <calculatorStyle.InputContainer>
+                <calculatorStyle.InputRow>
+                  <calculatorStyle.Label>Market Value Selling Price:</calculatorStyle.Label>
+                  <calculatorStyle.Input
+                    type="number"
+                    value={marketValue}
+                    onChange={(e) => setMarketValue(e.target.value)}
+                  />
+                </calculatorStyle.InputRow>
+                <calculatorStyle.InputRow>
+                  <calculatorStyle.Label>Taxable Fees:</calculatorStyle.Label>
+                  <calculatorStyle.Input
+                    type="number"
+                    value={taxableFees}
+                    onChange={(e) => setTaxableFees(e.target.value)}
+                  />
+                </calculatorStyle.InputRow>
+                <calculatorStyle.InputRow>
+                  <calculatorStyle.Label>Doc Fee:</calculatorStyle.Label>
+                  <calculatorStyle.Input
+                    type="number"
+                    value={docFee}
+                    onChange={(e) => setDocFee(e.target.value)}
+                  />
+                </calculatorStyle.InputRow>
+                <calculatorStyle.InputRow>
+                  <calculatorStyle.Label>GATAVT:</calculatorStyle.Label>
+                  <calculatorStyle.Input
+                    type="number"
+                    value={gatavt}
+                    onChange={(e) => setGatavt(e.target.value)}
+                  />
+                </calculatorStyle.InputRow>
+                <calculatorStyle.InputRow>
+                  <calculatorStyle.Label>Non-Tax Fees:</calculatorStyle.Label>
+                  <calculatorStyle.Input
+                    type="number"
+                    value={nontaxFees}
+                    onChange={(e) => setNontaxFees(e.target.value)}
+                  />
+                </calculatorStyle.InputRow>
+                <calculatorStyle.InputRow>
+                  <calculatorStyle.Label>APR: </calculatorStyle.Label>
+                  <calculatorStyle.Input
+                    type="number"
+                    value={apr}
+                    onChange={(e) => setApr(e.target.value)}
+                  />
+                </calculatorStyle.InputRow>
+              </calculatorStyle.InputContainer>
+
+              <calculatorStyle.Result>
+                Monthly Payment: ${calculatePayment('60')}{' '}
+                {/* Display the calculated payment for a specific term */}
+              </calculatorStyle.Result>
+            </calculatorStyle.CalculatorWrapper>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
