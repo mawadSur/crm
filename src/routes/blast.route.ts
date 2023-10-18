@@ -6,20 +6,16 @@ export class BlastRoute {
   private blastService: BlastService;
   constructor() {
     this.router = express.Router();
-    this.router.get('/newest', this.listNewest.bind(this));
+    this.router.get('/:id', this.getBlast.bind(this));
     this.blastService = new BlastService();
   }
 
-  async listNewest(req: express.Request, res: express.Response) {
+  async getBlast(req: express.Request, res: express.Response) {
     try {
-      const { offset, limit } = req.query;
-      const { data, total } = await this.blastService.listNewest({
-        offset: Number(offset),
-        limit: Number(limit),
-      });
+      const { id } = req.params;
+      const blast = await this.blastService.getBlast(id);
       res.json({
-        items: data.map((item) => item.toJSON()),
-        total,
+        blast: blast.toJSON(),
       });
     } catch (error) {
       console.log('error', error);

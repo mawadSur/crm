@@ -2,6 +2,7 @@ export * from './activity.model.js';
 export * from './admin.model.js';
 export * from './appointment.model.js';
 export * from './blast.model.js';
+export * from './blastGroup.model.js';
 export * from './car.model.js';
 export * from './chatConversation.model.js';
 export * from './customer.model.js';

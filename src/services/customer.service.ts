@@ -1,6 +1,6 @@
 import httpRequest from '../libs/httpsRequest.js';
 import {
-  Blast,
+  BlastGroupModel,
   BlastModel,
   CustomerActivityModel,
   CustomerInsuranceModel,
@@ -72,99 +72,93 @@ export class CustomerService {
     };
   }
 
-  async launchCampaign(
-    payload: { customerIds: string[]; context: string },
-    ignoreUpdateNewest: boolean = false,
-  ) {
-    const customers = await CustomerModel.find({
-      _id: {
-        $in: payload.customerIds,
-      },
-    })
-      .lean()
-      .exec();
-
-    if (customers.length === 0) {
-      throw new Error('Customers not found');
-    }
-
-    const waitingList = customers.map((customer) => ({
-      name: customer.name,
-      phone: customer.workNumber,
-      customerId: customer._id,
-      context: String(payload.context),
-      isSendMessage: false,
-      isNewest: true,
-    }));
-
-    if (!ignoreUpdateNewest) {
-      //! Update blast to older
-      await BlastModel.updateMany(
-        {
-          isNewest: true,
+  async launchCampaign(payload: { customerIds: string[]; context: string }) {
+    try {
+      const customers = await CustomerModel.find({
+        _id: {
+          $in: payload.customerIds,
         },
-        {
-          isNewest: false,
-        },
-        {
-          multi: true,
-        },
-      );
-    }
+      })
+        .lean()
+        .exec();
 
-    console.log('waitingList', waitingList);
-
-    //! Create blast data
-    const blasts = await BlastModel.insertMany(waitingList, {
-      ordered: false,
-      lean: true,
-    });
-
-    //! Send message to customers
-    const promiseSendMessage = await Promise.allSettled(
-      blasts.map((blast) =>
-        this.requestLaunch({
-          phone: blast.phone,
-          context: blast.context,
-        }),
-      ),
-    );
-
-    let totalSuccess = 0;
-    let totalFailed = 0;
-    const updateBlastOperations = [];
-
-    promiseSendMessage.forEach((item, i) => {
-      if (item.status === 'rejected') {
-        totalFailed += 1;
-        return;
+      if (customers?.length === 0) {
+        throw new Error('Customers not found');
       }
-      if (item.status === 'fulfilled') {
-        totalSuccess += 1;
-        const blastId = blasts[i]._id;
 
-        if (!blastId) return;
+      const waitingList = customers.map((customer) => ({
+        name: customer.name,
+        phone: customer.workNumber,
+        customerId: customer._id,
+        context: String(payload.context),
+        isSendMessage: false,
+      }));
 
-        updateBlastOperations.push({
-          updateOne: {
-            filter: { _id: blastId },
-            update: { $set: { isSendMessage: true } },
-          },
+      //! Create blast data
+      const blasts = await BlastModel.insertMany(waitingList, {
+        ordered: false,
+        lean: true,
+      });
+
+      console.log('blasts', blasts);
+      //! Create blast group
+      const blastIds = blasts.map((blast) => blast._id);
+      const blastGroup = new BlastGroupModel();
+      blastGroup.blastIds = blastIds as any;
+      await blastGroup.save();
+
+      //! Send message to customers
+      const promiseSendMessage = await Promise.allSettled(
+        blasts.map((blast) =>
+          this.requestLaunch({
+            phone: blast.phone,
+            context: blast.context,
+          }),
+        ),
+      );
+
+      let totalSuccess = 0;
+      let totalFailed = 0;
+      const updateBlastOperations = [];
+
+      promiseSendMessage.forEach((item, i) => {
+        if (item.status === 'rejected') {
+          totalFailed += 1;
+          return;
+        }
+        if (item.status === 'fulfilled') {
+          totalSuccess += 1;
+          const blastId = blasts[i]._id;
+
+          if (!blastId) return;
+
+          updateBlastOperations.push({
+            updateOne: {
+              filter: { _id: blastId },
+              update: { $set: { isSendMessage: true } },
+            },
+          });
+        }
+      });
+
+      if (updateBlastOperations.length > 0) {
+        //! Update blast status
+        await BlastModel.bulkWrite(updateBlastOperations, {
+          ordered: false,
         });
       }
-    });
 
-    if (updateBlastOperations.length > 0) {
-      //! Update blast status
-      await BlastModel.bulkWrite(updateBlastOperations, {
-        ordered: false,
-      });
+      return {
+        totalFailed,
+        totalSuccess,
+      };
+    } catch (error) {
+      console.log('error', error);
+      return {
+        totalFailed: 0,
+        totalSuccess: 0,
+      };
     }
-
-    return {
-      totalFailed,
-      totalSuccess,
-    };
   }
 
   async launchAllCampaign(payload: { context: string }) {
@@ -175,28 +169,13 @@ export class CustomerService {
     let _totalSuccess = 0;
     let _totalFailed = 0;
 
-    await BlastModel.updateMany(
-      {
-        isNewest: true,
-      },
-      {
-        isNewest: false,
-      },
-      {
-        multi: true,
-      },
-    );
-
     while (offset < totalCustomers) {
       try {
         const customers = await CustomerModel.find().skip(offset).limit(limit).lean().exec();
-        const { totalSuccess, totalFailed } = await this.launchCampaign(
-          {
-            customerIds: customers.map((customer) => String(customer._id)),
-            context: payload.context,
-          },
-          true,
-        );
+        const { totalSuccess, totalFailed } = await this.launchCampaign({
+          customerIds: customers.map((customer) => String(customer._id)),
+          context: payload.context,
+        });
         offset += limit;
         _totalSuccess += totalSuccess;
         _totalFailed += totalFailed;

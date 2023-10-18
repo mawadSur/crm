@@ -7,7 +7,6 @@ export interface Blast {
   customerId: string | SchemaDefinitionProperty<string>;
   isSendMessage: boolean;
   context: string;
-  isNewest: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -19,7 +18,6 @@ export const blastSchema = new Schema<Blast>(
     context: { type: String, required: true },
     customerId: { type: Schema.Types.ObjectId, ref: 'Customers' },
     isSendMessage: { type: Boolean, required: true, default: false },
-    isNewest: { type: Boolean, required: true, default: false },
   },
   {
     timestamps: true,
@@ -39,6 +37,5 @@ blastSchema.index({ customerId: 1 });
 blastSchema.index({ name: 1 });
 blastSchema.index({ phone: 1 });
 blastSchema.index({ isSendMessage: 1 });
-blastSchema.index({ isNewest: 1 });
 
 export const BlastModel = model<Blast>('Blast', blastSchema);

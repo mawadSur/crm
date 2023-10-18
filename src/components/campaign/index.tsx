@@ -182,9 +182,6 @@ const BlastCampaignCard = React.memo(() => {
     };
   }, []);
 
-  console.log('totalLaunchFailed', totalLaunchFailed);
-  console.log('totalLaunchSuccess', totalLaunchSuccess);
-
   return (
     <CampaignStyle.ContainerCampaign>
       <CampaignStyle.Card onClick={handleClick} open={isMenuOpen}>

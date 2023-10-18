@@ -1,32 +1,34 @@
+import { Loader } from '@adminjs/design-system';
 import { ApiClient } from 'adminjs';
 import React from 'react';
-import { useLocation } from 'react-router-dom';
-import { Cell, Funnel, FunnelChart, FunnelProps, ResponsiveContainer, Tooltip } from 'recharts';
-import CustomersList from './CustomerList.js';
+import Select from 'react-select';
+import { getBlastGroups } from '../../libs/apis/index.js';
+import { dateFormat } from '../../utils/functions.js';
+import BlastInformation from './BlastInfo.js';
 import FollowUpStyle from './style.js';
-
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#fd6b19', '#215a9f']; // sample colors, adjust as necessary
 
 const FollowUp = () => {
   const api = new ApiClient();
-  const [data, setData] = React.useState([]);
-  const location = useLocation();
+  const [loading, setLoading] = React.useState(false);
+  const [blastGroups, setBlastGroups] = React.useState([]);
   const [apiURI, setApiURI] = React.useState('');
-  const [selectedSection, setSelectedSection] = React.useState(null);
+  const [, setTotal] = React.useState(0);
+  const [offset] = React.useState(0);
+  const [limit] = React.useState(50);
+  const [blasts, setBlasts] = React.useState([]);
 
   React.useEffect(() => {
     const fetchServerSide = async () => {
+      setLoading(true);
       try {
         const response: any = await api.getPage({
-          pageName: 'blast',
+          pageName: 'followUp',
         });
-
         const { data } = response;
-
-        if (data?.apiURI) {
-          setApiURI(data.apiURI);
-        }
+        if (data?.apiURI) setApiURI(data.apiURI);
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.log('error', error);
       }
     };
@@ -35,77 +37,66 @@ const FollowUp = () => {
   }, []);
 
   // Load animation by populating data after a delay (using useEffect and useState)
-  const updateDataWithCounts = (customerCounts) => {
-    const funnelData = [
-      { value: customerCounts.totalCustomers, name: 'Sent message' },
-      { value: customerCounts.positiveResponseCount, name: 'Positive Response' },
-      { value: customerCounts.madeAppointmentCount, name: 'Made Appointment' },
-      { value: customerCounts.visitedStoreCount, name: 'Visited Store' },
-      { value: customerCounts.purchaseCount, name: 'Purchased' },
-    ];
-    setTimeout(() => setData(funnelData), 500); // simulating loading data with a delay
-  };
 
   React.useEffect(() => {
-    let sentMessage = 0;
-    if (location?.state?.total > 0) {
-      sentMessage = location.state.total;
-    } else {
-      if (!apiURI) return;
-      (async () => {
-        const response = await fetch(`${apiURI}/blasts/newest?limit=10&offset=0`);
-        const data = await response.json();
-        if (data?.total) sentMessage = data.total;
-      })();
-    }
-    console.log('sentMessage', sentMessage);
-    if (sentMessage > 0) {
-      const indexOfSentMessage = data.findIndex((item) => item.name === 'Sent message');
-      console.log('indexOfSentMessage', indexOfSentMessage);
-      if (indexOfSentMessage > -1) {
-        data[indexOfSentMessage].value = sentMessage;
-        setData([...data]);
+    if (!apiURI) return;
+    (async () => {
+      try {
+        setLoading(true);
+        const data = await getBlastGroups(apiURI, limit, offset, true);
+        if (data?.total) setTotal(data.total);
+        if (data?.items?.length) setBlastGroups(data.items);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.error('Error fetching data:', error);
       }
-    }
-  }, [location?.state, apiURI, data.length]);
+    })();
+  }, [apiURI]);
 
-  const handleSectionClick = (data: any, index: number) => {
-    setSelectedSection(data.name); // Update selected section
-    console.log(data);
-  };
+  const blastGroupsOptions = blastGroups.map((group) => ({
+    value: group.id,
+    label: dateFormat(group.createdAt, true),
+  }));
+
+  const handleBlastGroupChange = React.useCallback(
+    async (value) => {
+      const selectedBlastGroupId = value?.value;
+      const selectedBlastGroup = blastGroups.find((group) => group.id === selectedBlastGroupId);
+      setBlasts(selectedBlastGroup?.blastIds || []);
+    },
+    [blastGroups, apiURI],
+  );
 
   return (
-    <div>
+    <div style={{ padding: '2rem', boxSizing: 'border-box' }}>
       <FollowUpStyle.ContainerFollowUp>
         <FollowUpStyle.Card>
           <FollowUpStyle.Title>Follow Up Page</FollowUpStyle.Title>
         </FollowUpStyle.Card>
       </FollowUpStyle.ContainerFollowUp>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <ResponsiveContainer width="50%" height={400}>
-          <FunnelChart>
-            <Tooltip />
-            <Funnel
-              data={data}
-              dataKey="value"
-              nameKey="name"
-              onClick={handleSectionClick as FunnelProps['onClick']}
-            >
-              {data.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index]}
-                  cursor="pointer"
-                  stroke="none"
-                  strokeWidth={1}
-                  fillOpacity={0.7}
-                  onMouseEnter={() => {}}
-                />
-              ))}
-            </Funnel>
-          </FunnelChart>
-        </ResponsiveContainer>
-        <CustomersList onDataUpdate={updateDataWithCounts} selectedSection={selectedSection} />
+      <div
+        style={{
+          background: 'white',
+          borderRadius: '10px',
+          padding: '2rem',
+          boxSizing: 'border-box',
+          height: '100%',
+        }}
+      >
+        <div style={{ width: '350px', margin: '0 auto' }}>
+          <Select
+            defaultValue={{
+              value: blastGroupsOptions?.length > 0 ? blastGroupsOptions[0].value : '',
+              label:
+                blastGroupsOptions?.length > 0 ? blastGroupsOptions[0].label : 'Select a blast',
+            }}
+            onChange={handleBlastGroupChange}
+            placeholder="Select a blast"
+            options={blastGroupsOptions}
+          />
+        </div>
+        {loading ? <Loader /> : <BlastInformation blasts={blasts} />}
       </div>
     </div>
   );
