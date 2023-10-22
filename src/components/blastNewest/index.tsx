@@ -117,7 +117,7 @@ const BlastNewest = React.memo(({ caption = 'Blast Newest' }: Props) => {
               <TableCell>{blast?.customerId?.name}</TableCell>
               <TableCell>{blast?.context}</TableCell>
               <TableCell>{blast?.isSendMessage ? <Badge>Yes</Badge> : <Badge>No</Badge>}</TableCell>
-              <TableCell>{blast?.isNewest ? <Badge>Yes</Badge> : <Badge>No</Badge>}</TableCell>
+              {/* <TableCell>{blast?.isNewest ? <Badge>Yes</Badge> : <Badge>No</Badge>}</TableCell> */}
               <TableCell>{blast?.createdAt ? dateFormat(blast.createdAt, true) : ''}</TableCell>
             </TableRow>
           ))}

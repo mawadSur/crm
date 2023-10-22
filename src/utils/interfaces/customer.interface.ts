@@ -15,13 +15,13 @@ export interface ICustomerOtherContact {
   name: string;
 }
 
-export interface ICustomerflags {
+export interface ICustomerFlags {
   isBuying: boolean;
   carInMind: string;
   didMakeAppointment: boolean;
   didVisitStore: boolean;
   didPurchase: boolean;
-  customerType: string;
+  customerType: ECustomerTypeFlag;
   budgetRange: number;
   financingInterest: string;
   tradeIn: string;
@@ -46,7 +46,7 @@ export interface ICustomer {
   notes: string;
   textPreferred: boolean;
   otherContacts: ICustomerOtherContact[];
-  flags: ICustomerflags[];
+  flags: ICustomerFlags;
   relationships: string[];
   services: string[];
   updatedAt: Date;
@@ -108,4 +108,9 @@ export interface IQueryCustomer extends IQuery {
     financingStatus?: string;
     type?: string;
   };
+}
+
+export enum ECustomerTypeFlag {
+  New = 'New',
+  Used = 'Used',
 }

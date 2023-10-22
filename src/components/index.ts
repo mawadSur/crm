@@ -21,7 +21,7 @@ export const Components = {
   ),
 
   //! Blast
-  BlastNewest: componentLoader.add('BlastNewest', './blastNewest/index.js'),
+  // BlastNewest: componentLoader.add('BlastNewest', './blastNewest/index.js'),
 
   //! Common components
   ChatProxy: componentLoader.add('chatProxy', './common/chatProxy/index.js'),

@@ -2,7 +2,6 @@ import AdminJSExpress from '@adminjs/express';
 import { Database, Resource } from '@adminjs/mongoose';
 import AdminJS from 'adminjs';
 import mongoStore from 'connect-mongo';
-import cors from 'cors';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import { Components, componentLoader } from './components/index.js';
@@ -110,7 +109,6 @@ const start = async () => {
         icon: 'Zap',
       },
       followUp: {
-        // name, will be used to build an URL
         handler: async (request, response, context) => {
           return {
             apiURI: ENV_VARIABLES.API_URI,
@@ -119,15 +117,15 @@ const start = async () => {
         component: Components.FollowUp,
         icon: 'BarChart2',
       },
-      blast: {
-        handler: async (request, response, context) => {
-          return {
-            apiURI: ENV_VARIABLES.API_URI,
-          };
-        },
-        component: Components.BlastNewest,
-        icon: 'Volume2',
-      },
+      // blast: {
+      //   handler: async (request, response, context) => {
+      //     return {
+      //       apiURI: ENV_VARIABLES.API_URI,
+      //     };
+      //   },
+      //   component: Components.BlastNewest,
+      //   icon: 'Volume2',
+      // },
       searchVin: {
         handler: async (request, response, context) => {
           return {

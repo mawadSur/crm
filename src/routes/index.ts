@@ -5,6 +5,7 @@ import { CustomerRoute } from './customer.route.js';
 import { DesklogRoute } from './desklog.route.js';
 import { CarsRoute } from './cars.route.js';
 import { BlastRoute } from './blast.route.js';
+import { BlastGroupRoute } from './blastGroup.route.js';
 
 export class BaseRoute {
   public router: express.Router;
@@ -14,6 +15,7 @@ export class BaseRoute {
   private customerRoute: CustomerRoute;
   private carsRoute: CarsRoute;
   private blastRoute: BlastRoute;
+  private blastGroupRoute: BlastGroupRoute;
 
   constructor() {
     this.router = express.Router();
@@ -23,6 +25,7 @@ export class BaseRoute {
     this.customerRoute = new CustomerRoute();
     this.carsRoute = new CarsRoute();
     this.blastRoute = new BlastRoute();
+    this.blastGroupRoute = new BlastGroupRoute();
     this.load();
   }
 
@@ -33,5 +36,6 @@ export class BaseRoute {
     this.router.use('/customers', this.customerRoute.getRouter());
     this.router.use('/cars', this.carsRoute.getRouter());
     this.router.use('/blasts', this.blastRoute.getRouter());
+    this.router.use('/blast-groups', this.blastGroupRoute.getRouter());
   }
 }
