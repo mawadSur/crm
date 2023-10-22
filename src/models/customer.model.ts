@@ -1,5 +1,11 @@
 import { model, Schema } from 'mongoose';
-import { ageRange, ECustomerGender, ICustomer, validateEmailRegex } from '../utils/index.js';
+import {
+  ageRange,
+  ECustomerGender,
+  ECustomerTypeFlag,
+  ICustomer,
+  validateEmailRegex,
+} from '../utils/index.js';
 
 export interface TextConversation {
   timestamp: Date;
@@ -17,17 +23,22 @@ export const otherContactSchema = new Schema({
   },
 });
 
-export const flagSchema = new Schema({
-  isBuying: { type: Boolean },
-  carInMind: { type: String },
-  didMakeAppointment: { type: Boolean },
-  didVisitStore: { type: Boolean },
-  didPurchase: { type: Boolean },
-  customerType: { type: String },
-  budgetRange: { type: Number },
-  financingInterest: { type: String },
-  tradeIn: { type: String },
-});
+export const flagSchema = new Schema(
+  {
+    isBuying: { type: Boolean },
+    carInMind: { type: String },
+    didMakeAppointment: { type: Boolean },
+    didVisitStore: { type: Boolean },
+    didPurchase: { type: Boolean },
+    customerType: { type: String, enum: ECustomerTypeFlag, required: true },
+    budgetRange: { type: Number, default: 0 },
+    financingInterest: { type: String },
+    tradeIn: { type: String },
+  },
+  {
+    _id: false,
+  },
+);
 
 export const customerSchema = new Schema<ICustomer>(
   {
@@ -61,8 +72,18 @@ export const customerSchema = new Schema<ICustomer>(
       },
     ],
     flags: {
-      type: [flagSchema],
-      default: [],
+      type: flagSchema,
+      default: {
+        isBuying: false,
+        carInMind: '',
+        didMakeAppointment: false,
+        didVisitStore: false,
+        didPurchase: false,
+        customerType: ECustomerTypeFlag.New,
+        budgetRange: 0,
+        financingInterest: '',
+        tradeIn: '',
+      },
     },
   },
   {
@@ -77,6 +98,7 @@ customerSchema.index({ gender: 1 });
 customerSchema.index({ homeNumber: 1 });
 customerSchema.index({ cellNumber: 1 });
 customerSchema.index({ workNumber: 1 });
+customerSchema.index({ phone: 1 });
 customerSchema.index({ email: 1 });
 customerSchema.index({ relationships: 1 });
 customerSchema.index({ 'otherContacts.name': 1 });

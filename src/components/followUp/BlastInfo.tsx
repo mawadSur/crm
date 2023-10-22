@@ -16,11 +16,11 @@ const BlastInformation = React.memo(({ blasts }: { blasts: any[] }) => {
 
   const updateDataWithCounts = () => {
     const funnelData = [
-      { value: 10, name: EChartKeys.SentMessage },
-      { value: 50, name: EChartKeys.PositiveResponse },
-      { value: 100, name: EChartKeys.MadeAppointment },
-      { value: 150, name: EChartKeys.VisitedStore },
-      { value: 200, name: EChartKeys.Purchased },
+      { value: 0, name: EChartKeys.SentMessage },
+      { value: 0, name: EChartKeys.PositiveResponse },
+      { value: 0, name: EChartKeys.MadeAppointment },
+      { value: 0, name: EChartKeys.VisitedStore },
+      { value: 0, name: EChartKeys.Purchased },
     ];
     setTimeout(() => setData(funnelData), 500); // simulating loading data with a delay
   };
@@ -52,9 +52,33 @@ const BlastInformation = React.memo(({ blasts }: { blasts: any[] }) => {
 
   React.useEffect(() => {
     if (customers?.length === 0) return;
+
+    //! Count data in chart
     const tmpDataChart = [...data];
     const indexOfSentCount = tmpDataChart.findIndex((item) => item.name === EChartKeys.SentMessage);
+    const indexOfMakeAppointment = tmpDataChart.findIndex(
+      (item) => item.name === EChartKeys.MadeAppointment,
+    );
+    const indexOfVisitStore = tmpDataChart.findIndex(
+      (item) => item.name === EChartKeys.VisitedStore,
+    );
+    const indexOfPurchase = tmpDataChart.findIndex((item) => item.name === EChartKeys.Purchased);
+
+    const customerMakeAppointmentCount =
+      customers.filter((item) => item?.flags?.didMakeAppointment)?.length || 0;
+
+    const customerVisitedStoreCount =
+      customers.filter((item) => item?.flags?.didVisitStore)?.length || 0;
+
+    const customerPurchasedCount =
+      customers.filter((item) => item?.flags?.didPurchase)?.length || 0;
+
     tmpDataChart[indexOfSentCount].value = customers.length;
+    tmpDataChart[indexOfMakeAppointment].value = customerMakeAppointmentCount;
+    tmpDataChart[indexOfVisitStore].value = customerVisitedStoreCount;
+    tmpDataChart[indexOfPurchase].value = customerPurchasedCount;
+
+    console.log('tmpDataChart', tmpDataChart);
     setData(tmpDataChart);
   }, [customers]);
 
