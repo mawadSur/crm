@@ -184,3 +184,34 @@ export interface CarVinInfoInternal {
     months: string;
   }[];
 }
+
+export interface IMarketValue {
+  roughTradeIn: string;
+  minAdjRetail: string;
+  minAdjCleanTrade: string;
+  tradeIn: string;
+  body: string;
+  minAdjRoughTrade: string;
+  retail: string;
+  msrp: string;
+  adjustedCleanTrade: string;
+  vin: string;
+  model: string;
+  make: string;
+  adjustedCleanRetail: string;
+  averageTradeIn: string;
+  minMileageAdj: string;
+  tradeInValues: string[];
+  mileageAdjustment: string;
+  maxMileageAdj: string;
+  modelYear: string;
+  minAdjLoan: string;
+  averageMileage: string;
+  adjustedAverageTrade: string;
+  adjustedLoan: string;
+  fuelType: string;
+  success: boolean;
+  minAdjAverageTrade: string;
+  loanValue: string;
+  adjustedRoughTrade: string;
+}

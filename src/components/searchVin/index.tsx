@@ -2,13 +2,18 @@ import React from 'react';
 
 import { Input, Loader, MessageBox, Label, Text, Box } from '@adminjs/design-system';
 import { ApiClient } from 'adminjs';
-import { CarVinInfoInternal, convertPropertyNameToDisplayName } from '../../utils/index.js';
+import {
+  CarVinInfoInternal,
+  convertPropertyNameToDisplayName,
+  formatPrice,
+} from '../../utils/index.js';
 
 const SearchVin = () => {
   const api = new ApiClient();
   const [apiURI, setApiURI] = React.useState('');
   const [valueInput, setValueInput] = React.useState('');
   const [carInfo, setCarInfo] = React.useState<CarVinInfoInternal | null>();
+  const [marketInfo, setMarketInfo] = React.useState();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
 
@@ -39,17 +44,26 @@ const SearchVin = () => {
         try {
           if (!valueInput) return;
           setLoading(true);
-          const response = await fetch(`${apiURI}/cars/vin/${valueInput}`);
-          const data = await response.json();
-          console.log('data', data);
+          const [vinValue, marketValue] = await Promise.allSettled([
+            fetch(`${apiURI}/cars/vin/${valueInput}`),
+            fetch(`${apiURI}/cars/vin/${valueInput}/market`),
+          ]);
+          const vinValueData = vinValue?.status === 'fulfilled' && (await vinValue.value.json());
+          const marketValueData =
+            marketValue?.status === 'fulfilled' && (await marketValue.value.json());
 
-          if (data?.message) {
-            throw new Error(data.message);
+          if (vinValueData?.message) {
+            throw new Error(vinValueData.message);
           }
 
-          if (data?.attributes) {
-            setCarInfo(data);
+          if (vinValueData?.attributes) {
+            setCarInfo(vinValueData);
           }
+
+          if (marketValueData) {
+            setMarketInfo(marketValueData);
+          }
+
           setLoading(false);
           setError(null);
         } catch (error) {
@@ -112,6 +126,20 @@ const SearchVin = () => {
           <Loader />
         ) : (
           <div>
+            <h2 style={{ fontWeight: 'bold', margin: '1rem 0' }}>Market Value</h2>
+            <div style={{ columnCount: 3, columnGap: '1rem', height: 'auto' }}>
+              {marketInfo && Object.keys(marketInfo)?.length > 0
+                ? Object.keys(marketInfo).map((key) => (
+                    <Box>
+                      <Label variant="primary" size="lg">
+                        {convertPropertyNameToDisplayName(key)}:{' '}
+                        <span style={{ color: 'black' }}>{formatPrice(marketInfo[key])}</span>
+                      </Label>
+                    </Box>
+                  ))
+                : null}
+            </div>
+
             <h2 style={{ fontWeight: 'bold', margin: '1rem 0' }}>Attributes</h2>
             <div style={{ columnCount: 3, columnGap: '1rem', height: 'auto' }}>
               {carInfo?.attributes
