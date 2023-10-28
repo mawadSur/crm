@@ -25,7 +25,9 @@
     "testid",
     "carsxe",
     "gvwr",
-    "wheelwell"
+    "wheelwell",
+    "marketvalue",
+    "msrp"
   ],
   "editor.acceptSuggestionOnEnter": "on"
 }
